@@ -2,8 +2,8 @@
 <html lang="tr">
 <head>
     <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wish It Were Real - Turnuva</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Wish It Were Real - Turnuva V2</title>
     <link crossorigin href="https://fonts.gstatic.com/" rel="preconnect"/>
     <link href="https://fonts.googleapis.com/css2?display=swap&family=Lexend:wght@400;500;700;900&family=Manrope:wght@400;500;700;900&family=Noto+Sans:wght@400;500;700;900" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet"/>
@@ -11,11 +11,21 @@
     <link rel="icon" href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABFSURBVDhPYxgFo2AUjIJRMDIgBaMWAMGWg40CGGARKIcFFhAFqiBELKwL0RAUEpZSYYAAKUmZASwYGLAESJgRKMIAAGVyBqwSAFXRAAAAAElFTkSuQmCC" type="image/x-icon"/>
     <style>
         body {
-            min-height: max(884px, 100dvh);
+            min-height: 100dvh; /* Tam ekran yüksekliği */
             font-family: 'Lexend', "Manrope", "Noto Sans", sans-serif;
             overscroll-behavior-y: contain;
+            margin: 0; /* Body'deki varsayılan margin'i kaldır */
         }
         .hidden-screen { display: none !important; }
+        .screen-content {
+            padding-bottom: 70px; /* Alt menü yüksekliği kadar padding */
+             box-sizing: border-box; /* Padding'in toplam yüksekliğe dahil olmasını sağlar */
+            min-height: calc(100dvh - 0px); /* Eğer header sabitse onun yüksekliğini de çıkar */
+        }
+        #startScreen.screen-content { /* Start screen özelinde padding'i kaldırabilir veya ayarlayabiliriz */
+             padding-bottom: 0; /* Eğer alt menü start screen'de farklıysa */
+        }
+
 
         /* Giriş Ekranı Stilleri */
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
@@ -33,6 +43,22 @@
         @keyframes burst { 0% { opacity: 0.5; transform: translate(-50%, -50%) scale(0.5); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(1.5); } }
         .progress-bar-spark { position: absolute; right: -5px; top: -3px; width: 10px; height: 10px; background-color: #FFD700; border-radius: 50%; box-shadow: 0 0 8px 2px #FFD700; opacity: 0; animation: pulse-spark 0.5s ease-in-out; }
         @keyframes pulse-spark { 0%, 100% { opacity: 0; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.2); } }
+        
+        #vsButtonSpan.vs-animate { animation: vsPulse 0.4s ease-in-out; }
+        @keyframes vsPulse {
+            0% { transform: scale(1) rotate(-15deg); }
+            50% { transform: scale(1.3) rotate(5deg); }
+            100% { transform: scale(1) rotate(-15deg); }
+        }
+        @media (min-width: 768px) { /* md breakpoint - Tailwind */
+            #vsButtonSpan.vs-animate { animation: vsPulseDesktop 0.4s ease-in-out; }
+            @keyframes vsPulseDesktop {
+                0% { transform: scale(1) rotate(0deg); }
+                50% { transform: scale(1.3) rotate(0deg); }
+                100% { transform: scale(1) rotate(0deg); }
+            }
+        }
+
 
         /* Turnuva Geçiş Ekranı Stilleri (HTML #3) */
         .tournament-card-glow { box-shadow: 0 0 15px 5px rgba(66, 138, 239, 0.5), 0 0 30px 10px rgba(66, 138, 239, 0.3); animation: pulse-glow-qf 2s infinite; }
@@ -43,11 +69,20 @@
         .bg-hero-gradient { background-image: linear-gradient(to bottom, rgba(0,0,0,0.0), rgba(0,0,0,0.6)); }
         .gold-crown { color: #FFD700; }
         .material-icons, .material-icons-outlined { vertical-align: middle; }
+
+        /* Kalıcı Alt Menü */
+        #bottomNav {
+            height: 60px; /* Menü yüksekliği, screen-content padding-bottom ile eşleşmeli (veya biraz daha fazla) */
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+        #bottomNav a.active {
+            color: #428aef; /* Tailwind's blue-600 */
+        }
     </style>
 </head>
 <body class="bg-[#FAF8F6]">
 
-    <div id="startScreen" class="relative flex size-full min-h-screen flex-col justify-between items-center group/design-root overflow-hidden p-6 background-animate">
+    <div id="startScreen" class="screen-content relative flex size-full min-h-screen flex-col justify-center items-center group/design-root overflow-hidden p-6 background-animate">
         <div class="absolute inset-0 overflow-hidden z-0">
             <div class="absolute top-1/4 left-1/4 text-lg font-light text-gray-400 floating-headline" style="animation-delay: 0s;">Herkes için evrensel temel gelir</div>
             <div class="absolute top-1/2 right-1/4 text-lg font-light text-gray-400 floating-headline" style="animation-delay: 2s;">Haftalık çalışma süresi 3 gün</div>
@@ -56,18 +91,17 @@
             <h1 class="text-[#1a1a1a] tracking-tight text-[48px] sm:text-[64px] font-bold leading-tight pb-4 pt-12">Keşke Gerçek Olsa</h1>
             <p class="text-[#333333] text-xl sm:text-2xl font-normal leading-relaxed pb-8 max-w-md">Geleceği seçebilseydin, hangisini seçerdin?</p>
         </div>
-        <div class="w-full flex justify-center pb-12 z-10">
-            <button id="startGameButton" class="start-button flex min-w-[120px] max-w-[480px] w-full sm:w-auto cursor-pointer items-center justify-center overflow-hidden rounded-full h-16 px-8 text-white text-xl font-bold shadow-lg">
-                <span class="truncate">Başla</span>
+        <div class="w-full flex justify-center pb-12 z-10 sm:pb-4"> <button id="startGameButton" class="start-button flex min-w-[120px] max-w-[480px] w-full sm:w-auto cursor-pointer items-center justify-center overflow-hidden rounded-full h-16 px-8 text-white text-xl font-bold shadow-lg">
+                <span class="truncate">Turnuvaya Başla!</span>
             </button>
         </div>
     </div>
 
-    <div id="gameScreen" class="hidden-screen relative flex size-full min-h-screen flex-col justify-between group/design-root overflow-hidden bg-slate-50">
+    <div id="gameScreen" class="hidden-screen screen-content relative flex size-full min-h-screen flex-col justify-between group/design-root overflow-hidden bg-slate-50">
         <div class="flex flex-col flex-grow">
             <div class="sticky top-0 z-20 bg-slate-50 p-4 shadow-sm">
                 <div class="flex justify-between items-center mb-1">
-                    <p id="progressTextElement" class="text-[#0d131b] text-sm font-medium leading-normal">Başlangıç Turu: Maç 1 / 16</p>
+                    <p id="progressTextElement" class="text-[#0d131b] text-sm font-medium leading-normal">Eleme Turu: Maç 1 / 8</p>
                 </div>
                 <div class="h-1.5 rounded-full bg-[#cfd9e7] relative overflow-hidden">
                     <div id="progressBarFill" class="h-full rounded-full bg-[#428aef]" style="width: 0%;"></div>
@@ -83,7 +117,7 @@
                     </div>
                 </div>
                 <div class="flex items-center justify-center my-0 @md:my-0 @md:mx-2">
-                    <span class="bg-[#428aef] text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-md transform rotate-[-15deg] @md:rotate-0">VS</span>
+                    <span id="vsButtonSpan" class="bg-[#428aef] text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-md transform rotate-[-15deg] @md:rotate-0">VS</span>
                 </div>
                 <div class="card w-full max-w-md @md:max-w-sm bg-white rounded-xl shadow-xl overflow-hidden relative">
                     <div class="confetti-burst hidden"></div> 
@@ -95,15 +129,15 @@
                 </div>
             </div>
         </div>
-        <div class="h-5 bg-slate-50"></div>
     </div>
     
-    <div id="tournamentTransitionScreen" class="hidden-screen relative flex size-full min-h-screen flex-col bg-slate-100 justify-between group/design-root overflow-x-hidden">
+    <div id="tournamentTransitionScreen" class="hidden-screen screen-content relative flex size-full min-h-screen flex-col bg-slate-100 justify-between group/design-root overflow-x-hidden">
         <div>
             <header class="bg-slate-100 sticky top-0 z-10">
                 <div class="flex items-center p-4 pb-2 justify-between">
                     <div class="w-12"></div> 
-                    <h1 id="tournamentTransitionTitle" class="text-xl font-bold text-slate-800">Finalistler!</h1> <div class="flex w-12 items-center justify-end">
+                    <h1 id="tournamentTransitionTitle" class="text-xl font-bold text-slate-800">Finalistler!</h1>
+                    <div class="flex w-12 items-center justify-end">
                         <button id="closeTournamentTransitionButton" aria-label="Kapat" class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-slate-200 hover:bg-slate-300 text-slate-700 transition-colors">
                             <span class="material-icons">close</span>
                         </button>
@@ -112,46 +146,21 @@
                 <h2 id="tournamentTransitionSubtitle" class="text-slate-600 text-sm font-medium px-6 text-center pb-3 pt-1">Şampiyonluğa bir adım kaldı!</h2>
             </header>
             <main id="tournamentTransitionCardContainer" class="p-4 space-y-6">
-                <div class="finalist-card bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl tournament-final-card-glow @container">
-                    <div class="card-image w-full bg-center bg-no-repeat aspect-[16/10] bg-cover" style='background-image: url("https://picsum.photos/seed/finalist1_placeholder/600/400");'></div>
-                    <div class="p-4 @xl:px-5">
-                        <h3 class="card-title text-yellow-700 text-xl font-bold leading-tight">Finalist 1 Başlığı</h3>
-                        <p class="card-description text-yellow-600 text-sm font-normal mt-1">Finalist 1 açıklaması.</p>
-                        <p class="card-votes text-yellow-500 text-xs font-medium mt-2">Çok oy aldı!</p>
-                    </div>
-                </div>
-                <div class="finalist-card bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl tournament-card-glow @container">
-                    <div class="card-image w-full bg-center bg-no-repeat aspect-[16/10] bg-cover" style='background-image: url("https://picsum.photos/seed/finalist2_placeholder/600/400");'></div>
-                    <div class="p-4 @xl:px-5">
-                        <h3 class="card-title text-slate-800 text-lg font-bold leading-tight">Finalist 2 Başlığı</h3>
-                        <p class="card-description text-slate-500 text-sm font-normal mt-1">Finalist 2 açıklaması.</p>
-                        <p class="card-votes text-slate-400 text-xs font-medium mt-2">Bu da çok oy aldı!</p>
-                    </div>
-                </div>
-                 <div class="finalist-card bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl @container">
-                    <div class="card-image w-full bg-center bg-no-repeat aspect-[16/10] bg-cover" style='background-image: url("https://picsum.photos/seed/popular_placeholder/600/400");'></div>
-                    <div class="p-4 @xl:px-5">
-                        <h3 class="card-title text-slate-800 text-lg font-bold leading-tight">Popüler Diğer Dilek</h3>
-                        <p class="card-description text-slate-500 text-sm font-normal mt-1">Bu dilek de çok sevilmişti.</p>
-                         <p class="card-votes text-slate-400 text-xs font-medium mt-2">Yüksek oy!</p>
-                    </div>
-                </div>
-            </main>
+                </main>
         </div>
         <div id="loadingScreenTournamentTransition" class="fixed inset-0 bg-slate-900 bg-opacity-80 hidden flex-col items-center justify-center z-50">
             <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-400 mb-6"></div>
             <p class="text-slate-100 text-lg font-semibold text-center px-8">Final maçı hazırlanıyor...</p>
         </div>
-        <footer class="sticky bottom-0 bg-slate-100 border-t border-slate-200 pb-safe">
-            <div class="flex gap-3 px-4 py-3 justify-around">
-                <button id="proceedToFinalMatchButton" class="flex-1 max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-6 bg-[#428aef] text-slate-50 text-base font-bold leading-normal tracking-[0.015em] hover:bg-blue-600 transition-colors">
+        <footer class="sticky bottom-0 bg-slate-100 border-t border-slate-200 pb-safe"> <div class="flex gap-3 px-4 py-3 justify-around">
+                <button id="proceedToFinalMatchButton" class="flex-1 max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-6 bg-[#428aef] text-slate-50 text-base font-bold hover:bg-blue-600 transition-colors">
                     <span class="truncate">Final Maçına Geç</span>
                 </button>
-                </div>
+            </div>
         </footer>
     </div>
 
-    <div id="resultsScreen" class="hidden-screen relative flex size-full min-h-screen flex-col justify-between group/design-root overflow-x-hidden bg-slate-50">
+    <div id="resultsScreen" class="hidden-screen screen-content relative flex size-full min-h-screen flex-col justify-between group/design-root overflow-x-hidden bg-slate-50">
         <div>
             <header class="sticky top-0 z-10 bg-slate-50/80 backdrop-blur-sm">
                 <div class="flex items-center p-4 pb-3">
@@ -161,8 +170,7 @@
                     <h1 class="text-slate-900 text-xl font-bold leading-tight flex-1 text-center pr-10">Turnuva Sonuçları</h1>
                 </div>
             </header>
-            <main class="pb-24">
-                <h2 class="text-slate-800 text-2xl font-semibold leading-tight px-6 text-center pb-6 pt-5">Ve şampiyon dilek...</h2>
+            <main class="pb-4"> <h2 class="text-slate-800 text-2xl font-semibold leading-tight px-6 text-center pb-6 pt-5">Ve şampiyon dilek...</h2>
                 <div id="resultsCardContainer" class="px-4 space-y-4">
                     <div id="championCardDisplay" class="bg-white shadow-xl rounded-2xl overflow-hidden border-2 border-yellow-400 transform scale-105">
                         <div class="relative">
@@ -180,30 +188,14 @@
                             </div>
                         </div>
                     </div>
-                    </div>
+                </div>
             </main>
         </div>
-        <nav class="fixed bottom-0 left-0 right-0 bg-slate-50/90 backdrop-blur-md border-t border-slate-200">
-            <div class="flex justify-around items-center px-2 pt-2 pb-3 safe-area-inset-bottom">
-                <a id="resultsPlayAgainButton" href="#" class="flex flex-col items-center justify-end gap-0.5 text-slate-500 hover:text-blue-600 transition-colors w-1/3 py-1">
-                    <span class="material-icons-outlined">casino</span>
-                    <p class="text-xs font-medium tracking-tight">Tekrar Oyna</p>
-                </a>
-                <a href="#" class="flex flex-col items-center justify-end gap-0.5 text-blue-600 font-semibold w-1/3 py-1 bg-blue-100 rounded-lg">
-                    <span class="material-icons">emoji_events</span>
-                    <p class="text-xs font-medium tracking-tight">Sonuçlar</p>
-                </a>
-                <a id="resultsToFinishButton" href="#" class="flex flex-col items-center justify-end gap-0.5 text-slate-500 hover:text-blue-600 transition-colors w-1/3 py-1">
-                    <span class="material-icons-outlined">celebration</span>
-                    <p class="text-xs font-medium tracking-tight">Bitir</p>
-                </a>
-            </div>
-        </nav>
     </div>
 
-    <div id="finishScreen" class="hidden-screen relative flex size-full min-h-screen flex-col bg-slate-50 group/design-root overflow-x-hidden">
+    <div id="finishScreen" class="hidden-screen screen-content relative flex size-full min-h-screen flex-col bg-slate-50 group/design-root overflow-x-hidden">
         <div class="flex-grow">
-            <header class="flex items-center bg-slate-50 p-4 pb-2 justify-end">
+            <header class="flex items-center bg-slate-50 p-4 pb-2 justify-end sticky top-0 z-10">
                 <button id="closeFinishButton" aria-label="Kapat" class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-slate-200/70 hover:bg-slate-300/70 text-[#0d131b] transition-colors duration-200">
                      <span class="material-icons">close</span>
                 </button>
@@ -227,33 +219,53 @@
                 <h2 class="text-[#0d131b] text-2xl font-bold leading-tight">Diğer Popüler Hayaller...</h2>
             </div>
             <div class="flex overflow-x-auto [-ms-scrollbar-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden pl-6 pr-2 pb-6">
-                <div id="moreDreamsContainer" class="flex items-stretch gap-4">
-                    </div>
+                <div id="moreDreamsContainer" class="flex items-stretch gap-4"></div>
             </div>
         </div>
-        <nav class="sticky bottom-0 left-0 right-0 bg-slate-50/90 backdrop-blur-md border-t border-slate-200 shadow-t-lg">
-            <div class="flex justify-around items-center px-4 pt-3 pb-4">
-                <a id="finishHomeButton" href="#" class="flex flex-col items-center justify-center gap-1 text-[#0d131b] hover:text-[#428aef] transition-colors">
-                    <span class="material-icons">home</span> <span class="text-xs font-medium">Ana Sayfa</span>
-                </a>
-                 <a id="finishToResultsButton" href="#" class="flex flex-col items-center justify-center gap-1 text-slate-500 hover:text-[#428aef] transition-colors">
-                    <span class="material-icons-outlined">emoji_events</span> <span class="text-xs font-medium">Sonuçlar</span>
-                </a>
-                <a href="#" class="flex flex-col items-center justify-center gap-1 text-slate-500 hover:text-[#428aef] transition-colors">
-                    <div class="p-2 bg-[#428aef] rounded-full text-white shadow-md -translate-y-3">
-                        <span class="material-icons">add</span>
-                    </div>
-                    <span class="text-xs font-medium -translate-y-3">Oluştur</span>
-                </a>
-                 <a href="#" class="flex flex-col items-center justify-center gap-1 text-slate-500 hover:text-[#428aef] transition-colors">
-                    <span class="material-icons-outlined">people</span> <span class="text-xs font-medium">Topluluk</span>
-                </a>
-                <a href="#" class="flex flex-col items-center justify-center gap-1 text-slate-500 hover:text-[#428aef] transition-colors">
-                    <span class="material-icons-outlined">person_outline</span> <span class="text-xs font-medium">Profil</span>
-                </a>
-            </div>
-        </nav>
     </div>
+
+    <div id="howToPlayScreen" class="hidden-screen screen-content relative flex size-full min-h-screen flex-col bg-slate-50 group/design-root overflow-x-hidden p-6">
+        <header class="sticky top-0 z-10 bg-slate-50/80 backdrop-blur-sm py-4 -mx-6 px-6 mb-6 shadow-sm">
+            <div class="flex items-center justify-between">
+                <h1 class="text-slate-900 text-2xl font-bold leading-tight">Nasıl Oynanır?</h1>
+                <button id="closeHowToPlayButton" aria-label="Kapat" class="text-slate-700 flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-slate-200 transition-colors">
+                    <span class="material-icons-outlined">close</span>
+                </button>
+            </div>
+        </header>
+        <main class="space-y-4 text-slate-700">
+            <p class="text-lg">"Keşke Gerçek Olsa" oyununa hoş geldiniz!</p>
+            <ol class="list-decimal list-inside space-y-2">
+                <li>Size sunulan iki "gelecek senaryosu" (dilek) arasından favorinizi seçin.</li>
+                <li>Seçimlerinizle dilekler turnuvada ilerleyecek:
+                    <ul class="list-disc list-inside pl-6 space-y-1 mt-1">
+                        <li><strong>Eleme Turu:</strong> 16 dilek arasından 8 kazanan belirlenir.</li>
+                        <li><strong>Çeyrek Final:</strong> 8 dilek arasından 4 kazanan belirlenir.</li>
+                        <li><strong>Yarı Final:</strong> 4 dilek arasından 2 finalist belirlenir.</li>
+                        <li><strong>Final:</strong> 2 finalist arasından şampiyon dilek seçilir!</li>
+                    </ul>
+                </li>
+                <li>Oyun sonunda şampiyon olan dileği ve diğer popüler seçimleri görebilirsiniz.</li>
+                <li>İyi eğlenceler ve en iyi geleceği seçin!</li>
+            </ol>
+        </main>
+    </div>
+
+    <nav id="bottomNav" class="fixed bottom-0 left-0 right-0 bg-slate-50 border-t border-slate-200 z-30">
+        <div class="flex justify-around items-center h-full max-w-md mx-auto px-2">
+            <a id="navHomeButton" href="#" class="flex flex-col items-center justify-center gap-0.5 text-slate-600 hover:text-blue-600 transition-colors w-1/3 py-1 h-full">
+                <span class="material-icons-outlined">home</span>
+                <p class="text-xs font-medium tracking-tight">Anasayfa</p>
+            </a>
+            <a id="navPlayButton" href="#" class="flex flex-col items-center justify-center gap-0.5 text-slate-600 hover:text-blue-600 transition-colors w-1/3 py-1 h-full">
+                <span class="material-icons-outlined">casino</span>
+                <p class="text-xs font-medium tracking-tight">Oyna</p>
+            </a>
+            <a id="navInfoResultsButton" href="#" class="flex flex-col items-center justify-center gap-0.5 text-slate-600 hover:text-blue-600 transition-colors w-1/3 py-1 h-full">
+                <span class="material-icons-outlined">help_outline</span> <p id="navInfoResultsButtonText" class="text-xs font-medium tracking-tight">Nasıl Oynanır</p>
+            </a>
+        </div>
+    </nav>
 
 <script>
     // ---------- DOM Elementleri ----------
@@ -262,13 +274,15 @@
         game: document.getElementById('gameScreen'),
         tournamentTransition: document.getElementById('tournamentTransitionScreen'),
         results: document.getElementById('resultsScreen'),
-        finish: document.getElementById('finishScreen')
+        finish: document.getElementById('finishScreen'),
+        howToPlay: document.getElementById('howToPlayScreen')
     };
 
     const startGameButton = document.getElementById('startGameButton');
     const gameScreenCards = document.querySelectorAll('#gameScreen .card');
     const progressBarFill = document.getElementById('progressBarFill');
     const progressTextElement = document.getElementById('progressTextElement');
+    const vsButtonSpan = document.getElementById('vsButtonSpan');
 
     const tournamentTransitionTitle = document.getElementById('tournamentTransitionTitle');
     const tournamentTransitionSubtitle = document.getElementById('tournamentTransitionSubtitle');
@@ -283,65 +297,64 @@
     const championTitle = document.getElementById('championTitle');
     const championInfo = document.getElementById('championInfo');
     const closeResultsButton = document.getElementById('closeResultsButton');
-    const resultsPlayAgainButton = document.getElementById('resultsPlayAgainButton');
-    const resultsToFinishButton = document.getElementById('resultsToFinishButton');
-
+    
     const winningWishTextFinishElement = document.getElementById('winningWishTextFinish');
     const shareChampionButton = document.getElementById('shareChampionButton');
-    const finishPlayAgainButton = document.getElementById('finishPlayAgainButton');
     const closeFinishButton = document.getElementById('closeFinishButton');
-    const finishHomeButton = document.getElementById('finishHomeButton');
-    const finishToResultsButton = document.getElementById('finishToResultsButton');
     const moreDreamsContainer = document.getElementById('moreDreamsContainer');
+
+    const closeHowToPlayButton = document.getElementById('closeHowToPlayButton');
+
+    // Alt Menü Butonları
+    const bottomNav = document.getElementById('bottomNav');
+    const navHomeButton = document.getElementById('navHomeButton');
+    const navPlayButton = document.getElementById('navPlayButton');
+    const navInfoResultsButton = document.getElementById('navInfoResultsButton');
+    const navInfoResultsButtonText = document.getElementById('navInfoResultsButtonText');
+    const navInfoResultsButtonIcon = navInfoResultsButton.querySelector('.material-icons-outlined');
+
 
     // ---------- Oyun Verileri ve Durumu ----------
     const STAGES = {
-        SEEDING: 'Seeding Round', // 16 maç -> 16 kazanan
-        ROUND_OF_16: 'Son 16 Turu', // 8 maç -> 8 kazanan
-        QUARTERFINALS: 'Çeyrek Final', // 4 maç -> 4 kazanan
-        SEMIFINALS: 'Yarı Final', // 2 maç -> 2 kazanan
-        TRANSITION_TO_FINAL: 'TransitionToFinal', // Yarı final sonrası geçiş ekranı
-        FINAL: 'Final Maçı', // 1 maç -> 1 şampiyon
-        RESULTS: 'Results',
-        FINISHED: 'Finished'
+        SEEDING: 'Eleme Turu',         // 16 dilek -> 8 maç -> 8 kazanan
+        QUARTERFINALS: 'Çeyrek Final', // 8 dilek -> 4 maç -> 4 kazanan
+        SEMIFINALS: 'Yarı Final',    // 4 dilek -> 2 maç -> 2 kazanan
+        TRANSITION_TO_FINAL: 'Finalistler', 
+        FINAL: 'Final Maçı',         // 2 dilek -> 1 maç -> 1 şampiyon
+        RESULTS: 'Sonuçlar',
+        FINISHED: 'Bitti',
+        HOW_TO_PLAY: 'Nasıl Oynanır'
     };
 
+    let currentScreenId = 'start'; // Hangi ekranın aktif olduğunu takip et
     let currentStage = STAGES.SEEDING;
     let currentMatchInStage = 0;
-    let wishesForCurrentStage = []; // O anki turda yarışan dilekler
-    let nextStageWishes = []; // O anki turun kazananları, bir sonraki turun yarışanları olacak
-    let voteCounts = {}; // { wishId: count }
-    let allTimeWinners = []; // Tüm kazananları ve oy sayılarını tutabiliriz
+    let wishesForCurrentStage = []; 
+    let nextStageWishes = []; 
+    let voteCounts = {}; 
     let champion = null;
 
-    const wishes = [ /* Bir önceki yanıttaki wishes array'ini buraya kopyalayın */
-        { id:1, title: "Evrensel Temel Gelir", description: "Tüm vatandaşlar için düzenli ve koşulsuz bir gelir sağlanır.", imageSeed: "income_v3" },
-        { id:2, title: "Kansere Kesin Çözüm", description: "Tıpta devrim niteliğinde bir buluşla kanser tamamen tedavi edilebilir hale gelir.", imageSeed: "cancer_cure_v3" },
-        { id:3, title: "Küresel Ağaçlandırma Seferberliği", description: "Dünya genelinde milyarlarca ağaç dikilerek iklim değişikliğiyle mücadele edilir.", imageSeed: "reforest_v3" },
-        { id:4, title: "3 Günlük Çalışma Haftası", description: "Verimlilik artarken, insanlar daha dengeli bir yaşam sürer.", imageSeed: "work_3day_v3" },
-        { id:5, title: "Tamamen Temiz Enerji", description: "Dünya enerji ihtiyacının tamamı yenilenebilir kaynaklardan karşılanır.", imageSeed: "clean_energy_v3" },
-        { id:6, title: "Kalıcı Dünya Barışı", description: "Tüm uluslar arasında anlaşmazlıklar son bulur, savaşlar tarihe karışır.", imageSeed: "world_peace_v3" },
-        { id:7, title: "Mars Kolonisi Kurulur", description: "İnsanlık, Mars'ta kendi kendine yetebilen bir koloni kurarak gezegenler arası bir tür olur.", imageSeed: "mars_colony_v3" },
-        { id:8, title: "Yapay Zeka ile Küresel Sorunlara Çözüm", description: "Yapay zeka, iklim değişikliği, hastalıklar gibi büyük sorunların çözümünde kilit rol oynar.", imageSeed: "ai_solve_v3" },
-        { id:9, title: "Parazitsiz ve Erişilebilir Eğitim", description: "Herkes için nitelikli eğitim fırsatları eşit ve ücretsiz hale gelir.", imageSeed: "free_edu_v3" },
-        { id:10, title: "Okyanuslar Plastikten Arındırılır", description: "Gelişmiş teknolojilerle okyanuslardaki tüm plastik atıklar temizlenir.", imageSeed: "clean_oceans_v3" },
-        { id:11, title: "Yıldızlararası Seyahat Mümkün Olur", description: "İnsanlık, ışık hızına yakın hızlarda seyahat edebilen uzay gemileri geliştirir.", imageSeed: "interstellar_v3" },
-        { id:12, title: "Kişiye Özel Tıp ile Uzun Yaşam", description: "Genetik yapıya uygun tedavi yöntemleriyle insan ömrü sağlıklı bir şekilde uzar.", imageSeed: "long_life_v3" },
-        { id:13, title: "Küresel Gıda Güvenliği", description: "Sürdürülebilir tarım ve adil dağıtımla dünyada açlık sona erer.", imageSeed: "food_forall_v3" },
-        { id:14, title: "Ruh Sağlığı Stigması Kalkar", description: "Ruh sağlığı hizmetleri yaygınlaşır ve toplumsal kabul görür.", imageSeed: "mental_health_v3" },
-        { id:15, title: "Nesli Tükenen Hayvanlar Geri Döner", description: "Klonlama ve genetik mühendislik ile bazı nesli tükenmiş hayvanlar yeniden hayata döndürülür.", imageSeed: "deextinct_v3" },
-        { id:16, title: "Anında Madde Işınlama (Eşya)", description: "Eşyalar için anında ışınlama teknolojisi, lojistik ve ticarette devrim yaratır.", imageSeed: "teleport_goods_v3" },
-        { id:17, title: "Geniş Doğal Yaşam Koruma Alanları", description: "Dünya yüzeyinin büyük bir kısmı koruma altına alınarak biyoçeşitlilik garanti edilir.", imageSeed: "nature_reserve_v3" },
-        { id:18, title: "Füzyon Enerjisi Santralleri", description: "Temiz ve neredeyse sınırsız enerji kaynağı olan füzyon reaktörleri yaygınlaşır.", imageSeed: "fusion_power_v3" },
-        { id:19, title: "Tüm Öğrenci Borçları Silinir", description: "Genç nesiller, eğitim borcu yükü olmadan hayata başlar.", imageSeed: "debt_free_edu_v3" },
-        { id:20, title: "Küresel Hızlı Tren Ağı", description: "Kıtalararası seyahat, çevre dostu ve süper hızlı trenlerle yapılır.", imageSeed: "fast_train_v3" },
-        { id:21, title: "Uzaylılarla İlk Temas (Barışçıl)", description: "İnsanlık, dost canlısı bir uzaylı medeniyetiyle resmi temas kurar.", imageSeed: "alien_contact_v3" },
-        { id:22, title: "Atmosfer Temizleme Teknolojisi", description: "Hava kirliliği ve sera gazları atmosferden etkin bir şekilde temizlenir.", imageSeed: "clean_air_v3" },
-        { id:23, title: "Herkes İçin Sanal Gerçeklik Dünyaları", description: "İnsanlar, ultra gerçekçi sanal dünyalarda eğitim alabilir, çalışabilir ve eğlenebilir.", imageSeed: "metaverse_v3" },
-        { id:24, title: "Okyanus Altı Şehirler Kurulur", description: "Deniz seviyesinin yükselmesine karşı okyanusların altında yaşam alanları inşa edilir.", imageSeed: "underwater_city_v3" }
+    const wishes = [ // 16+ dilek olmalı
+        { id:1, title: "Evrensel Temel Gelir", description: "Tüm vatandaşlar için düzenli gelir.", imageSeed: "income_v4" },
+        { id:2, title: "Kansere Kesin Çözüm", description: "Kanser tamamen tedavi edilebilir.", imageSeed: "cancer_cure_v4" },
+        { id:3, title: "Küresel Ağaçlandırma", description: "Milyarlarca ağaç dikilir.", imageSeed: "reforest_v4" },
+        { id:4, title: "3 Günlük Çalışma Haftası", description: "Daha iyi iş-yaşam dengesi.", imageSeed: "work_3day_v4" },
+        { id:5, title: "Tamamen Temiz Enerji", description: "Dünya enerjisi yenilenebilir.", imageSeed: "clean_energy_v4" },
+        { id:6, title: "Kalıcı Dünya Barışı", description: "Savaşlar tarihe karışır.", imageSeed: "world_peace_v4" },
+        { id:7, title: "Mars Kolonisi Kurulur", description: "İnsanlık Mars'ta yaşar.", imageSeed: "mars_colony_v4" },
+        { id:8, title: "Yapay Zeka Çözümleri", description: "AI küresel sorunları çözer.", imageSeed: "ai_solve_v4" },
+        { id:9, title: "Erişilebilir Eğitim", description: "Herkese ücretsiz kaliteli eğitim.", imageSeed: "free_edu_v4" },
+        { id:10, title: "Okyanuslar Plastiksiz", description: "Okyanuslar tamamen temizlenir.", imageSeed: "clean_oceans_v4" },
+        { id:11, title: "Yıldızlararası Seyahat", description: "Uzak yıldızlara yolculuk.", imageSeed: "interstellar_v4" },
+        { id:12, title: "Kişiye Özel Tıp", description: "Sağlıklı ve uzun yaşam.", imageSeed: "long_life_v4" },
+        { id:13, title: "Küresel Gıda Güvenliği", description: "Dünyada açlık sona erer.", imageSeed: "food_forall_v4" },
+        { id:14, title: "Ruh Sağlığı Stigması Kalkar", description: "Ruh sağlığına tam destek.", imageSeed: "mental_health_v4" },
+        { id:15, title: "Nesli Tükenenler Geri Döner", description: "Bazı türler yeniden canlanır.", imageSeed: "deextinct_v4" },
+        { id:16, title: "Anında Eşya Işınlama", description: "Lojistik ve ticarette devrim.", imageSeed: "teleport_goods_v4" },
+        { id:17, title: "Geniş Doğal Koruma Alanları", description: "Biyoçeşitlilik garanti altında.", imageSeed: "nature_reserve_v4" },
+        { id:18, title: "Füzyon Enerjisi Santralleri", description: "Temiz ve sınırsız enerji.", imageSeed: "fusion_power_v4" }
     ];
     let availableWishesForSeeding = [];
-
 
     // ---------- Yardımcı Fonksiyonlar ----------
     function shuffleArray(array) {
@@ -351,61 +364,92 @@
         }
     }
 
+    function updateBottomNav() {
+        // Aktif butonu ayarla
+        [navHomeButton, navPlayButton, navInfoResultsButton].forEach(btn => btn.classList.remove('active', 'text-blue-600'));
+        navInfoResultsButtonIcon.textContent = 'help_outline'; // Varsayılan ikon
+        navInfoResultsButtonText.textContent = 'Nasıl Oynanır';
+
+        if (currentScreenId === 'start') {
+            navHomeButton.classList.add('active', 'text-blue-600');
+            // bottomNav.classList.add('hidden-screen'); // Giriş ekranında alt menüyü gizle
+            document.querySelector('#startScreen').style.paddingBottom = '0px'; // Girişte padding yok
+        } else {
+            // bottomNav.classList.remove('hidden-screen');
+             Object.values(screens).forEach(s => {
+                if (s.id !== 'startScreen') s.style.paddingBottom = '70px';
+            });
+
+
+            if (currentScreenId === 'game' || currentScreenId === 'tournamentTransition') {
+                navPlayButton.classList.add('active', 'text-blue-600');
+            } else if (currentScreenId === 'results' || currentScreenId === 'finish') {
+                navInfoResultsButtonText.textContent = 'Sonuçlar';
+                navInfoResultsButtonIcon.textContent = 'emoji_events';
+                navInfoResultsButton.classList.add('active', 'text-blue-600');
+            } else if (currentScreenId === 'howToPlay') {
+                 navInfoResultsButton.classList.add('active', 'text-blue-600');
+            }
+        }
+    }
+
+
     function showScreen(screenId) {
         Object.values(screens).forEach(screen => screen.classList.add('hidden-screen'));
         if (screens[screenId]) {
             screens[screenId].classList.remove('hidden-screen');
+            currentScreenId = screenId; // Aktif ekranı güncelle
+            
             const bodyClassList = document.body.classList;
-            bodyClassList.remove('background-animate', 'bg-[#FAF8F6]', 'bg-slate-50', 'bg-slate-100'); // Önce hepsini kaldır
+            bodyClassList.remove('background-animate', 'bg-[#FAF8F6]', 'bg-slate-50', 'bg-slate-100');
             if (screenId === 'start') bodyClassList.add('background-animate', 'bg-[#FAF8F6]');
             else if (screenId === 'tournamentTransition') bodyClassList.add('bg-slate-100');
             else bodyClassList.add('bg-slate-50');
+            
+            updateBottomNav(); // Ekran değiştikçe alt menüyü güncelle
+            window.scrollTo(0,0); // Her ekran değişiminde sayfanın başına git
         } else {
             console.error("Ekran bulunamadı:", screenId);
         }
     }
     
     // ---------- Oyun Mantığı Fonksiyonları ----------
-    function resetGame() {
+    function resetGameAndPlay() {
         currentStage = STAGES.SEEDING;
         currentMatchInStage = 0;
         wishesForCurrentStage = [];
         nextStageWishes = [];
         voteCounts = {};
-        allTimeWinners = [];
         champion = null;
         
         availableWishesForSeeding = [...wishes];
         shuffleArray(availableWishesForSeeding);
-        // Başlangıç turu için 32 dilek al (16 maç x 2 dilek/maç)
-        wishesForCurrentStage = availableWishesForSeeding.slice(0, 32); 
-        if(wishesForCurrentStage.length < 32) {
-            // Yeterli dilek yoksa, olanlarla devam et veya hata ver. Şimdilik olanlarla.
-            console.warn("Başlangıç turu için yeterli (32) dilek yok. Mevcut:", wishesForCurrentStage.length);
+        wishesForCurrentStage = availableWishesForSeeding.slice(0, 16); // 16 dilek -> 8 maç
+        if(wishesForCurrentStage.length < 16) {
+            console.warn("Eleme turu için yeterli (16) dilek yok. Mevcut:", wishesForCurrentStage.length);
         }
 
         updateProgressBar();
         loadNextMatchUI();
+        showScreen('game');
     }
 
     function getMatchPair() {
         if (wishesForCurrentStage.length < (currentMatchInStage * 2) + 2) {
-            console.error("Mevcut tur için yeterli dilek kalmadı!", currentStage, currentMatchInStage, wishesForCurrentStage.length);
-            return [wishes[0], wishes[1]]; // Hata durumunda varsayılan
+            return [wishes[0], wishes[1]]; // Hata durumu
         }
-        const wish1 = wishesForCurrentStage[currentMatchInStage * 2];
-        const wish2 = wishesForCurrentStage[(currentMatchInStage * 2) + 1];
-        return [wish1, wish2];
+        return [wishesForCurrentStage[currentMatchInStage * 2], wishesForCurrentStage[(currentMatchInStage * 2) + 1]];
     }
     
     function loadNextMatchUI() {
         const [wish1, wish2] = getMatchPair();
         if (!wish1 || !wish2) {
-            console.error("Maç için dilekler yüklenemedi. Stage:", currentStage, "Match:", currentMatchInStage);
-            // Hata durumunda bir sonraki aşamaya geçmeyi dene veya oyunu bitir
-            advanceToNextStage();
-            return;
+            advanceToNextStage(); return;
         }
+        
+        vsButtonSpan.classList.remove('vs-animate');
+        void vsButtonSpan.offsetWidth; // Reflow
+        vsButtonSpan.classList.add('vs-animate');
 
         gameScreenCards[0].querySelector('.card-title').textContent = wish1.title;
         gameScreenCards[0].querySelector('.card-description').textContent = wish1.description;
@@ -420,23 +464,22 @@
         gameScreenCards.forEach(card => {
             card.classList.remove('selected', 'not-selected');
             card.style.pointerEvents = 'auto';
-            const confetti = card.querySelector('.confetti-burst');
-            if (confetti) confetti.classList.add('hidden');
+            card.querySelector('.confetti-burst')?.classList.add('hidden');
         });
     }
 
     function updateProgressBar() {
         let totalMatchesInStage = 0;
-        if (currentStage === STAGES.SEEDING) totalMatchesInStage = 16; // 32 dilek / 2
-        else totalMatchesInStage = wishesForCurrentStage.length / 2;
+        if (currentStage === STAGES.SEEDING && wishesForCurrentStage.length > 0) totalMatchesInStage = wishesForCurrentStage.length / 2; // 16/2 = 8 maç
+        else if (wishesForCurrentStage.length > 0) totalMatchesInStage = wishesForCurrentStage.length / 2;
+        else return; // Veri yoksa bir şey yapma
 
         const progress = totalMatchesInStage > 0 ? ((currentMatchInStage) / totalMatchesInStage) * 100 : 0;
         progressBarFill.style.width = `${progress}%`;
         progressTextElement.textContent = `${currentStage}: Maç ${currentMatchInStage + 1} / ${totalMatchesInStage}`;
         if(currentStage === STAGES.FINAL) progressTextElement.textContent = "FİNAL MAÇI!";
 
-
-        if (currentMatchInStage >= 0 && wishesForCurrentStage.length > 0) { // Spark efekti
+        if (currentMatchInStage >= 0) {
             const spark = document.createElement('div');
             spark.className = 'progress-bar-spark';
             spark.style.left = `calc(${progress}% - 5px)`; 
@@ -451,26 +494,22 @@
         
         const chosenWishId = selectedCardNode.dataset.wishId;
         const winnerWish = wishes.find(w => w.id == chosenWishId);
-        nextStageWishes.push(winnerWish);
+        if (winnerWish) nextStageWishes.push(winnerWish);
 
-        if (currentStage === STAGES.SEEDING) { // Sadece ilk turda oy say
+        if (currentStage === STAGES.SEEDING) {
             voteCounts[chosenWishId] = (voteCounts[chosenWishId] || 0) + 1;
         }
         
-        const confetti = selectedCardNode.querySelector('.confetti-burst');
-        if (confetti) {
-            confetti.classList.remove('hidden');
-            setTimeout(() => confetti.classList.add('hidden'), 700);
-        }
+        selectedCardNode.querySelector('.confetti-burst')?.classList.remove('hidden');
+        setTimeout(() => selectedCardNode.querySelector('.confetti-burst')?.classList.add('hidden'), 700);
+        
         gameScreenCards.forEach(otherCard => {
             if (otherCard !== selectedCardNode) otherCard.classList.add('not-selected');
         });
 
         setTimeout(() => {
             currentMatchInStage++;
-            let totalMatchesInThisStage = 0;
-            if (currentStage === STAGES.SEEDING) totalMatchesInThisStage = 16;
-            else totalMatchesInThisStage = wishesForCurrentStage.length / 2;
+            let totalMatchesInThisStage = (currentStage === STAGES.SEEDING) ? 8 : wishesForCurrentStage.length / 2;
 
             if (currentMatchInStage >= totalMatchesInThisStage) {
                 advanceToNextStage();
@@ -484,17 +523,16 @@
     function advanceToNextStage() {
         currentMatchInStage = 0;
         wishesForCurrentStage = [...nextStageWishes];
-        shuffleArray(wishesForCurrentStage); // Bir sonraki tur için kazananları karıştır
+        shuffleArray(wishesForCurrentStage);
         nextStageWishes = [];
 
         switch (currentStage) {
-            case STAGES.SEEDING:      currentStage = STAGES.ROUND_OF_16; break;
-            case STAGES.ROUND_OF_16:  currentStage = STAGES.QUARTERFINALS; break;
+            case STAGES.SEEDING:      currentStage = STAGES.QUARTERFINALS; break; // 8 kazanan -> Çeyrek Final
             case STAGES.QUARTERFINALS:currentStage = STAGES.SEMIFINALS; break;
-            case STAGES.SEMIFINALS:   currentStage = STAGES.TRANSITION_TO_FINAL; break; // Yarı final sonrası geçiş ekranı
+            case STAGES.SEMIFINALS:   currentStage = STAGES.TRANSITION_TO_FINAL; break;
             case STAGES.TRANSITION_TO_FINAL: currentStage = STAGES.FINAL; break;
             case STAGES.FINAL:        
-                champion = wishesForCurrentStage[0]; // Finalin kazananı şampiyon
+                champion = wishesForCurrentStage[0];
                 currentStage = STAGES.RESULTS; 
                 break;
         }
@@ -503,110 +541,65 @@
             displayTournamentTransitionScreen();
         } else if (currentStage === STAGES.RESULTS) {
             displayResultsScreen();
-        } else if (wishesForCurrentStage.length >= 2) { // En az 2 yarışmacı varsa devam et
+        } else if (wishesForCurrentStage.length >= 2) {
             updateProgressBar();
             loadNextMatchUI();
             showScreen('game');
-        } else if (wishesForCurrentStage.length === 1 && currentStage !== STAGES.FINAL) { // Eğer bir şekilde tek kişi kaldıysa ve final değilse, o şampiyon olur.
+        } else if (wishesForCurrentStage.length === 1 && currentStage !== STAGES.FINAL) {
              champion = wishesForCurrentStage[0];
              currentStage = STAGES.RESULTS;
              displayResultsScreen();
-        }
-         else {
-            console.error("Bir sonraki aşamaya geçilemiyor, yeterli yarışmacı yok veya aşama bilinmiyor.", currentStage, wishesForCurrentStage);
-            // Hata durumunda sonuçları göster veya başa dön.
-            displayResultsScreen(); // Mevcut verilerle sonuçları göstermeyi dene.
+        } else {
+            champion = wishes[0]; // Fallback
+            displayResultsScreen();
         }
     }
 
     function displayTournamentTransitionScreen() {
-        // wishesForCurrentStage burada 2 finalisti içermeli
         tournamentTransitionTitle.textContent = "Finalistler Belli Oldu!";
         tournamentTransitionSubtitle.textContent = "Şimdi şampiyonu belirleme zamanı!";
-        tournamentTransitionCardContainer.innerHTML = ''; // Temizle
+        tournamentTransitionCardContainer.innerHTML = ''; 
 
-        const finalists = wishesForCurrentStage.slice(0, 2); // İlk iki finalist
+        const finalists = wishesForCurrentStage.slice(0, 2);
         
-        // Finalist kartlarını oluştur
         finalists.forEach((finalist, index) => {
             const cardDiv = document.createElement('div');
-            cardDiv.className = "finalist-card bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl @container";
-            if (index === 0) cardDiv.classList.add('tournament-final-card-glow'); // İlkini daha çok vurgula
-
+            cardDiv.className = `finalist-card bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl @container ${index === 0 ? 'tournament-final-card-glow' : 'tournament-card-glow'}`;
             cardDiv.innerHTML = `
                 <div class="card-image w-full bg-center bg-no-repeat aspect-[16/10] bg-cover" style='background-image: url("https://picsum.photos/seed/${finalist.imageSeed}/600/400");'></div>
                 <div class="p-4 @xl:px-5">
                     <h3 class="card-title text-slate-800 text-lg font-bold">${finalist.title}</h3>
-                    <p class="card-description text-slate-500 text-sm font-normal mt-1">${finalist.description.substring(0,80)}...</p>
-                    <p class="card-votes text-slate-400 text-xs font-medium mt-2">${voteCounts[finalist.id] || 'Çok sayıda'} başlangıç oyu</p>
+                    <p class="card-description text-slate-500 text-sm mt-1">${finalist.description.substring(0,80)}...</p>
+                    <p class="card-votes text-slate-400 text-xs mt-2">${voteCounts[finalist.id] || 0} başlangıç oyu</p>
                 </div>`;
             tournamentTransitionCardContainer.appendChild(cardDiv);
         });
-
-        // Üçüncü kart için en popülerlerden birini (finalistler hariç) ekleyebiliriz
-        const initialVotesSorted = Object.entries(voteCounts).sort(([,a],[,b]) => b-a);
-        let thirdPopularWish = null;
-        for (const [id,] of initialVotesSorted) {
-            if (!finalists.find(f => f.id == id)) {
-                thirdPopularWish = wishes.find(w => w.id == id);
-                break;
-            }
-        }
-        if (thirdPopularWish && tournamentTransitionCardContainer.children.length < 3) {
-             const cardDiv = document.createElement('div');
-            cardDiv.className = "finalist-card bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl @container";
-            cardDiv.innerHTML = `
-                <div class="card-image w-full bg-center bg-no-repeat aspect-[16/10] bg-cover" style='background-image: url("https://picsum.photos/seed/${thirdPopularWish.imageSeed}/600/400");'></div>
-                <div class="p-4 @xl:px-5">
-                    <h3 class="card-title text-slate-800 text-lg font-bold">${thirdPopularWish.title}</h3>
-                    <p class="card-description text-slate-500 text-sm font-normal mt-1">${thirdPopularWish.description.substring(0,80)}...</p>
-                    <p class="card-votes text-slate-400 text-xs font-medium mt-2">${voteCounts[thirdPopularWish.id] || 0} başlangıç oyu</p>
-                </div>`;
-            tournamentTransitionCardContainer.appendChild(cardDiv);
-        }
-         // Eğer hala 3 kart yoksa ve finalist sayısı 1 ise (hata durumu ama...)
-        while(tournamentTransitionCardContainer.children.length < Math.min(3, wishes.length) && tournamentTransitionCardContainer.children.length < finalists.length +1) {
-            const randomWish = wishes[Math.floor(Math.random() * wishes.length)];
-            if (!finalists.find(f => f.id == randomWish.id) && randomWish.id !== (thirdPopularWish ? thirdPopularWish.id : -1) ) {
-                 const cardDiv = document.createElement('div');
-                cardDiv.className = "finalist-card bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl @container";
-                cardDiv.innerHTML = `...`; // Yukarıdaki gibi doldur
-                tournamentTransitionCardContainer.appendChild(cardDiv);
-                if(tournamentTransitionCardContainer.children.length >=3) break;
-            }
-        }
-
-
         showScreen('tournamentTransition');
     }
     
     function displayResultsScreen() {
-        if (!champion) { // Eğer şampiyon belirlenmemişse (örneğin, direkt bu ekrana gelindiyse)
-            // En çok oy alan veya rastgele birini şampiyon yap
+        if (!champion) {
             const sortedByVotes = Object.keys(voteCounts).sort((a,b) => voteCounts[b] - voteCounts[a]);
             champion = wishes.find(w => w.id == sortedByVotes[0]) || wishes[0];
-            console.warn("Şampiyon bulunamadı, en çok oy alan veya rastgele biri atandı:", champion.title);
         }
 
         championTitle.textContent = champion.title;
         championImage.src = `https://picsum.photos/seed/${champion.imageSeed}/600/400`;
-        championImage.alt = champion.title;
         championInfo.textContent = `Bu dilek turnuvanın şampiyonu oldu!`;
         
-        resultsCardContainer.innerHTML = ''; // Temizle
-        resultsCardContainer.appendChild(championCardDisplay); // Şampiyon kartını başa ekle
+        resultsCardContainer.innerHTML = ''; 
+        resultsCardContainer.appendChild(championCardDisplay); 
 
-        // Diğer popüler dilekleri listele (şampiyon hariç)
         const otherPopularWishes = Object.entries(voteCounts)
             .map(([id, count]) => ({ ...wishes.find(w => w.id == id), voteCount: count }))
-            .filter(w => w.id !== champion.id)
+            .filter(w => w.id !== champion.id && w.title) // Şampiyonu ve tanımsızları hariç tut
             .sort((a, b) => b.voteCount - a.voteCount)
-            .slice(0, 4); // En fazla 4 tane daha göster
+            .slice(0, 4);
 
         otherPopularWishes.forEach(wish => {
-            if (!wish.title) return; // Hatalı veri varsa atla
-            const cardHTML = `
-                <div class="bg-white shadow-lg rounded-2xl overflow-hidden">
+            const cardHTML = `...`; // Önceki yanıttaki gibi doldurun
+            resultsCardContainer.insertAdjacentHTML('beforeend', `
+             <div class="bg-white shadow-lg rounded-2xl overflow-hidden">
                     <div class="relative">
                         <img alt="${wish.title}" class="w-full h-40 object-cover" src="https://picsum.photos/seed/${wish.imageSeed}/600/300"/>
                         <div class="absolute inset-0 bg-hero-gradient"></div>
@@ -618,14 +611,14 @@
                             </div>
                         </div>
                     </div>
-                </div>`;
-            resultsCardContainer.insertAdjacentHTML('beforeend', cardHTML);
+                </div>
+            `);
         });
         showScreen('results');
     }
     
     function displayFinishScreen() {
-        if (!champion) champion = wishes[0]; // Güvenlik önlemi
+        if (!champion) champion = wishes[0];
         winningWishTextFinishElement.textContent = `Şampiyon dilek: ${champion.title}! Bu harika geleceği arkadaşlarınla paylaş!`;
         
         moreDreamsContainer.innerHTML = '';
@@ -633,47 +626,56 @@
         shuffleArray(shuffledWishes);
         for(let i=0; i < Math.min(3, shuffledWishes.length); i++) {
             const dream = shuffledWishes[i];
-            const dreamCardHTML = `
+            if(!dream || !dream.title) continue;
+            const dreamCardHTML = `...`; // Önceki yanıttaki gibi doldurun
+             moreDreamsContainer.insertAdjacentHTML('beforeend', `
                 <div class="flex flex-col gap-3 rounded-xl min-w-[280px] bg-white shadow-lg p-4">
                     <div class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg" style='background-image: url("https://picsum.photos/seed/${dream.imageSeed}/400/225");'></div>
                     <p class="text-[#0d131b] text-base font-medium leading-normal flex-grow">${dream.title}</p>
                     <button class="mt-auto flex items-center justify-center w-full h-10 rounded-lg bg-rose-100 text-rose-600 hover:bg-rose-200 transition-colors duration-200 text-sm font-semibold">
                         <span class="material-icons text-sm mr-1">favorite_border</span> Bunu dile!
                     </button>
-                </div>`;
-            moreDreamsContainer.insertAdjacentHTML('beforeend', dreamCardHTML);
+                </div>
+            `);
         }
         showScreen('finish');
     }
 
     // ---------- Olay Dinleyicileri ----------
-    startGameButton.addEventListener('click', () => {
-        resetGame();
-        showScreen('game');
-    });
-
-    gameScreenCards.forEach(card => {
-        card.addEventListener('click', () => handleCardSelection(card));
-    });
+    startGameButton.addEventListener('click', resetGameAndPlay);
+    gameScreenCards.forEach(card => card.addEventListener('click', () => handleCardSelection(card)));
     
-    closeTournamentTransitionButton.addEventListener('click', () => { resetGame(); showScreen('start'); });
+    closeTournamentTransitionButton.addEventListener('click', () => { resetGameAndPlay(); showScreen('start'); });
     proceedToFinalMatchButton.addEventListener('click', () => {
         loadingScreenTournamentTransition.classList.remove('hidden');
         setTimeout(() => {
             loadingScreenTournamentTransition.classList.add('hidden');
-            // currentStage zaten TRANSITION_TO_FINAL olmalı, advanceToNextStage Final'e geçirecek
             advanceToNextStage(); 
         }, 1500);
     });
 
-    closeResultsButton.addEventListener('click', () => { resetGame(); showScreen('start'); });
-    resultsPlayAgainButton.addEventListener('click', (e) => { e.preventDefault(); resetGame(); showScreen('game'); });
-    resultsToFinishButton.addEventListener('click', (e) => { e.preventDefault(); displayFinishScreen(); });
+    closeResultsButton.addEventListener('click', () => { resetGameAndPlay(); showScreen('start'); });
+    closeFinishButton.addEventListener('click', () => { resetGameAndPlay(); showScreen('start'); });
+    closeHowToPlayButton.addEventListener('click', () => showScreen('start')); // Veya bir önceki ekrana
 
-    closeFinishButton.addEventListener('click', () => { resetGame(); showScreen('start'); });
-    finishPlayAgainButton.addEventListener('click', () => { resetGame(); showScreen('game'); });
-    finishHomeButton.addEventListener('click', (e) => { e.preventDefault(); resetGame(); showScreen('start'); });
-    finishToResultsButton.addEventListener('click', (e) => { e.preventDefault(); displayResultsScreen(); });
+    // Alt Menü Navigasyon
+    navHomeButton.addEventListener('click', (e) => { e.preventDefault(); resetGameAndPlay(); showScreen('start'); });
+    navPlayButton.addEventListener('click', (e) => { e.preventDefault(); resetGameAndPlay(); showScreen('game'); });
+    navInfoResultsButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (currentScreenId === 'results' || currentScreenId === 'finish') {
+            displayResultsScreen();
+        } else {
+            showScreen('howToPlay');
+        }
+    });
+    
+    // Diğer butonlar (önceki yanıttaki gibi)
+    document.getElementById('resultsPlayAgainButton')?.addEventListener('click', (e) => { e.preventDefault(); resetGameAndPlay(); showScreen('game'); });
+    document.getElementById('resultsToFinishButton')?.addEventListener('click', (e) => { e.preventDefault(); displayFinishScreen(); });
+    document.getElementById('finishPlayAgainButton')?.addEventListener('click', () => { resetGameAndPlay(); showScreen('game'); });
+    document.getElementById('finishHomeButton')?.addEventListener('click', (e) => { e.preventDefault(); resetGameAndPlay(); showScreen('start'); });
+    document.getElementById('finishToResultsButton')?.addEventListener('click', (e) => { e.preventDefault(); displayResultsScreen(); });
     
     shareChampionButton.addEventListener('click', () => {
         if(navigator.share && champion) {
@@ -688,7 +690,7 @@
 
     // ---------- Oyun Başlangıcı ----------
     document.addEventListener('DOMContentLoaded', () => {
-        showScreen('start');
+        showScreen('start'); // İlk ekranı göster
     });
 
 </script>
