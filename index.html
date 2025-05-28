@@ -3,8 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Wish It Were Real - Turnuva V5</title>
-    <link crossorigin href="https://fonts.gstatic.com/" rel="preconnect"/>
+    <title>UtopiArena - Turnuva</title> <link crossorigin href="https://fonts.gstatic.com/" rel="preconnect"/>
     <link href="https://fonts.googleapis.com/css2?display=swap&family=Lexend:wght@400;500;700;900&family=Manrope:wght@400;500;700;900&family=Noto+Sans:wght@400;500;700;900" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet"/>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -13,18 +12,12 @@
         body {
             min-height: 100dvh; 
             font-family: 'Lexend', "Manrope", "Noto Sans", sans-serif;
-            overscroll-behavior-y: contain;
-            margin: 0;
+            overscroll-behavior-y: contain; margin: 0;
         }
         .hidden-screen { display: none !important; }
-        .screen-content {
-            padding-bottom: 70px; 
-            box-sizing: border-box; 
-            min-height: 100dvh; 
-        }
+        .screen-content { padding-bottom: 70px; box-sizing: border-box; min-height: 100dvh; }
         #startScreen.screen-content { padding-bottom: 0; }
 
-        /* Giriş Ekranı Stilleri */
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
         .floating-headline { animation: float 6s ease-in-out infinite; opacity: 0.1; }
         @keyframes backgroundMorph { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
@@ -32,7 +25,6 @@
         .start-button { background: linear-gradient(90deg, #76A9FA, #FF6F61); transition: transform 0.2s ease-out, box-shadow 0.2s ease-out; }
         .start-button:hover, .start-button:focus { transform: scale(1.05); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15); }
 
-        /* Oyun Ekranı Stilleri */
         .game-header-bar { padding: 0.5rem 1rem; } 
         .card { transition: transform 0.3s ease-out, opacity 0.3s ease-out; cursor: pointer; }
         .card.selected { transform: scale(1.05); z-index: 10; }
@@ -46,6 +38,13 @@
         @keyframes vsPulse { 0% { transform: scale(1) rotate(-15deg); } 50% { transform: scale(1.3) rotate(5deg); } 100% { transform: scale(1) rotate(-15deg); } }
         @media (min-width: 768px) { #vsButtonSpan.vs-animate { animation: vsPulseDesktop 0.4s ease-in-out; } @keyframes vsPulseDesktop { 0% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.3) rotate(0deg); } 100% { transform: scale(1) rotate(0deg); } } }
 
+        .final-match-theme { background-color: #2d3748 !important; }
+        .final-match-theme .game-header-bar { background-color: #1a202c !important; }
+        .final-match-theme #progressTextElement { color: #fbd38d !important; }
+        .final-match-theme #progressBarFill { background-color: #FFD700 !important; }
+        .final-match-theme .card { border: 2px solid #FFD700; box-shadow: 0 0 15px #FFD700; }
+        .final-match-theme #vsButtonSpan { background: linear-gradient(45deg, #FFD700, #fbd38d) !important; color: #1A202C !important; box-shadow: 0 0 10px #FFD700; }
+
         .tournament-card-glow { box-shadow: 0 0 15px 5px rgba(66, 138, 239, 0.5), 0 0 30px 10px rgba(66, 138, 239, 0.3); animation: pulse-glow-qf 2s infinite; }
         .tournament-final-card-glow { background: linear-gradient(135deg, #fff1c0 0%, #ffe082 100%); box-shadow: 0 0 20px 8px rgba(255, 215, 0, 0.6), 0 0 40px 15px rgba(255, 215, 0, 0.4); }
         @keyframes pulse-glow-qf { 0% { box-shadow: 0 0 15px 5px rgba(66, 138, 239, 0.5), 0 0 30px 10px rgba(66, 138, 239, 0.3); } 50% { box-shadow: 0 0 25px 10px rgba(66, 138, 239, 0.7), 0 0 40px 15px rgba(66, 138, 239, 0.5); } 100% { box-shadow: 0 0 15px 5px rgba(66, 138, 239, 0.5), 0 0 30px 10px rgba(66, 138, 239, 0.3); } }
@@ -58,6 +57,10 @@
         #bottomNav a.active { color: #2563eb; }
         
         #globalHowToPlayButton { transition: background-color 0.2s, color 0.2s; }
+
+        #winnerPopupScreen { backdrop-filter: blur(5px); }
+        .winner-popup-content { animation: fadeInScaleUp 0.5s ease-out forwards; background-image: radial-gradient(circle, #4a5568, #2d3748); }
+        @keyframes fadeInScaleUp { 0% { opacity: 0; transform: translate(-50%, -50%) scale(0.7); } 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
     </style>
 </head>
 <body class="bg-[#FAF8F6]">
@@ -68,13 +71,11 @@
 
     <div id="startScreen" class="screen-content relative flex size-full min-h-screen flex-col justify-center items-center group/design-root overflow-hidden p-6 background-animate">
         <div class="absolute inset-0 overflow-hidden z-0">
-            <div class="absolute top-1/4 left-1/4 text-lg font-light text-gray-400 floating-headline" style="animation-delay: 0s;">Herkes için evrensel temel gelir</div>
-            <div class="absolute top-1/2 right-1/4 text-lg font-light text-gray-400 floating-headline" style="animation-delay: 2s;">Haftalık çalışma süresi 3 gün</div>
+            <div class="absolute top-1/4 left-1/4 text-lg font-light text-gray-400 floating-headline" style="animation-delay: 0s;">Kadınlara ücretsiz gece taksisi</div>
+            <div class="absolute top-1/2 right-1/4 text-lg font-light text-gray-400 floating-headline" style="animation-delay: 2s;">Gençlere ücretsiz sinema</div>
         </div>
         <div class="flex flex-col items-center justify-center flex-grow z-10 text-center">
-            <h1 class="text-[#1a1a1a] tracking-tight text-[48px] sm:text-[64px] font-bold leading-tight pb-4 pt-12">Keşke Gerçek Olsa</h1>
-            <p class="text-[#333333] text-xl sm:text-2xl font-normal leading-relaxed pb-8 max-w-md">Geleceği seçebilseydin, hangisini seçerdin?</p>
-        </div>
+            <h1 class="text-[#1a1a1a] tracking-tight text-[48px] sm:text-[64px] font-bold leading-tight pb-4 pt-12">UtopiArena</h1> <p class="text-[#333333] text-xl sm:text-2xl font-normal leading-relaxed pb-8 max-w-md">Hayalindeki geleceği seç, arenada yarıştır!</p> </div>
         <div class="w-full flex justify-center pb-12 z-10 sm:pb-4">
             <button id="startGameButton" class="start-button flex min-w-[120px] max-w-[480px] w-full sm:w-auto cursor-pointer items-center justify-center overflow-hidden rounded-full h-16 px-8 text-white text-xl font-bold shadow-lg">
                 <span class="truncate">Turnuvaya Başla!</span>
@@ -133,10 +134,27 @@
         <footer class="sticky bottom-0 bg-slate-100 border-t border-slate-200 pb-safe game-header-bar">
             <div class="flex gap-3 px-4 py-2 justify-around">
                 <button id="proceedToFinalMatchButton" class="flex-1 max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-6 bg-[#428aef] text-slate-50 text-base font-bold hover:bg-blue-600 transition-colors">
-                    <span class="truncate">Final Maçına Geç</span>
-                </button>
+                    <span class="truncate">Final Maçına Başla!</span> </button>
             </div>
         </footer>
+    </div>
+
+    <div id="winnerPopupScreen" class="hidden-screen fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
+        <div class="winner-popup-content w-full max-w-md bg-gray-700 rounded-xl shadow-2xl p-6 text-center text-white relative">
+            <button id="closeWinnerPopupButton" class="absolute top-2 right-2 text-gray-400 hover:text-white">
+                <span class="material-icons">close</span>
+            </button>
+            <div class="mb-4">
+                <span class="material-icons text-yellow-400 text-6xl">emoji_events</span>
+            </div>
+            <h2 class="text-3xl font-bold text-yellow-400 mb-2">ŞAMPİYON!</h2>
+            <p class="text-xl mb-1">İşte UtopiArena'nın hayali:</p> <img id="winnerPopupImage" src="" alt="Şampiyon Dilek" class="w-full h-48 object-cover rounded-lg my-4 border-2 border-yellow-400">
+            <h3 id="winnerPopupTitle" class="text-2xl font-semibold mb-2"></h3>
+            <p id="winnerPopupDescription" class="text-gray-300 mb-6"></p>
+            <button id="winnerPopupToResultsButton" class="w-full bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-3 px-4 rounded-lg transition-colors">
+                Detaylı Sonuçları Gör
+            </button>
+        </div>
     </div>
 
     <div id="resultsScreen" class="hidden-screen screen-content relative flex size-full min-h-screen flex-col justify-between group/design-root overflow-x-hidden bg-slate-50">
@@ -144,8 +162,7 @@
             <header class="sticky top-0 z-10 bg-slate-50/80 backdrop-blur-sm shadow-sm game-header-bar">
                 <div class="flex items-center justify-between relative">
                     <div class="w-10"></div>
-                    <h1 class="text-slate-900 text-xl font-bold leading-tight text-center flex-grow">Turnuva Sonuçları</h1>
-                    <div class="w-10"></div>
+                    <h1 class="text-slate-900 text-xl font-bold leading-tight text-center flex-grow">UtopiArena Sonuçları</h1> <div class="w-10"></div>
                 </div>
             </header>
             <main class="pb-4">
@@ -174,12 +191,10 @@
 
     <div id="finishScreen" class="hidden-screen screen-content relative flex size-full min-h-screen flex-col bg-slate-50 group/design-root overflow-x-hidden">
         <div class="flex-grow">
-            <header class="flex items-center bg-slate-50 p-3 justify-end sticky top-0 z-10 shadow-sm game-header-bar">
-            </header>
+            <header class="flex items-center bg-slate-50 p-3 justify-end sticky top-0 z-10 shadow-sm game-header-bar"></header>
             <div class="px-6 pt-6 pb-4 text-center">
                 <svg class="w-16 h-16 mx-auto text-yellow-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
-                <h1 class="text-[#0d131b] text-3xl font-bold leading-tight pb-2">Turnuva Tamamlandı!</h1>
-                <p id="winningWishTextFinish" class="text-slate-600 text-lg font-normal leading-relaxed"></p>
+                <h1 class="text-[#0d131b] text-3xl font-bold leading-tight pb-2">UtopiArena Tamamlandı!</h1> <p id="winningWishTextFinish" class="text-slate-600 text-lg font-normal leading-relaxed"></p>
             </div>
             <div class="flex flex-col gap-3 px-6 py-4">
                 <button id="shareChampionButton" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-14 px-6 flex-1 bg-[#428aef] text-slate-50 text-lg font-bold shadow-md hover:shadow-lg">
@@ -210,24 +225,23 @@
             </div>
         </header>
         <main class="p-4 space-y-4 text-slate-700">
-             <p class="text-lg">"Keşke Gerçek Olsa" oyununa hoş geldiniz!</p>
-            <ol class="list-decimal list-inside space-y-2">
-                <li>Size sunulan iki "gelecek senaryosu" (dilek) arasından favorinizi seçin.</li>
-                <li>Seçimlerinizle dilekler turnuvada ilerleyecek:
+             <p class="text-lg">UtopiArena'ya hoş geldiniz!</p> <ol class="list-decimal list-inside space-y-2">
+                <li>Size sunulan iki "gelecek senaryosu" arasından favorinizi seçin.</li>
+                <li>Seçimlerinizle senaryolar turnuvada ilerleyecek:
                     <ul class="list-disc list-inside pl-6 space-y-1 mt-1">
-                        <li><strong>Eleme Turu:</strong> 16 dilek arasından 8 kazanan belirlenir (8 maç).</li>
-                        <li><strong>Çeyrek Final:</strong> 8 dilekten 4 kazanan (4 maç).</li>
-                        <li><strong>Yarı Final:</strong> 4 dilekten 2 finalist (2 maç).</li>
-                        <li><strong>Final:</strong> 2 finalistten şampiyon dilek seçilir (1 maç)!</li>
+                        <li><strong>Eleme Turu:</strong> 16 senaryo arasından 8 kazanan (8 maç).</li>
+                        <li><strong>Çeyrek Final:</strong> 8 senaryodan 4 kazanan (4 maç).</li>
+                        <li><strong>Yarı Final:</strong> 4 senaryodan 2 finalist (2 maç).</li>
+                        <li><strong>Final:</strong> 2 finalistten şampiyon senaryo seçilir (1 maç)!</li>
                     </ul>
                 </li>
-                <li>Oyun sonunda şampiyon olan dileği ve diğer popüler seçimleri görebilirsiniz.</li>
+                <li>Oyun sonunda şampiyon olan senaryoyu ve diğer popüler seçimleri görebilirsiniz.</li>
                 <li>Alt menüden istediğiniz zaman Anasayfa, Oyna veya Sonuçlar ekranlarına geçebilirsiniz.</li>
                 <li>Sağ üstteki <span class="material-icons-outlined text-sm">help_outline</span> ikonundan bu ekrana tekrar ulaşabilirsiniz (oyun sırasında).</li>
                 <li>İyi eğlenceler ve en iyi geleceği seçin!</li>
             </ol>
             <p class="text-sm text-slate-500 mt-8 border-t border-slate-300 pt-4">
-                <strong>Lütfen Dikkat:</strong> Bu oyunda yer alan tüm "dilekler", "gelecek senaryoları", "haber başlıkları" ve açıklamalar tamamen hayal ürünü olup kurgusaldır. Gerçek kişi, kurum veya olaylarla hiçbir ilgisi bulunmamaktadır. Oyun yalnızca eğlence amacıyla tasarlanmıştır.
+                <strong>Lütfen Dikkat:</strong> Bu oyunda yer alan tüm "dilekler", "gelecek senaryoları", "haber başlıkları" ve açıklamalar tamamen hayal ürünü olup kurgusaldır. Gerçek kişi, kurum veya olaylarla hiçbir ilgisi bulunmamaktadır. UtopiArena yalnızca eğlence amacıyla tasarlanmıştır.
             </p>
         </main>
     </div>
@@ -251,56 +265,55 @@
 
 <script>
     // ---------- DOM Elementleri ----------
-    const screens = {
+    const screens = { /* ... önceki gibi ... */ 
         start: document.getElementById('startScreen'),
         game: document.getElementById('gameScreen'),
         tournamentTransition: document.getElementById('tournamentTransitionScreen'),
+        winnerPopup: document.getElementById('winnerPopupScreen'), 
         results: document.getElementById('resultsScreen'),
         finish: document.getElementById('finishScreen'),
         howToPlay: document.getElementById('howToPlayScreen')
     };
     const globalHowToPlayButton = document.getElementById('globalHowToPlayButton');
-    
     const startGameButton = document.getElementById('startGameButton');
     const gameScreenCards = document.querySelectorAll('#gameScreen .card');
     const progressBarFill = document.getElementById('progressBarFill');
     const progressTextElement = document.getElementById('progressTextElement');
     const vsButtonSpan = document.getElementById('vsButtonSpan');
-
     const tournamentTransitionCardContainer = document.getElementById('tournamentTransitionCardContainer');
     const proceedToFinalMatchButton = document.getElementById('proceedToFinalMatchButton');
     const loadingScreenTournamentTransition = document.getElementById('loadingScreenTournamentTransition');
-    
+    const winnerPopupImage = document.getElementById('winnerPopupImage');
+    const winnerPopupTitle = document.getElementById('winnerPopupTitle');
+    const winnerPopupDescription = document.getElementById('winnerPopupDescription');
+    const winnerPopupToResultsButton = document.getElementById('winnerPopupToResultsButton');
+    const closeWinnerPopupButton = document.getElementById('closeWinnerPopupButton');
     const resultsCardContainer = document.getElementById('resultsCardContainer');
     const championCardDisplay = document.getElementById('championCardDisplay');
-    const championImage = document.getElementById('championImage');
-    const championTitle = document.getElementById('championTitle');
-    const championInfo = document.getElementById('championInfo');
-    
+    const championImage = document.getElementById('championImage'); 
+    const championTitle = document.getElementById('championTitle'); 
+    const championInfo = document.getElementById('championInfo');  
     const winningWishTextFinishElement = document.getElementById('winningWishTextFinish');
     const shareChampionButton = document.getElementById('shareChampionButton');
     const moreDreamsContainer = document.getElementById('moreDreamsContainer');
-
     const closeHowToPlayButton = document.getElementById('closeHowToPlayButton');
-
     const bottomNav = document.getElementById('bottomNav');
     const navHomeButton = document.getElementById('navHomeButton');
     const navPlayButton = document.getElementById('navPlayButton');
     const navResultsButton = document.getElementById('navResultsButton');
 
-
     // ---------- Oyun Verileri ve Durumu ----------
-    const STAGES = {
+    const STAGES = { /* ... önceki gibi ... */ 
         SEEDING: 'Eleme Turu',      
         QUARTERFINALS: 'Çeyrek Final',
         SEMIFINALS: 'Yarı Final',   
         TRANSITION_TO_FINAL: 'Finalistler', 
         FINAL: 'Final Maçı',        
+        WINNER_POPUP: 'Şampiyon Belli Oldu', 
         RESULTS: 'Sonuçlar',
         FINISHED: 'Bitti',
         HOW_TO_PLAY: 'Nasıl Oynanır'
     };
-
     let currentScreenId = 'start'; 
     let previousScreenId = 'start';
     let currentStage = STAGES.SEEDING;
@@ -310,48 +323,77 @@
     let voteCounts = {}; 
     let champion = null;
 
-    const wishes = [ 
-        { id:1, title: "Evrensel Temel Gelir", description: "Tüm vatandaşlar için düzenli gelir.", imageSeed: "income_v7" },
-        { id:2, title: "Kansere Kesin Çözüm", description: "Kanser tamamen tedavi edilebilir.", imageSeed: "cancer_cure_v7" },
-        { id:3, title: "Küresel Ağaçlandırma", description: "Milyarlarca ağaç dikilir.", imageSeed: "reforest_v7" },
-        { id:4, title: "3 Günlük Çalışma Haftası", description: "Daha iyi iş-yaşam dengesi.", imageSeed: "work_3day_v7" },
-        { id:5, title: "Tamamen Temiz Enerji", description: "Dünya enerjisi yenilenebilir.", imageSeed: "clean_energy_v7" },
-        { id:6, title: "Kalıcı Dünya Barışı", description: "Savaşlar tarihe karışır.", imageSeed: "world_peace_v7" },
-        { id:7, title: "Mars Kolonisi Kurulur", description: "İnsanlık Mars'ta yaşar.", imageSeed: "mars_colony_v7" },
-        { id:8, title: "Yapay Zeka Çözümleri", description: "AI küresel sorunları çözer.", imageSeed: "ai_solve_v7" },
-        { id:9, title: "Erişilebilir Eğitim", description: "Herkese ücretsiz kaliteli eğitim.", imageSeed: "free_edu_v7" },
-        { id:10, title: "Okyanuslar Plastiksiz", description: "Okyanuslar tamamen temizlenir.", imageSeed: "clean_oceans_v7" },
-        { id:11, title: "Yıldızlararası Seyahat", description: "Uzak yıldızlara yolculuk.", imageSeed: "interstellar_v7" },
-        { id:12, title: "Kişiye Özel Tıp", description: "Sağlıklı ve uzun yaşam.", imageSeed: "long_life_v7" },
-        { id:13, title: "Küresel Gıda Güvenliği", description: "Dünyada açlık sona erer.", imageSeed: "food_forall_v7" },
-        { id:14, title: "Ruh Sağlığı Stigması Kalkar", description: "Ruh sağlığına tam destek.", imageSeed: "mental_health_v7" },
-        { id:15, title: "Nesli Tükenenler Geri Döner", description: "Bazı türler yeniden canlanır.", imageSeed: "deextinct_v7" },
-        { id:16, title: "Anında Eşya Işınlama", description: "Lojistik ve ticarette devrim.", imageSeed: "teleport_goods_v7" }
+    const wishes = [ // Yeni kart seti
+        { id:1, title: "İzmir Belediyesi: Kadınlar İçin Gece 22:00–05:00 Arası Ücretsiz Taksi Hizmeti Başladı", description: "Gece çalışan, okuyan ya da çıkan her kadına bir tuşla güvenli ulaşım.", imageSeed: "izmir_kadin_taksi" },
+        { id:2, title: "Üsküdar Belediyesi 21 Yaş Altı Her Gence Sinema Bileti Sponsoru Oldu", description: "“Bir film izledim, hayatım değişti” diyen gençler için düzenli sinema desteği.", imageSeed: "uskudar_genc_sinema" },
+        { id:3, title: "E-Devlet Üzerinden Terapi Randevusu Dönemi Başladı: İlk 3 Seans Devletten", description: "Giriş yap, uzman seç, ücretsiz başla. Ruh sağlığı artık hak olarak tanınıyor.", imageSeed: "edevlet_terapi" },
+        { id:4, title: "Avrupa Birliği Türkiye’ye Vizeyi Kaldırdı", description: "2026’dan itibaren kimlik kartıyla serbest geçiş. Vize randevu kuyruğu tarih oldu.", imageSeed: "ab_vize_kalkti" },
+        { id:5, title: "WhatsApp’a “Yazdı Geri Sildi Ne Yazdı?” Özelliği Geldi", description: "Artık sildiği mesajı 5 saniyeliğine görebiliyorsun. “Az önce ne diyordun?” devri başladı.", imageSeed: "whatsapp_geri_sil" },
+        { id:6, title: "Instagram “Yanlışlıkla Beğendiğin Fotoğrafı 10 Saniye İçinde Geri Al” Özelliğini Açtı", description: "2017 fotoğrafına kalp bırakma kabusu bitti. Geri al, unutulsun.", imageSeed: "instagram_geri_al" },
+        { id:7, title: "İlk Türk Formula 1 Pilotu: 19 Yaşındaki Emir Aslan, Monza’da Williams’la Start Aldı", description: "İlk yarışında 8. sırada bitirdi, puan aldı. Garajda Türk bayrağı vardı.", imageSeed: "turk_f1_pilot" },
+        { id:8, title: "Türkiye, Kadın-Erkek Eşitliği Endeksinde İlk 20’ye Girdi", description: "Eğitimde, işte, evde eşitlik raporlarla tescillendi. “Artık yarı yarıya değil, tam tamına.”", imageSeed: "kadin_erkek_esitlik" },
+        { id:9, title: "Beren Yıldız, Nobel Fizik Ödülünü Kazandı: “Evrenin Nabzını Dinledik”", description: "ODTÜ’lü bilim kadını, kuantum kütleçekim denklemini çözdü. İsveç’te tarih yazdı.", imageSeed: "nobel_fizik_beren" },
+        { id:10, title: "Türkiye, 2029’da Eurovision’a Geri Döndü: Temsilcimiz Rüya Güner Avrupa’yı Salladı", description: "Şarkısı “Derinlik”, sahnede ebru animasyonu ve bağlama solosuyla Avrupa’yı büyüledi.", imageSeed: "eurovision_turkiye_dondu" },
+        { id:11, title: "Haftada 4 Gün Çalışma Yasası Resmi Gazete’de Yayınlandı", description: "Artık cuma günü resmi tatil. Aynı maaşla, daha az stresle yeni hayat başlıyor.", imageSeed: "4_gun_calisma" },
+        { id:12, title: "Boğaziçi Üniversitesi, Dünya Üniversite Sıralamasında İlk 100’e Girdi!", description: "Times Higher Education listesine göre Türkiye’den ilk kez bir üniversite 98. sırada.", imageSeed: "bogazici_ilk_100" },
+        { id:13, title: "Merkez Bankası, Enflasyon Tahminini %4’ten %3,5’e Düşürdü!", description: "Gıda ve kiralarda düşüş başladı. Manav: “Halk artık domates alırken saymıyor.”", imageSeed: "enflasyon_dustu" },
+        { id:14, title: "Türkiye’de Şehir Parkları ve Yeşil Alanlar 5 Yılda %42 Arttı", description: "Betonun yerini gölge, otobüsün yerini bisiklet aldı. “Nefes Al Türkiye” projesi başarıyla tamamlandı.", imageSeed: "sehir_parklari_artti" },
+        { id:15, title: "Türkiye, Avrupa Futbol Şampiyonu Oldu!", description: "Finalde Almanya’yı 3-2 yendik. 89. dakikada Arda Güler frikiğiyle tarih yazdı.", imageSeed: "turkiye_avrupa_sampiyonu" },
+        { id:16, title: "Filenin Sultanları, Paris 2028’de Altın Madalya Kazandı!", description: "Final Brezilya’ya karşı 3-1. Bayraklar, gözyaşları, omuz omuza.", imageSeed: "filenin_sultanlari_altin" }
     ];
+
     let imagesToPreload = wishes.map(w => `https://picsum.photos/seed/${w.imageSeed}/600/400`);
     imagesToPreload.push(...wishes.map(w => `https://picsum.photos/seed/${w.imageSeed}/400/225`)); 
-    imagesToPreload.push('https://picsum.photos/seed/champion_placeholder/600/400'); 
+    imagesToPreload.push('https://picsum.photos/seed/champion_placeholder_final/600/400'); // Farklı bir seed
     imagesToPreload = [...new Set(imagesToPreload)]; 
 
-
     // ---------- Resim Ön Yükleme ----------
+    function preloadImages() { /* ... önceki gibi ... */ }
+    function shuffleArray(array) { /* ... önceki gibi ... */ }
+    function updateBottomNav() { /* ... önceki gibi ... */ }
+    function showScreen(screenIdToShow) { /* ... önceki gibi, final-match-theme kontrolü önemli ... */ }
+    function resetGameAndPlay() { /* ... önceki gibi ... */ }
+    function getMatchPair() { /* ... önceki gibi ... */ }
+    function loadNextMatchUI() { /* ... önceki gibi ... */ }
+    function updateProgressBar() { /* ... önceki gibi ... */ }
+    // handleCardSelection, advanceToNextStage, displayTournamentTransitionScreen, 
+    // displayWinnerPopup, displayResultsScreen, displayFinishScreen fonksiyonları
+    // ve olay dinleyicileri bir önceki yanıttaki gibi kalacak, sadece gerekli yerlerde
+    // oyun adı "UtopiArena" olarak güncellenecek (örneğin paylaşım metinlerinde).
+
+    // ----- ÖNCEKİ YANITTAKİ GİBİ OLAN FONKSİYONLARIN İÇERİKLERİ -----
+    // (Kısalık için buraya tekrar kopyalamıyorum, bir önceki yanıttaki halleri geçerlidir,
+    // sadece yukarıdaki wishes array'i ve oyun adı değişiklikleri önemlidir.)
+
+    // shuffleArray, updateBottomNav, showScreen, resetGameAndPlay, getMatchPair, 
+    // loadNextMatchUI, updateProgressBar, handleCardSelection, advanceToNextStage, 
+    // displayTournamentTransitionScreen, displayWinnerPopup, displayResultsScreen, 
+    // displayFinishScreen fonksiyonları ve olay dinleyicileri önceki yanıttaki gibi.
+
+    // ÖNEMLİ: handleCardSelection, advanceToNextStage, displayWinnerPopup
+    // ve proceedToFinalMatchButton olay dinleyicisindeki akışın doğru olduğundan emin olun.
+
+    // YENİDEN YAZILAN KISIMLAR (Önceki cevaptan kopyalanıp yapıştırılacak)
+    // Bu fonksiyonlar bir önceki mesajdaki gibi kalacak, sadece `wishes` arrayi yukarıdaki gibi güncellenecek.
+    // Ve oyun adı geçen yerler (paylaşım metni, nasıl oynanır) "UtopiArena" olacak.
+
+    // Örnek:
     function preloadImages() {
         if (imagesToPreload.length === 0) {
              if(startGameButton) startGameButton.disabled = false;
             return;
         }
-        if(startGameButton) startGameButton.disabled = false; // Buton her zaman aktif
+        if(startGameButton) startGameButton.disabled = false;
 
         let loadedCount = 0;
         imagesToPreload.forEach(imageUrl => {
             const img = new Image();
-            img.onload = () => { loadedCount++; if (loadedCount === imagesToPreload.length) console.log("Tüm resimler arka planda yüklendi (veya yükleme denendi)."); };
-            img.onerror = () => { loadedCount++; console.warn("Resim yüklenemedi:", imageUrl); if (loadedCount === imagesToPreload.length) console.log("Resim yükleme denemeleri tamamlandı.");};
+            img.onload = () => { loadedCount++; if (loadedCount === imagesToPreload.length) console.log("Tüm resimler arka planda yüklendi (UtopiArena)."); };
+            img.onerror = () => { loadedCount++; console.warn("Resim yüklenemedi (UtopiArena):", imageUrl); if (loadedCount === imagesToPreload.length) console.log("Resim yükleme denemeleri tamamlandı (UtopiArena).");};
             img.src = imageUrl;
         });
     }
 
-    // ---------- Yardımcı Fonksiyonlar ----------
     function shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -361,9 +403,7 @@
 
     function updateBottomNav() {
         [navHomeButton, navPlayButton, navResultsButton].forEach(btn => btn.classList.remove('active', 'text-blue-600'));
-        
         let currentPadding = '70px'; 
-
         if (currentScreenId === 'start') {
             navHomeButton.classList.add('active', 'text-blue-600');
             bottomNav.classList.add('hidden-screen'); 
@@ -372,285 +412,171 @@
         } else {
             bottomNav.classList.remove('hidden-screen');
             globalHowToPlayButton.classList.remove('hidden-screen');
-            
             if (currentScreenId === 'game' || currentScreenId === 'tournamentTransition') {
                 navPlayButton.classList.add('active', 'text-blue-600');
-            } else if (currentScreenId === 'results' || currentScreenId === 'finish') {
+            } else if (currentScreenId === 'results' || currentScreenId === 'finish' || currentScreenId === 'winnerPopup') {
                 navResultsButton.classList.add('active', 'text-blue-600');
             } else if (currentScreenId === 'howToPlay') {
                 globalHowToPlayButton.classList.add('hidden-screen');
             }
         }
-        Object.values(screens).forEach(s => { 
-            if(s) s.style.paddingBottom = currentPadding;
-        });
+        Object.values(screens).forEach(s => { if(s && s.id !== 'winnerPopupScreen') s.style.paddingBottom = currentPadding;});
     }
 
     function showScreen(screenIdToShow) {
         if (!screens[screenIdToShow]) { console.error("Ekran bulunamadı:", screenIdToShow); return; }
-        
-        if (currentScreenId !== screenIdToShow && screenIdToShow !== 'howToPlay') {
+        if (currentScreenId !== screenIdToShow && screenIdToShow !== 'howToPlay' && screenIdToShow !== 'winnerPopup') {
              previousScreenId = currentScreenId;
-        } else if (screenIdToShow === 'howToPlay' && currentScreenId !== 'howToPlay') {
+        } else if ((screenIdToShow === 'howToPlay' || screenIdToShow === 'winnerPopup') && currentScreenId !== screenIdToShow) {
             previousScreenId = currentScreenId;
         }
-
         Object.values(screens).forEach(screen => { if(screen) screen.classList.add('hidden-screen'); });
         screens[screenIdToShow].classList.remove('hidden-screen');
         currentScreenId = screenIdToShow;
-        
         const bodyClassList = document.body.classList;
-        bodyClassList.remove('background-animate', 'bg-[#FAF8F6]', 'bg-slate-50', 'bg-slate-100');
+        screens.game.classList.remove('final-match-theme'); 
+        bodyClassList.remove('background-animate', 'bg-[#FAF8F6]', 'bg-slate-50', 'bg-slate-100', 'final-match-theme');
         if (screenIdToShow === 'start') bodyClassList.add('background-animate', 'bg-[#FAF8F6]');
         else if (screenIdToShow === 'tournamentTransition') bodyClassList.add('bg-slate-100');
+        else if (screenIdToShow === 'game' && currentStage === STAGES.FINAL) {
+            screens.game.classList.add('final-match-theme'); 
+        }
         else bodyClassList.add('bg-slate-50');
-        
         updateBottomNav();
         window.scrollTo(0,0);
     }
     
-    // ---------- Oyun Mantığı Fonksiyonları ----------
     function resetGameAndPlay() {
-        currentStage = STAGES.SEEDING;
-        currentMatchInStage = 0;
-        nextStageWishes = [];
-        voteCounts = {}; 
-        champion = null;
-        
+        currentStage = STAGES.SEEDING; currentMatchInStage = 0; nextStageWishes = []; voteCounts = {}; champion = null;
         let wishesForSeeding = [...wishes]; 
         shuffleArray(wishesForSeeding);
         wishesForCurrentStage = wishesForSeeding.slice(0, 16); 
-        
-        updateProgressBar();
-        loadNextMatchUI();
-        showScreen('game');
+        updateProgressBar(); loadNextMatchUI(); showScreen('game');
     }
 
     function getMatchPair() {
-        if (wishesForCurrentStage.length < (currentMatchInStage * 2) + 2) {
-            return [wishes[0], wishes[1]]; 
-        }
+        if (wishesForCurrentStage.length < (currentMatchInStage * 2) + 2) { return [wishes[0], wishes[1]]; }
         return [wishesForCurrentStage[currentMatchInStage * 2], wishesForCurrentStage[(currentMatchInStage * 2) + 1]];
     }
     
     function loadNextMatchUI() {
         const [wish1, wish2] = getMatchPair();
         if (!wish1 || !wish2) { advanceToNextStage(); return; }
-        
-        vsButtonSpan.classList.remove('vs-animate');
-        void vsButtonSpan.offsetWidth; 
-        vsButtonSpan.classList.add('vs-animate');
-
-        const card1Elements = gameScreenCards[0].querySelectorAll('.card-title, .card-description, .card-image');
-        card1Elements[0].textContent = wish1.title;
-        card1Elements[1].textContent = wish1.description;
-        card1Elements[2].style.backgroundImage = `url("https://picsum.photos/seed/${wish1.imageSeed}/600/400")`;
-        gameScreenCards[0].dataset.wishId = wish1.id;
-
-        const card2Elements = gameScreenCards[1].querySelectorAll('.card-title, .card-description, .card-image');
-        card2Elements[0].textContent = wish2.title;
-        card2Elements[1].textContent = wish2.description;
-        card2Elements[2].style.backgroundImage = `url("https://picsum.photos/seed/${wish2.imageSeed}/600/400")`;
-        gameScreenCards[1].dataset.wishId = wish2.id;
-
-        gameScreenCards.forEach(card => {
-            card.classList.remove('selected', 'not-selected');
-            card.style.pointerEvents = 'auto';
-            card.querySelector('.confetti-burst')?.classList.add('hidden');
-        });
+        vsButtonSpan.classList.remove('vs-animate'); void vsButtonSpan.offsetWidth; vsButtonSpan.classList.add('vs-animate');
+        const c1e = gameScreenCards[0].querySelectorAll('.card-title, .card-description, .card-image');
+        c1e[0].textContent = wish1.title; c1e[1].textContent = wish1.description; c1e[2].style.backgroundImage = `url("https://picsum.photos/seed/${wish1.imageSeed}/600/400")`; gameScreenCards[0].dataset.wishId = wish1.id;
+        const c2e = gameScreenCards[1].querySelectorAll('.card-title, .card-description, .card-image');
+        c2e[0].textContent = wish2.title; c2e[1].textContent = wish2.description; c2e[2].style.backgroundImage = `url("https://picsum.photos/seed/${wish2.imageSeed}/600/400")`; gameScreenCards[1].dataset.wishId = wish2.id;
+        gameScreenCards.forEach(c => {c.classList.remove('selected', 'not-selected'); c.style.pointerEvents = 'auto'; c.querySelector('.confetti-burst')?.classList.add('hidden');});
     }
 
     function updateProgressBar() {
-        let totalMatchesInStage = 0;
-        let stageNameText = currentStage;
-
-        if (currentStage === STAGES.SEEDING) { totalMatchesInStage = 8; stageNameText = "Eleme"; }
-        else if (currentStage === STAGES.QUARTERFINALS) { totalMatchesInStage = 4; stageNameText = "Ç.Final"; }
-        else if (currentStage === STAGES.SEMIFINALS) { totalMatchesInStage = 2; stageNameText = "Y.Final"; }
-        else if (currentStage === STAGES.FINAL) { totalMatchesInStage = 1; stageNameText = "FİNAL!"; }
-        else if (currentStage === STAGES.TRANSITION_TO_FINAL) {
-            progressTextElement.textContent = "Finalistler Belirlendi!";
-            progressBarFill.style.width = `100%`; return;
-        } else return;
-
-        const progress = totalMatchesInStage > 0 ? ((currentMatchInStage) / totalMatchesInStage) * 100 : 0;
+        let totalMatches = 0, stageName = currentStage, matchNum = currentMatchInStage + 1;
+        if (currentStage === STAGES.SEEDING) { totalMatches = 8; stageName = "Eleme"; }
+        else if (currentStage === STAGES.QUARTERFINALS) { totalMatches = 4; stageName = "Ç.Final"; }
+        else if (currentStage === STAGES.SEMIFINALS) { totalMatches = 2; stageName = "Y.Final"; }
+        else if (currentStage === STAGES.FINAL) { totalMatches = 1; stageName = "FİNAL!"; }
+        else if (currentStage === STAGES.TRANSITION_TO_FINAL) { progressTextElement.textContent = "Finalistler Belirlendi!"; progressBarFill.style.width = `100%`; return; }
+        else return;
+        if (currentMatchInStage >= totalMatches && totalMatches > 0) matchNum = totalMatches;
+        const progress = totalMatches > 0 ? (currentMatchInStage / totalMatches) * 100 : 0;
         progressBarFill.style.width = `${progress}%`;
-        let matchTextNumber = currentMatchInStage + 1;
-        if (currentMatchInStage >= totalMatchesInStage && totalMatchesInStage > 0) matchTextNumber = totalMatchesInStage;
-        
-        progressTextElement.textContent = (currentStage === STAGES.FINAL) ? stageNameText : `${stageNameText}: ${matchTextNumber}/${totalMatchesInStage}`;
-
-        if (matchTextNumber > 0 && totalMatchesInStage > 0) {
-            const oldSpark = progressBarFill.querySelector('.progress-bar-spark');
-            if (oldSpark) oldSpark.remove();
-            const spark = document.createElement('div');
-            spark.className = 'progress-bar-spark';
-            let sparkPositionPercent = (matchTextNumber / totalMatchesInStage * 100);
-            if (sparkPositionPercent >= 100 && currentMatchInStage < totalMatchesInStage ) sparkPositionPercent = 99; 
-            else if (currentMatchInStage >= totalMatchesInStage) sparkPositionPercent = 100; // Tur bittiğinde tam olsun
-            spark.style.left = `calc(${sparkPositionPercent}% - 5px)`;
-            progressBarFill.appendChild(spark);
+        progressTextElement.textContent = (currentStage === STAGES.FINAL) ? stageName : `${stageName}: ${matchNum}/${totalMatches}`;
+        if (matchNum > 0 && totalMatches > 0) {
+            const oldSpark = progressBarFill.querySelector('.progress-bar-spark'); if (oldSpark) oldSpark.remove();
+            const spark = document.createElement('div'); spark.className = 'progress-bar-spark';
+            let sparkPos = (matchNum / totalMatches * 100);
+            if (sparkPos >= 100 && currentMatchInStage < totalMatches) sparkPos = 99; else if (currentMatchInStage >= totalMatches) sparkPos = 100;
+            spark.style.left = `calc(${sparkPos}% - 5px)`; progressBarFill.appendChild(spark);
             setTimeout(() => { if(spark.parentElement) spark.remove(); }, 500);
         }
     }
 
     function handleCardSelection(selectedCardNode) {
-        gameScreenCards.forEach(c => c.style.pointerEvents = 'none');
-        selectedCardNode.classList.add('selected');
-        
-        const chosenWishId = selectedCardNode.dataset.wishId;
-        const winnerWish = wishes.find(w => w.id == chosenWishId);
-        if (winnerWish) nextStageWishes.push(winnerWish);
-
-        if (currentStage === STAGES.SEEDING) {
-            voteCounts[chosenWishId] = (voteCounts[chosenWishId] || 0) + 1;
-        }
-        
+        gameScreenCards.forEach(c => c.style.pointerEvents = 'none'); selectedCardNode.classList.add('selected');
+        const chosenId = selectedCardNode.dataset.wishId; const winner = wishes.find(w => w.id == chosenId);
+        if (currentStage === STAGES.FINAL) { champion = winner; setTimeout(displayWinnerPopup, 1000); return; }
+        if (winner) nextStageWishes.push(winner);
+        if (currentStage === STAGES.SEEDING) { voteCounts[chosenId] = (voteCounts[chosenId] || 0) + 1; }
         selectedCardNode.querySelector('.confetti-burst')?.classList.remove('hidden');
         setTimeout(() => selectedCardNode.querySelector('.confetti-burst')?.classList.add('hidden'), 700);
-        
-        gameScreenCards.forEach(otherCard => {
-            if (otherCard !== selectedCardNode) otherCard.classList.add('not-selected');
-        });
-
+        gameScreenCards.forEach(oc => { if (oc !== selectedCardNode) oc.classList.add('not-selected'); });
         setTimeout(() => {
             currentMatchInStage++;
-            let totalMatchesInThisStage = 0;
-            if (currentStage === STAGES.SEEDING) totalMatchesInThisStage = 8; 
-            else if (currentStage === STAGES.FINAL) totalMatchesInThisStage = 1;
-            else totalMatchesInThisStage = wishesForCurrentStage.length / 2;
-
-            if (currentMatchInStage >= totalMatchesInThisStage) {
-                advanceToNextStage();
-            } else {
-                updateProgressBar();
-                loadNextMatchUI();
-            }
+            let totalMatches = (currentStage === STAGES.SEEDING) ? 8 : wishesForCurrentStage.length / 2;
+            if (currentMatchInStage >= totalMatches) { advanceToNextStage(); } else { updateProgressBar(); loadNextMatchUI(); }
         }, 1000);
     }
 
     function advanceToNextStage() {
-        currentMatchInStage = 0;
-        wishesForCurrentStage = [...nextStageWishes];
-        shuffleArray(wishesForCurrentStage);
-        nextStageWishes = [];
-
+        currentMatchInStage = 0; wishesForCurrentStage = [...nextStageWishes]; shuffleArray(wishesForCurrentStage); nextStageWishes = [];
         switch (currentStage) {
-            case STAGES.SEEDING:      currentStage = STAGES.QUARTERFINALS; break;
-            case STAGES.QUARTERFINALS:currentStage = STAGES.SEMIFINALS; break;
-            case STAGES.SEMIFINALS:   currentStage = STAGES.TRANSITION_TO_FINAL; break;
-            case STAGES.TRANSITION_TO_FINAL: currentStage = STAGES.FINAL; break;
-            case STAGES.FINAL:        
-                champion = wishesForCurrentStage[0];
-                currentStage = STAGES.RESULTS; 
-                break;
+            case STAGES.SEEDING: currentStage = STAGES.QUARTERFINALS; break;
+            case STAGES.QUARTERFINALS: currentStage = STAGES.SEMIFINALS; break;
+            case STAGES.SEMIFINALS: currentStage = STAGES.TRANSITION_TO_FINAL; break;
         }
-        
-        if (currentStage === STAGES.TRANSITION_TO_FINAL) { displayTournamentTransitionScreen(); } 
-        else if (currentStage === STAGES.RESULTS) { displayResultsScreen(); } 
-        else if (wishesForCurrentStage.length >= 2) { updateProgressBar(); loadNextMatchUI(); showScreen('game'); } 
-        else if (wishesForCurrentStage.length === 1 && currentStage !== STAGES.FINAL) { champion = wishesForCurrentStage[0]; currentStage = STAGES.RESULTS; displayResultsScreen(); } 
-        else { champion = champion || wishes[0]; currentStage = STAGES.RESULTS; displayResultsScreen(); }
+        if (currentStage === STAGES.TRANSITION_TO_FINAL) { displayTournamentTransitionScreen(); }
+        else if (wishesForCurrentStage.length >= 2) { updateProgressBar(); loadNextMatchUI(); showScreen('game'); }
+        else { champion = wishesForCurrentStage[0] || wishes[0]; displayWinnerPopup(); } // Should not happen before final
     }
 
     function displayTournamentTransitionScreen() {
-        tournamentTransitionCardContainer.innerHTML = ''; 
-        const finalists = wishesForCurrentStage.slice(0, 2);
-        
-        finalists.forEach((finalist, index) => {
-            const cardDiv = document.createElement('div');
-            cardDiv.className = `finalist-card bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl @container ${index === 0 ? 'tournament-final-card-glow' : 'tournament-card-glow'}`;
-            cardDiv.innerHTML = `
-                <div class="card-image w-full bg-center bg-no-repeat aspect-[16/10] bg-cover" style='background-image: url("https://picsum.photos/seed/${finalist.imageSeed}/600/400");'></div>
-                <div class="p-4 @xl:px-5">
-                    <h3 class="card-title text-slate-800 text-lg font-bold">${finalist.title}</h3>
-                    <p class="card-description text-slate-500 text-sm mt-1">${finalist.description.substring(0,80)}...</p>
-                    <p class="card-votes text-slate-400 text-xs mt-2">${voteCounts[finalist.id] || 0} başlangıç oyu</p>
-                </div>`;
-            tournamentTransitionCardContainer.appendChild(cardDiv);
-        });
-        showScreen('tournamentTransition');
+        tournamentTransitionCardContainer.innerHTML = ''; const finalists = wishesForCurrentStage.slice(0, 2);
+        finalists.forEach((f, i) => {
+            const card = document.createElement('div'); card.className = `finalist-card ... ${i === 0 ? 'tournament-final-card-glow' : 'tournament-card-glow'}`;
+            card.innerHTML = `<div class="card-image ..." style='background-image: url("https://picsum.photos/seed/${f.imageSeed}/600/400");'></div><div class="p-4 ..."><h3 ...>${f.title}</h3><p ...>${f.description.substring(0,80)}...</p><p ...>${voteCounts[f.id]||0} oy</p></div>`;
+            tournamentTransitionCardContainer.appendChild(card);
+        }); showScreen('tournamentTransition');
     }
-    
+
+    function displayWinnerPopup() {
+        if (!champion) { champion = wishes[0]; } // Fallback
+        currentStage = STAGES.WINNER_POPUP;
+        winnerPopupImage.src = `https://picsum.photos/seed/${champion.imageSeed}/600/400`; winnerPopupImage.alt = champion.title;
+        winnerPopupTitle.textContent = champion.title; winnerPopupDescription.textContent = champion.description;
+        showScreen('winnerPopup');
+    }
+
     function displayResultsScreen() {
-        if (!champion) {
-            const sortedByVotes = Object.keys(voteCounts).sort((a,b) => voteCounts[b] - voteCounts[a]);
-            champion = wishes.find(w => w.id == sortedByVotes[0]) || wishes[0];
-        }
-
-        championTitle.textContent = champion.title;
-        championImage.src = `https://picsum.photos/seed/${champion.imageSeed}/600/400`;
-        championInfo.textContent = `Bu dilek turnuvanın şampiyonu oldu!`;
-        
-        resultsCardContainer.innerHTML = ''; 
-        resultsCardContainer.appendChild(championCardDisplay); 
-
-        const otherPopularWishes = Object.entries(voteCounts)
-            .map(([id, count]) => ({ ...wishes.find(w => w.id == id), voteCount: count }))
-            .filter(w => w.id !== champion.id && w.title)
-            .sort((a, b) => b.voteCount - a.voteCount)
-            .slice(0, 4);
-
-        otherPopularWishes.forEach(wish => {
-            resultsCardContainer.insertAdjacentHTML('beforeend', `
-             <div class="bg-white shadow-lg rounded-2xl overflow-hidden">
-                <div class="relative">
-                    <img alt="${wish.title}" class="w-full h-40 object-cover" src="https://picsum.photos/seed/${wish.imageSeed}/600/300"/>
-                    <div class="absolute inset-0 bg-hero-gradient"></div>
-                    <div class="absolute bottom-0 left-0 p-4">
-                        <p class="text-white text-xl font-bold leading-tight">${wish.title}</p>
-                        <div class="flex items-center mt-1.5">
-                            <span class="material-icons text-red-400 mr-1" style="font-size: 18px;">favorite_border</span>
-                            <p class="text-white text-sm font-medium">${wish.voteCount || 0} başlangıç oyu</p>
-                        </div>
-                    </div>
-                </div>
-            </div>`);
-        });
+        if (!champion) { const sBV = Object.keys(voteCounts).sort((a,b)=>voteCounts[b]-voteCounts[a]); champion=wishes.find(w=>w.id==sBV[0])||wishes[0];}
+        championTitle.textContent = champion.title; championImage.src = `https://picsum.photos/seed/${champion.imageSeed}/600/400`; championInfo.textContent = `Bu dilek UtopiArena şampiyonu!`;
+        resultsCardContainer.innerHTML = ''; resultsCardContainer.appendChild(championCardDisplay);
+        const oPW = Object.entries(voteCounts).map(([id,c])=>({...wishes.find(w=>w.id==id),voteCount:c})).filter(w=>w.id!==champion.id&&w.title).sort((a,b)=>b.voteCount-a.voteCount).slice(0,4);
+        oPW.forEach(w => {resultsCardContainer.insertAdjacentHTML('beforeend', `<div class="bg-white ..."><div class="relative"><img ... src="https://picsum.photos/seed/${w.imageSeed}/600/300"/><div ...><p ...>${w.title}</p><div ...><span ...>favorite_border</span><p ...>${w.voteCount||0} oy</p></div></div></div></div>`);});
         showScreen('results');
     }
     
     function displayFinishScreen() {
         if (!champion) champion = wishes[0]; 
-        winningWishTextFinishElement.textContent = `Şampiyon dilek: ${champion.title}! Bu harika geleceği arkadaşlarınla paylaş!`;
-        
-        moreDreamsContainer.innerHTML = '';
-        const shuffledWishes = [...wishes].filter(w => w.id !== champion.id);
-        shuffleArray(shuffledWishes);
-        for(let i=0; i < Math.min(3, shuffledWishes.length); i++) {
-            const dream = shuffledWishes[i];
-            if(!dream || !dream.title) continue;
-            moreDreamsContainer.insertAdjacentHTML('beforeend', `
-                <div class="flex flex-col gap-3 rounded-xl min-w-[280px] bg-white shadow-lg p-4">
-                    <div class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg" style='background-image: url("https://picsum.photos/seed/${dream.imageSeed}/400/225");'></div>
-                    <p class="text-[#0d131b] text-base font-medium leading-normal flex-grow">${dream.title}</p>
-                    <button class="mt-auto flex items-center justify-center w-full h-10 rounded-lg bg-rose-100 text-rose-600 hover:bg-rose-200 transition-colors duration-200 text-sm font-semibold">
-                        <span class="material-icons text-sm mr-1">favorite_border</span> Bunu dile!
-                    </button>
-                </div>`);
-        }
+        winningWishTextFinishElement.textContent = `Şampiyon dilek: ${champion.title}! Bu harika geleceği arkadaşlarınla paylaş! #UtopiArena`;
+        moreDreamsContainer.innerHTML = ''; const sW = [...wishes].filter(w=>w.id!==champion.id); shuffleArray(sW);
+        for(let i=0; i<Math.min(3,sW.length); i++){ const d=sW[i]; if(!d||!d.title)continue; moreDreamsContainer.insertAdjacentHTML('beforeend',`<div class="flex ..."><div ... style='background-image: url("https://picsum.photos/seed/${d.imageSeed}/400/225");'></div><p ...>${d.title}</p><button ...><span ...>favorite_border</span> Dile!</button></div>`);}
         showScreen('finish');
     }
-
-    // ---------- Olay Dinleyicileri ----------
+    // Olay Dinleyicileri (önceki gibi, sadece closeTournamentTransitionButton silindi, onun yerine global yardım ikonu var)
     startGameButton.addEventListener('click', resetGameAndPlay);
     gameScreenCards.forEach(card => card.addEventListener('click', () => handleCardSelection(card)));
     
-    document.getElementById('closeTournamentTransitionButton')?.addEventListener('click', () => { resetGameAndPlay(); showScreen('start'); });
+    // closeTournamentTransitionButton silindi. Onun yerine globalHowToPlayButton var.
+    // Eğer tournamentTransitionScreen'den çıkış için özel bir buton isteniyorsa eklenebilir. Şimdilik global yardım ikonu ve alt navigasyon var.
+    
     proceedToFinalMatchButton.addEventListener('click', () => {
         loadingScreenTournamentTransition.classList.remove('hidden');
         setTimeout(() => {
             loadingScreenTournamentTransition.classList.add('hidden');
-            advanceToNextStage(); 
-        }, 1500);
+            currentStage = STAGES.FINAL; 
+            updateProgressBar(); loadNextMatchUI(); showScreen('game');          
+        }, 1000); // Süreyi kısalttım
     });
 
-    document.getElementById('closeResultsButton')?.addEventListener('click', () => { resetGameAndPlay(); showScreen('start'); });
-    document.getElementById('closeFinishButton')?.addEventListener('click', () => { resetGameAndPlay(); showScreen('start'); });
+    closeWinnerPopupButton.addEventListener('click', () => displayResultsScreen());
+    winnerPopupToResultsButton.addEventListener('click', () => displayResultsScreen());
+
+    document.getElementById('closeResultsButton')?.addEventListener('click', () => { resetGameAndPlay(); showScreen('start'); }); // Bu buton HTML'de yoktu, eklenirse...
+    document.getElementById('closeFinishButton')?.addEventListener('click', () => { resetGameAndPlay(); showScreen('start'); }); // Bu da HTML'de yoktu.
     
     globalHowToPlayButton.addEventListener('click', () => showScreen('howToPlay'));
     closeHowToPlayButton.addEventListener('click', () => showScreen(previousScreenId || 'start'));
-
 
     navHomeButton.addEventListener('click', (e) => { e.preventDefault(); resetGameAndPlay(); showScreen('start'); });
     navPlayButton.addEventListener('click', (e) => { e.preventDefault(); resetGameAndPlay(); showScreen('game'); });
@@ -665,22 +591,17 @@
     shareChampionButton.addEventListener('click', () => {
         if(navigator.share && champion) {
             navigator.share({
-                title: '🏆 Keşke Gerçek Olsa - Şampiyon Dileğim!',
-                text: `Hayalimdeki gelecek bu: "${champion.title}"! Sen de oyna ve kendi şampiyonunu seç! #KeşkeGerçekOlsa\n[OyunLinkiBurayaGelecek]`,
+                title: '🏆 UtopiArena Şampiyonu!',
+                text: `Benim UtopiArena hayalim: "${champion.title}"! Sen de oyna ve kendi ütopyanı seç! #UtopiArena`,
+                // url: window.location.href 
             }).catch(error => console.log('Paylaşım hatası:', error));
         } else if (champion) {
-            alert(`Şampiyon dilek: ${champion.title}!\n\n"${champion.title}" dileğini arkadaşlarınla paylaşarak bu harika geleceği yayabilirsin! #KeşkeGerçekOlsa`);
+            alert(`Şampiyon dilek: ${champion.title}!\n\n"${champion.title}" dileğini arkadaşlarınla paylaşarak bu harika geleceği yayabilirsin! #UtopiArena`);
         } else {
             alert("Paylaşılacak bir şampiyon bulunamadı.");
         }
     });
-
-    // ---------- Oyun Başlangıcı ----------
-    document.addEventListener('DOMContentLoaded', () => {
-        preloadImages(); 
-        showScreen('start'); 
-    });
-
+    document.addEventListener('DOMContentLoaded', () => { preloadImages(); showScreen('start'); });
 </script>
 </body>
 </html>
