@@ -60,7 +60,7 @@
 
         #winnerPopupDescription.card-description-clamp { 
             -webkit-line-clamp: 4; 
-            max-height: calc(1.4em * 4); 
+            max-height: calc(1.4em * 4 + 2px); 
             min-height: auto; 
         }
 
@@ -88,11 +88,17 @@
         .final-match-theme .game-header-bar { background-color: #1a202c !important; }
         .final-match-theme #progressTextElement { color: #fbd38d !important; }
         .final-match-theme #progressBarFill { background-color: #FFD700 !important; }
-        .final-match-theme .card { border: 2px solid #FFD700; box-shadow: 0 0 15px #FFD700; }
-        .final-match-theme .card .card-title { 
-            color: #f7fafc; 
+        .final-match-theme .card { 
+            border: 2px solid #FFD700; 
+            box-shadow: 0 0 15px #FFD700; 
+            background-color: #374151; 
         }
-        .final-match-theme .card .card-description { color: #a0aec0; }
+        .final-match-theme .card .card-title { 
+            color: #f3f4f6; 
+        }
+        .final-match-theme .card .card-description { 
+            color: #9ca3af; 
+        }
         .final-match-theme #vsButtonSpan { background: linear-gradient(45deg, #FFD700, #fbd38d) !important; color: #1A202C !important; box-shadow: 0 0 10px #FFD700; }
 
         .tournament-card-glow { box-shadow: 0 0 15px 5px rgba(66, 138, 239, 0.5), 0 0 30px 10px rgba(66, 138, 239, 0.3); animation: pulse-glow-qf 2s infinite; }
@@ -108,9 +114,24 @@
         
         #globalHowToPlayButton { transition: background-color 0.2s, color 0.2s; }
 
-        #winnerPopupScreen { backdrop-filter: blur(5px); }
-        .winner-popup-content { animation: fadeInScaleUp 0.5s ease-out forwards; background-image: radial-gradient(circle, #4a5568, #2d3748); }
-        @keyframes fadeInScaleUp { 0% { opacity: 0; transform: translate(-50%, -50%) scale(0.7); } 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+        .modal-overlay {
+            background-color: rgba(30, 41, 59, 0.7); 
+            backdrop-filter: blur(5px); 
+        }
+        .modal-content-box {
+            transform: scale(0.95);
+            opacity: 0;
+            transition-property: transform, opacity;
+            transition-timing-function: ease-out;
+            transition-duration: 300ms;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+        }
+        .modal-overlay.active .modal-content-box {
+            transform: scale(1);
+            opacity: 1;
+        }
 
         @keyframes pulseTitle {
             0%, 100% { opacity: 1; transform: scale(1); }
@@ -119,13 +140,6 @@
         #startScreen h1 {
             animation: pulseTitle 4s ease-in-out infinite;
         }
-
-        /* MODIFICATION: Onboarding Modal stilleri */
-        #onboardingHowToPlayModal {
-            background-color: rgba(30, 41, 59, 0.6); /* bg-slate-800 opacity-60 */
-            backdrop-filter: blur(4px);
-        }
-        /* MODIFICATION END */
 
     </style>
 </head>
@@ -184,47 +198,35 @@
         </div>
     </div>
     
-    <div id="tournamentTransitionScreen" class="hidden-screen screen-content relative flex flex-col h-screen bg-slate-100 overflow-y-hidden justify-between group/design-root">
-        <div class="flex flex-col flex-1 min-h-0">
-            <header class="sticky top-0 z-10 bg-slate-100 shadow-sm game-header-bar">
-                <div class="flex items-center p-0 justify-between relative">
-                    <div class="w-10"></div>
-                    <h1 id="tournamentTransitionTitle" class="text-xl font-bold text-slate-800 text-center flex-grow">Finalistler!</h1>
-                    <div class="w-10"></div>
-                </div>
-                <h2 id="tournamentTransitionSubtitle" class="text-slate-600 text-sm font-medium px-6 text-center pb-1 pt-1">Şampiyonluğa bir adım kaldı!</h2>
-            </header>
-            <main id="tournamentTransitionCardContainer" class="p-4 space-y-6 overflow-y-auto flex-1 min-h-0"></main>
-        </div>
-        <div id="loadingScreenTournamentTransition" class="fixed inset-0 bg-slate-900 bg-opacity-80 hidden flex-col items-center justify-center z-50">
-            <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-400 mb-6"></div>
-            <p class="text-slate-100 text-lg font-semibold text-center px-8">Final maçı hazırlanıyor...</p>
-        </div>
-        <footer class="sticky bottom-0 bg-slate-100 border-t border-slate-200 game-header-bar">
-            <div class="flex gap-3 px-4 py-2 justify-around">
-                <button id="proceedToFinalMatchButton" class="flex-1 max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-6 bg-[#428aef] text-slate-50 text-base font-bold hover:bg-blue-600 transition-colors">
-                    <span class="truncate">Final Maçına Başla!</span>
-                </button>
-            </div>
-        </footer>
-    </div>
-
-    <div id="winnerPopupScreen" class="hidden-screen fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
-        <div class="winner-popup-content w-full max-w-md bg-gray-700 rounded-xl shadow-2xl p-6 text-center text-white relative">
-            <button id="closeWinnerPopupButton" class="absolute top-2 right-2 text-gray-400 hover:text-white">
+    <div id="winnerPopupScreen" class="hidden-screen fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay opacity-0">
+        <div id="winnerPopupContentContainer" class="modal-content-box bg-gray-800 rounded-xl shadow-2xl w-full max-w-md text-center text-white relative">
+            <button id="closeWinnerPopupButton" class="absolute top-3 right-3 text-gray-400 hover:text-white z-10 p-1 rounded-full hover:bg-gray-700">
                 <span class="material-icons">close</span>
             </button>
-            <div class="mb-4">
-                <span class="material-icons text-yellow-400 text-6xl">emoji_events</span>
+            
+            <div class="p-6 space-y-4">
+                <div class="mb-1">
+                    <span class="material-icons text-yellow-400 text-5xl sm:text-6xl">emoji_events</span>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-bold text-yellow-400">ŞAMPİYON HAYAL!</h2>
+                <p id="winnerPopupSubtitle" class="text-sm sm:text-base text-gray-300 px-2">UtopiArena'da senin ve diğerlerinin oylarıyla geleceğin hayali bu oldu:</p>
+
+                <div class="bg-gray-700 rounded-lg p-3 sm:p-4 border border-gray-600 shadow-md">
+                    <img id="winnerPopupImage" src="" alt="Şampiyon Dilek" class="w-full h-40 sm:h-48 object-cover rounded-md mb-3 shadow-sm">
+                    <h3 id="winnerPopupTitle" class="text-lg sm:text-xl font-semibold text-white mb-1"></h3>
+                    <p id="winnerPopupDescription" class="text-xs sm:text-sm text-gray-300 card-description-clamp leading-relaxed"></p> 
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3">
+                    <button id="winnerShareButton" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2.5 px-4 rounded-lg transition-colors text-sm sm:text-base flex items-center justify-center gap-2 shadow hover:shadow-md">
+                        <span class="material-icons-outlined text-base">share</span>
+                        Şampiyonu Paylaş
+                    </button>
+                    <button id="winnerToResultsButton" class="w-full bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-semibold py-2.5 px-4 rounded-lg transition-colors text-sm sm:text-base shadow hover:shadow-md">
+                        Sonuçları Keşfet
+                    </button>
+                </div>
             </div>
-            <h2 class="text-3xl font-bold text-yellow-400 mb-2">ŞAMPİYON!</h2>
-            <p class="text-xl mb-1">İşte UtopiArena'nın hayali:</p>
-            <img id="winnerPopupImage" src="" alt="Şampiyon Dilek" class="w-full h-48 object-cover rounded-lg my-4 border-2 border-yellow-400">
-            <h3 id="winnerPopupTitle" class="text-2xl font-semibold mb-2"></h3>
-            <p id="winnerPopupDescription" class="text-gray-300 mb-6 card-description-clamp"></p>
-            <button id="winnerPopupToResultsButton" class="w-full bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-3 px-4 rounded-lg transition-colors">
-                Detaylı Sonuçları Gör
-            </button>
         </div>
     </div>
 
@@ -324,9 +326,9 @@
         </div>
     </div>
 
-    <div id="onboardingHowToPlayModal" class="hidden-screen fixed inset-0 z-[100] flex items-center justify-center p-4">
-    <div id="onboardingModalBackdrop" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm transition-opacity duration-300 ease-out opacity-0"></div>
-        <div id="onboardingModalContent" class="bg-slate-50 rounded-xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all duration-300 ease-out opacity-0 scale-90 relative z-10">
+    <div id="onboardingHowToPlayModal" class="hidden-screen fixed inset-0 z-[100] flex items-center justify-center p-4 modal-overlay opacity-0">
+        <div id="onboardingModalBackdrop" class="fixed inset-0 transition-opacity duration-300 ease-out opacity-0 bg-slate-900/70 backdrop-blur-sm"></div>
+        <div id="onboardingModalContent" class="modal-content-box bg-slate-50 rounded-xl shadow-2xl w-full max-w-md overflow-hidden relative z-10">
             <header class="p-4 border-b border-slate-200">
                 <h2 class="text-xl sm:text-2xl font-bold text-slate-800 text-center">UtopiArena'ya Hoş Geldin!</h2>
             </header>
@@ -361,6 +363,17 @@
             </footer>
         </div>
     </div>
+
+    <div id="stageTransitionModal" class="hidden-screen fixed inset-0 z-[150] flex items-center justify-center p-4 modal-overlay opacity-0">
+        <div id="stageTransitionModalBackdrop" class="fixed inset-0 transition-opacity duration-300 ease-out opacity-0 bg-slate-900/75 backdrop-blur-md"></div>
+        <div id="stageTransitionModalContent" class="modal-content-box bg-slate-800 text-white rounded-xl shadow-2xl w-full max-w-xs sm:max-w-sm text-center overflow-hidden relative z-10 p-4 sm:p-6">
+            <span id="stageTransitionIcon" class="material-icons text-5xl sm:text-6xl mb-3 block text-yellow-400"></span>
+            <h2 id="stageTransitionTitle" class="text-xl sm:text-2xl font-bold mb-2 text-yellow-400"></h2>
+            <p id="stageTransitionMessage" class="text-sm sm:text-base text-slate-200"></p>
+        </div>
+    </div>
+
+
     <nav id="bottomNav" class="fixed bottom-0 left-0 right-0 bg-slate-50 border-t border-slate-200 z-30">
         <div class="flex justify-around items-center h-full max-w-2xl mx-auto px-1">
             <a id="navHomeButton" href="#" class="flex flex-col items-center justify-center gap-0.5 text-slate-600 hover:text-blue-600 transition-colors w-1/3 py-2 h-full">
@@ -381,9 +394,11 @@
 <script>
     // ---------- DOM Elementleri ----------
     const screens = {
-        start: document.getElementById('startScreen'), game: document.getElementById('gameScreen'),
-        tournamentTransition: document.getElementById('tournamentTransitionScreen'), winnerPopup: document.getElementById('winnerPopupScreen'),
-        results: document.getElementById('resultsScreen'), finish: document.getElementById('finishScreen'),
+        start: document.getElementById('startScreen'), 
+        game: document.getElementById('gameScreen'),
+        winnerPopup: document.getElementById('winnerPopupScreen'),
+        results: document.getElementById('resultsScreen'), 
+        finish: document.getElementById('finishScreen'),
         howToPlay: document.getElementById('howToPlayScreen')
     };
     const globalHowToPlayButton = document.getElementById('globalHowToPlayButton');
@@ -392,14 +407,16 @@
     const progressBarFill = document.getElementById('progressBarFill');
     const progressTextElement = document.getElementById('progressTextElement');
     const vsButtonSpan = document.getElementById('vsButtonSpan');
-    const tournamentTransitionCardContainer = document.getElementById('tournamentTransitionCardContainer');
-    const proceedToFinalMatchButton = document.getElementById('proceedToFinalMatchButton');
-    const loadingScreenTournamentTransition = document.getElementById('loadingScreenTournamentTransition');
+        
+    const winnerPopupContentContainer = document.getElementById('winnerPopupContentContainer');
     const winnerPopupImage = document.getElementById('winnerPopupImage'); 
     const winnerPopupTitle = document.getElementById('winnerPopupTitle');
+    const winnerPopupSubtitle = document.getElementById('winnerPopupSubtitle'); 
     const winnerPopupDescription = document.getElementById('winnerPopupDescription');
-    const winnerPopupToResultsButton = document.getElementById('winnerPopupToResultsButton');
+    const winnerToResultsButton = document.getElementById('winnerToResultsButton'); 
+    const winnerShareButton = document.getElementById('winnerShareButton'); 
     const closeWinnerPopupButton = document.getElementById('closeWinnerPopupButton');
+    
     const resultsCardContainer = document.getElementById('resultsCardContainer');
     const championCardDisplay = document.getElementById('championCardDisplay');
     const championImageResults = document.getElementById('championImageResults'); 
@@ -414,17 +431,26 @@
     const navPlayButton = document.getElementById('navPlayButton');
     const navResultsButton = document.getElementById('navResultsButton');
 
-    // MODIFICATION: Onboarding Modal DOM elementleri
     const onboardingModal = document.getElementById('onboardingHowToPlayModal');
     const onboardingModalBackdrop = document.getElementById('onboardingModalBackdrop');
     const onboardingModalContent = document.getElementById('onboardingModalContent');
     const proceedFromOnboardingButton = document.getElementById('proceedFromOnboardingButton');
-    // MODIFICATION END
+
+    const stageTransitionModal = document.getElementById('stageTransitionModal');
+    const stageTransitionModalBackdrop = document.getElementById('stageTransitionModalBackdrop');
+    const stageTransitionModalContent = document.getElementById('stageTransitionModalContent');
+    const stageTransitionIcon = document.getElementById('stageTransitionIcon');
+    const stageTransitionTitle = document.getElementById('stageTransitionTitle');
+    const stageTransitionMessage = document.getElementById('stageTransitionMessage');
 
     const STAGES = {
-        SEEDING: 'Eleme Turu', QUARTERFINALS: 'Çeyrek Final', SEMIFINALS: 'Yarı Final',    
-        TRANSITION_TO_FINAL: 'Finalistler', FINAL: 'Final Maçı', WINNER_POPUP: 'Şampiyon Belli Oldu',
-        RESULTS: 'Sonuçlar', FINISHED: 'Bitti', HOW_TO_PLAY: 'Nasıl Oynanır'
+        SEEDING: 'Eleme Turu', 
+        QUARTERFINALS: 'Çeyrek Final', 
+        SEMIFINALS: 'Yarı Final',    
+        FINAL: 'Final Maçı', 
+        RESULTS: 'Sonuçlar', 
+        FINISHED: 'Bitti', 
+        HOW_TO_PLAY: 'Nasıl Oynanır'
     };
     let currentScreenId = 'start';
     let previousScreenId = 'start';
@@ -445,12 +471,12 @@
         { id:7, title: "İlk Türk Formula 1 Pilotu: 19 Yaşındaki Emir Aslan, Monza’da Williams’la Start Aldı", description: "Genç pilot ilk yarışında sekizinci sırada bitirerek puan almayı başardı. Garajda gururla dalgalanan Türk bayrağı vardı, motor sporlarında yepyeni bir sayfa açıldı.", imageSeed: "turk_f1_pilot_v3" },
         { id:8, title: "Türkiye, Kadın-Erkek Eşitliği Endeksinde İlk 20’ye Girdi", description: "Eğitimde, iş hayatında ve evde kadın-erkek eşitliği uluslararası raporlarla tescillendi. “Artık yarı yarıya değil, tam tamına eşitiz” denilebilen bir dönem başladı.", imageSeed: "kadin_erkek_esitlik_v3" },
         { id:9, title: "Beren Yıldız, Nobel Fizik Ödülünü Kazandı: “Evrenin Nabzını Dinledik”", description: "ODTÜ’lü başarılı bilim kadını, kuantum kütleçekim alanındaki temel denklemi çözdü. İsveç’te düzenlenen törende tarih yazdı, bilim dünyasında büyük yankı uyandırdı.", imageSeed: "nobel_fizik_beren_v3" },
-        { id:10, title: "Türkiye, 2029’da Eurovision’a Geri Döndü: Temsilcimiz Rüya Güner Avrupa’yı Salladı", description: "Yarışmada seslendirdiği “Derinlik” adlı şarkısı, sahnede kullanılan ebru animasyonu ve etkileyici bağlama solosuyla tüm Avrupa’yı büyüledi, kültürel bir köprü kuruldu.", imageSeed: "eurovision_turkiye_dondu_v3" },
-        { id:11, title: "Haftada 4 Gün Çalışma Yasası Resmi Gazete’de Yayınlandı", description: "Artık cuma günü de resmi tatil ilan edildi. Aynı maaşla, daha az stresle yepyeni bir hayat başlıyor, genel iş-yaşam dengesi önemli ölçüde iyileşiyor.", imageSeed: "4_gun_calisma_v3" },
+        { id:10, title: "Türkiye, 2029’da Eurovision’a Geri Döndü: Temsilcimiz Rüya Güner Avrupa’yı Salladı", description: "Yarışmada seslendirdiği “Derinlik” adlı şarkısı, sahnede kullanılan ebru animasyonu ve etkileyici bağlama solosuyla tüm Avrupa’yı büyüledi, kültürel bir köprü kuruldu.", imageSeed: "https://i.ibb.co/ycYF3DTj/Chat-GPT-Image-May-29-2025-12-56-35-AM.png" },
+        { id:11, title: "Haftada 4 Gün Çalışma Yasası Resmi Gazete’de Yayınlandı", description: "Artık cuma günü de resmi tatil ilan edildi. Aynı maaşla, daha az stresle yepyeni bir hayat başlıyor, genel iş-yaşam dengesi önemli ölçüde iyileşiyor.", imageSeed: "https://i.ibb.co/tMNVV4qG/Chat-GPT-Image-May-29-2025-12-52-25-AM.png" },
         { id:12, title: "Boğaziçi Üniversitesi, Dünya Üniversite Sıralamasında İlk 100’e Girdi!", description: "Times Higher Education'ın saygın listesine göre Türkiye’den ilk kez bir üniversite 98. sırada yer aldı. Bu, eğitimde uluslararası bir başarı olarak tescillendi.", imageSeed: "bogazici_ilk_100_v3" },
         { id:13, title: "Merkez Bankası, Enflasyon Tahminini %4’ten %3,5’e Düşürdü!", description: "Temel gıda ürünlerinde ve kiralarda belirgin bir düşüş başladı. Pazarcı esnafı: “Halk artık domatesi alırken saymıyor.” Ekonomik refah seviyesi artıyor.", imageSeed: "enflasyon_dustu_v3" },
         { id:14, title: "Türkiye’de Şehir Parkları ve Yeşil Alanlar 5 Yılda %42 Arttı", description: "Şehirlerde betonun yerini artık ağaç gölgeleri, otobüsün yerini ise bisiklet yolları aldı. “Nefes Al Türkiye” projesi başarıyla tamamlandı, yaşam kalitesi gözle görülür şekilde yükseldi.", imageSeed: "sehir_parklari_artti_v3" },
-        { id:15, title: "Türkiye, Avrupa Futbol Şampiyonu Oldu!", description: "Unutulmaz finalde Almanya’yı 3-2 yendik. Maçın 89. dakikasında Arda Güler'in attığı frikik golüyle millilerimiz tarih yazdı, tüm ülke büyük bir sevince boğuldu.", imageSeed: "turkiye_avrupa_sampiyonu_v3" },
+        { id:15, title: "Türkiye, Avrupa Futbol Şampiyonu Oldu!", description: "Unutulmaz finalde Almanya’yı 3-2 yendik. Maçın 89. dakikasında Arda Güler'in attığı frikik golüyle millilerimiz tarih yazdı, tüm ülke büyük bir sevince boğuldu.", imageSeed: "https://i.ibb.co/zV9g4Pdf/Chat-GPT-Image-May-29-2025-12-24-44-AM.png" },
         { id:16, title: "Filenin Sultanları, Paris 2028’de Altın Madalya Kazandı!", description: "Nefes kesen finalde Brezilya’ya karşı alınan 3-1'lik skorla şampiyonluk geldi. Bayraklar, gözyaşları ve omuz omuza kazanılan bu büyük zaferle Türk voleybolu adını zirveye yazdırdı.", imageSeed: "https://i.ibb.co/R4jrvBMx/Ads-z-tasar-m-1.png" }
     ];
 
@@ -485,84 +511,129 @@
 
     function updateBottomNav() {
         [navHomeButton, navPlayButton, navResultsButton].forEach(btn => btn.classList.remove('active', 'text-blue-600'));
+        const isOverlayActive = (onboardingModal && !onboardingModal.classList.contains('hidden-screen')) || 
+                               (screens.winnerPopup && !screens.winnerPopup.classList.contains('hidden-screen')) ||
+                               (stageTransitionModal && !stageTransitionModal.classList.contains('hidden-screen'));
                 
-        if (currentScreenId === 'start' || currentScreenId === 'onboardingModal') { // Onboarding sırasında da nav gizli
-            navHomeButton.classList.add('active', 'text-blue-600'); bottomNav.classList.add('hidden-screen');
-            globalHowToPlayButton.classList.add('hidden-screen');
+        if (currentScreenId === 'start' || isOverlayActive) { 
+            navHomeButton.classList.add('active', 'text-blue-600'); 
+            bottomNav.classList.add('hidden-screen');
+            if (globalHowToPlayButton) globalHowToPlayButton.classList.add('hidden-screen');
         } else {
-            bottomNav.classList.remove('hidden-screen'); globalHowToPlayButton.classList.remove('hidden-screen');
-            if (currentScreenId === 'game' || currentScreenId === 'tournamentTransition') { navPlayButton.classList.add('active', 'text-blue-600'); }
-            else if (currentScreenId === 'results' || currentScreenId === 'finish' || currentScreenId === 'winnerPopup') { navResultsButton.classList.add('active', 'text-blue-600'); }
-            else if (currentScreenId === 'howToPlay') { globalHowToPlayButton.classList.add('hidden-screen'); }
+            bottomNav.classList.remove('hidden-screen'); 
+            if (globalHowToPlayButton) globalHowToPlayButton.classList.remove('hidden-screen');
+            if (currentScreenId === 'game') { navPlayButton.classList.add('active', 'text-blue-600'); } 
+            else if (currentScreenId === 'results' || currentScreenId === 'finish') { navResultsButton.classList.add('active', 'text-blue-600'); }
+            else if (currentScreenId === 'howToPlay' && globalHowToPlayButton) { globalHowToPlayButton.classList.add('hidden-screen'); }
         }
+    }
+    
+    function showModal(modalElement, modalContentElement, backdropElement = null) {
+        if (!modalElement || !modalContentElement) return;
+        let tempPreviousScreenId = currentScreenId; // Mevcut ana ekranı sakla
+
+        modalElement.classList.remove('hidden-screen');
+        modalElement.classList.add('flex', 'active'); 
+        if (backdropElement) {
+            backdropElement.classList.remove('opacity-0');
+            backdropElement.classList.add('opacity-100');
+        }
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                 modalContentElement.classList.remove('opacity-0', 'scale-90');
+                 modalContentElement.classList.add('opacity-100', 'scale-100', 'active');
+            });
+        });
+        
+        currentScreenId = modalElement.id; 
+        updateBottomNav();
+        // Eğer bir modal açılıyorsa ve önceki ekran bir modal değilse, previousScreenId'yi güncelle
+        if (tempPreviousScreenId !== 'onboardingHowToPlayModal' && tempPreviousScreenId !== 'stageTransitionModal' && tempPreviousScreenId !== 'winnerPopupScreen') {
+            previousScreenId = tempPreviousScreenId;
+        }
+    }
+
+    function hideModal(modalElement, modalContentElement, backdropElement = null, callback) {
+        if (!modalElement || !modalContentElement) { if (callback) callback(); return; }
+
+        modalContentElement.classList.remove('opacity-100', 'scale-100', 'active');
+        modalContentElement.classList.add('opacity-0', 'scale-90');
+        if (backdropElement) {
+            backdropElement.classList.remove('opacity-100');
+            backdropElement.classList.add('opacity-0');
+        }
+        modalElement.classList.remove('active'); 
+        
+        setTimeout(() => {
+            modalElement.classList.add('hidden-screen');
+            modalElement.classList.remove('flex');
+            // Modal kapandığında, eğer aktif ekran bu modal id ise, bir önceki ana ekrana dön
+            if (currentScreenId === modalElement.id) {
+                currentScreenId = previousScreenId || 'start'; 
+            }
+            updateBottomNav();
+            if (callback) callback();
+        }, 300); 
     }
 
     function showScreen(screenIdToShow) {
-        if (screenIdToShow === 'onboardingModal') { // Onboarding modal özel durum
-            onboardingModal.classList.remove('hidden-screen');
-            onboardingModal.classList.add('flex');
-            onboardingModalBackdrop.classList.remove('opacity-0');
-            onboardingModalBackdrop.classList.add('opacity-100');
-            setTimeout(() => {
-                onboardingModalContent.classList.remove('opacity-0', 'scale-90');
-                onboardingModalContent.classList.add('opacity-100', 'scale-100');
-            }, 50); // Küçük bir gecikme ile animasyon başlar
-            currentScreenId = 'onboardingModal'; // Geçerli ekranı güncelle
-            updateBottomNav(); // Navigasyonu gizle
-            return;
-        }
+        let activeModal = null;
+        if (onboardingModal && !onboardingModal.classList.contains('hidden-screen')) activeModal = { el: onboardingModal, content: onboardingModalContent, backdrop: onboardingModalBackdrop };
+        else if (screens.winnerPopup && !screens.winnerPopup.classList.contains('hidden-screen')) activeModal = { el: screens.winnerPopup, content: winnerPopupContentContainer, backdrop: null };
+        else if (stageTransitionModal && !stageTransitionModal.classList.contains('hidden-screen')) activeModal = { el: stageTransitionModal, content: stageTransitionModalContent, backdrop: stageTransitionModalBackdrop };
 
-        if (!screens[screenIdToShow]) { console.error("Ekran bulunamadı:", screenIdToShow); return; }
-        
-        if (currentScreenId !== screenIdToShow && 
-            screenIdToShow !== 'howToPlay' && // howToPlay bir overlay değil, tam ekran
-            screenIdToShow !== 'winnerPopup' && // winnerPopup bir overlay
-            screenIdToShow !== 'onboardingModal') { // onboardingModal bir overlay
-            previousScreenId = currentScreenId; 
-        }
-        
-        Object.values(screens).forEach(screen => { if(screen) screen.classList.add('hidden-screen'); });
-        // Overlay olmayanları gizle
-        if (onboardingModal && !onboardingModal.classList.contains('hidden-screen') && screenIdToShow !== 'onboardingModal') {
-             onboardingModalContent.classList.remove('opacity-100', 'scale-100');
-             onboardingModalContent.classList.add('opacity-0', 'scale-90');
-             onboardingModalBackdrop.classList.remove('opacity-100');
-             onboardingModalBackdrop.classList.add('opacity-0');
-            setTimeout(() => {
-                onboardingModal.classList.add('hidden-screen');
-                onboardingModal.classList.remove('flex');
-            }, 300);
-        }
-        if (screens.winnerPopup && !screens.winnerPopup.classList.contains('hidden-screen') && screenIdToShow !== 'winnerPopup') {
-            // Winner popup'ı kapatmak için özel bir mantık gerekebilir veya showScreen çağrılırken yönetilir.
-            // Şimdilik varsayılan gizleme ile devam edelim.
-        }
+        const displayActualScreen = () => {
+            if (screenIdToShow === 'onboardingModal') {
+                showModal(onboardingModal, onboardingModalContent, onboardingModalBackdrop);
+                return;
+            }
+            if (screenIdToShow === 'winnerPopup') {
+                displayWinnerPopupContent(); 
+                showModal(screens.winnerPopup, winnerPopupContentContainer);
+                return;
+            }
+            // Stage transition modal'ı advanceToNextStage içinde showModal ile çağrılır, showScreen ile değil.
 
+            if (!screens[screenIdToShow]) { console.error("Ekran bulunamadı:", screenIdToShow); return; }
+            
+            if (currentScreenId !== screenIdToShow) { // Sadece gerçekten ana ekran değişiyorsa previousScreenId'yi güncelle
+                 if (currentScreenId !== 'onboardingModal' && currentScreenId !== 'stageTransitionModal' && currentScreenId !== 'winnerPopupScreen') {
+                    previousScreenId = currentScreenId;
+                 }
+            }
+            
+            Object.values(screens).forEach(screen => { 
+                if(screen && screen.id !== screenIdToShow && screen.id !== 'winnerPopupScreen' && screen.id !== 'onboardingHowToPlayModal' && screen.id !== 'stageTransitionModal') { // Modalları hariç tut
+                    screen.classList.add('hidden-screen'); 
+                }
+            });
+            screens[screenIdToShow].classList.remove('hidden-screen'); 
+            currentScreenId = screenIdToShow; // Ana ekranı ayarla
+            
+            const bodyClassList = document.body.classList; 
+            if (screens.game) screens.game.classList.remove('final-match-theme');
+            bodyClassList.remove('background-animate', 'bg-[#FAF8F6]', 'bg-slate-50', 'bg-slate-100'); 
 
-        screens[screenIdToShow].classList.remove('hidden-screen'); 
-        currentScreenId = screenIdToShow;
-        
-        const bodyClassList = document.body.classList; 
-        if (screens.game) screens.game.classList.remove('final-match-theme');
-        
-        bodyClassList.remove('background-animate', 'bg-[#FAF8F6]', 'bg-slate-50', 'bg-slate-100'); 
+            if (screenIdToShow === 'start') bodyClassList.add('background-animate', 'bg-[#FAF8F6]');
+            else if (screenIdToShow === 'game' && currentStage === STAGES.FINAL && screens.game) { 
+                screens.game.classList.add('final-match-theme'); 
+            }
+            else { 
+                 bodyClassList.add('bg-slate-50');
+            }
+            
+            updateBottomNav(); 
+            window.scrollTo(0,0);
+        };
 
-        if (screenIdToShow === 'start') bodyClassList.add('background-animate', 'bg-[#FAF8F6]');
-        else if (screenIdToShow === 'tournamentTransition') bodyClassList.add('bg-slate-100');
-        else if (screenIdToShow === 'game' && currentStage === STAGES.FINAL && screens.game) { 
-            screens.game.classList.add('final-match-theme'); 
+        if (activeModal && activeModal.el.id !== screenIdToShow) { // Eğer bir modal açıksa ve farklı bir ana ekrana geçiliyorsa
+            hideModal(activeModal.el, activeModal.content, activeModal.backdrop, displayActualScreen);
+        } else {
+            displayActualScreen();
         }
-        else if (screenIdToShow !== 'winnerPopup' && screenIdToShow !== 'onboardingModal') { // Overlays body class'ını etkilemesin
-             bodyClassList.add('bg-slate-50');
-        }
-        
-        updateBottomNav(); 
-        window.scrollTo(0,0);
     }
     
-    // MODIFICATION: resetGameAndPlay fonksiyonu güncellendi
     function resetGameAndPlay(showOnboarding = false) {
-        // 1. Oyun verilerini hazırla
         currentStage = STAGES.SEEDING;
         currentMatchInStage = 0;
         nextStageWishes = [];
@@ -572,18 +643,14 @@
         shuffleArray(wishesForSeeding);
         wishesForCurrentStage = wishesForSeeding.slice(0, 16);
 
-        if (showOnboarding && onboardingModal) {
+        if (showOnboarding) {
             showScreen('onboardingModal');
-            // Oyun UI'ı modal kapatılınca başlayacak
         } else {
-            // Doğrudan oyunu başlat ve göster
             updateProgressBar();
             loadNextMatchUI();
             showScreen('game');
         }
     }
-    // MODIFICATION END
-
 
     function getMatchPair() {
         if (wishesForCurrentStage.length < (currentMatchInStage * 2) + 2) { return [wishes[0], wishes[1]]; } 
@@ -628,7 +695,6 @@
         else if (currentStage === STAGES.QUARTERFINALS) { totalMatches = 4; stageName = "Ç.Final"; }
         else if (currentStage === STAGES.SEMIFINALS) { totalMatches = 2; stageName = "Y.Final"; }
         else if (currentStage === STAGES.FINAL) { totalMatches = 1; stageName = "FİNAL!"; }
-        else if (currentStage === STAGES.TRANSITION_TO_FINAL) { progressTextElement.textContent = "Finalistler Belirlendi!"; progressBarFill.style.width = `100%`; return; }
         else return;
         if (currentMatchInStage >= totalMatches && totalMatches > 0) matchNum = totalMatches;
         const progress = totalMatches > 0 ? (currentMatchInStage / totalMatches) * 100 : 0;
@@ -647,7 +713,15 @@
     function handleCardSelection(selectedCardNode) {
         gameScreenCards.forEach(c => c.style.pointerEvents = 'none'); selectedCardNode.classList.add('selected');
         const chosenId = selectedCardNode.dataset.wishId; const winner = wishes.find(w => w.id == chosenId);
-        if (currentStage === STAGES.FINAL) { champion = winner; setTimeout(()=> showScreen('winnerPopup'), 1000); return; } // Winner popup göster
+        
+        if (currentStage === STAGES.FINAL) { 
+            champion = winner; 
+            setTimeout(()=> {
+                showScreen('winnerPopup'); 
+            }, 1000); 
+            return; 
+        }
+
         if (winner) nextStageWishes.push(winner);
         if (currentStage === STAGES.SEEDING) { voteCounts[chosenId] = (voteCounts[chosenId] || 0) + 1; }
         selectedCardNode.querySelector('.confetti-burst')?.classList.remove('hidden');
@@ -655,73 +729,158 @@
         gameScreenCards.forEach(oc => { if (oc !== selectedCardNode) oc.classList.add('not-selected'); });
         setTimeout(() => {
             currentMatchInStage++;
-            let totalMatchesInThisStage = (currentStage === STAGES.SEEDING) ? 8 : wishesForCurrentStage.length / 2;
-            if (currentMatchInStage >= totalMatchesInThisStage) { advanceToNextStage(); } else { updateProgressBar(); loadNextMatchUI(); }
+            let totalMatchesInThisStage = 0;
+            if (currentStage === STAGES.SEEDING) totalMatchesInThisStage = 8;
+            else if (currentStage === STAGES.QUARTERFINALS) totalMatchesInThisStage = 4;
+            else if (currentStage === STAGES.SEMIFINALS) totalMatchesInThisStage = 2;
+            
+            if (currentMatchInStage >= totalMatchesInThisStage && currentStage !== STAGES.FINAL) { 
+                advanceToNextStage(); 
+            } else if (currentStage !== STAGES.FINAL) { 
+                updateProgressBar(); 
+                loadNextMatchUI(); 
+            }
         }, 1000);
     }
 
     function advanceToNextStage() {
-        currentMatchInStage = 0; wishesForCurrentStage = [...nextStageWishes]; shuffleArray(wishesForCurrentStage); nextStageWishes = [];
+        currentMatchInStage = 0; 
+        wishesForCurrentStage = [...nextStageWishes]; 
+        shuffleArray(wishesForCurrentStage); 
+        nextStageWishes = [];
+        
+        let nextLogicalStage = null;
         switch (currentStage) {
-            case STAGES.SEEDING: currentStage = STAGES.QUARTERFINALS; break;
-            case STAGES.QUARTERFINALS: currentStage = STAGES.SEMIFINALS; break;
-            case STAGES.SEMIFINALS: currentStage = STAGES.TRANSITION_TO_FINAL; break;
+            case STAGES.SEEDING: nextLogicalStage = STAGES.QUARTERFINALS; break;
+            case STAGES.QUARTERFINALS: nextLogicalStage = STAGES.SEMIFINALS; break;
+            case STAGES.SEMIFINALS: nextLogicalStage = STAGES.FINAL; break; 
+            default:
+                console.error("Mevcut aşamadan ilerlenemiyor:", currentStage);
+                showScreen('start'); 
+                return;
         }
-        if (currentStage === STAGES.TRANSITION_TO_FINAL) { displayTournamentTransitionScreen(); }
-        else if (wishesForCurrentStage.length >= 2) { updateProgressBar(); loadNextMatchUI(); showScreen('game'); }
-        else { champion = wishesForCurrentStage[0] || wishes[0]; showScreen('winnerPopup'); } // Winner popup göster
-    }
+        
+        const previousStageForModal = currentStage; 
+        currentStage = nextLogicalStage; 
 
-    function displayTournamentTransitionScreen() {
-        tournamentTransitionCardContainer.innerHTML = ''; const finalists = wishesForCurrentStage.slice(0, 2);
-        finalists.forEach((f, i) => {
-            const card = document.createElement('div'); card.className = `finalist-card bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl @container ${i === 0 ? 'tournament-final-card-glow' : 'tournament-card-glow'}`;
-            card.innerHTML = `<div class="w-full aspect-[16/10] overflow-hidden">
-                                <img src="${getImageUrl(f.imageSeed)}" alt="${f.title}" class="w-full h-full object-cover">
-                              </div>
-                              <div class="p-4 @xl:px-5">
-                                <h3 class="card-title text-slate-800 text-lg font-bold">${f.title}</h3>
-                                <p class="text-slate-500 text-sm mt-1 card-description-clamp">${f.description}</p>
-                                <p class="text-slate-400 text-xs mt-2">${voteCounts[f.id]||0} başlangıç oyu</p>
-                              </div>`;
-            tournamentTransitionCardContainer.appendChild(card);
-        }); showScreen('tournamentTransition');
-    }
+        const showNextMatchSetup = () => {
+            if (wishesForCurrentStage.length >= 2 || (currentStage === STAGES.FINAL && wishesForCurrentStage.length === 2) ) {
+                 updateProgressBar(); 
+                 loadNextMatchUI(); 
+                 showScreen('game'); 
+            } else if (wishesForCurrentStage.length === 1 && currentStage !== STAGES.FINAL) {
+                console.warn("Aşamaya tek bir dilekle devam ediliyor (advanceToNextStage), şampiyon ilan ediliyor:", wishesForCurrentStage[0]);
+                champion = wishesForCurrentStage[0];
+                showScreen('winnerPopup');
+            } else {
+                console.error("HATA (advanceToNextStage): Aşamaya devam etmek için yeterli dilek yok veya final için yanlış sayıda:", currentStage, wishesForCurrentStage);
+                showScreen('start');
+            }
+        };
 
-    // displayWinnerPopup fonksiyonu winnerPopupScreen'i gösterir, bu zaten showScreen ile yönetiliyor.
-    // Bu fonksiyonun ana görevi popup içeriğini doldurmak.
-    function displayWinnerPopupContent() { 
-        if (!champion) { champion = wishes[0]; } // Fallback
-        winnerPopupImage.src = getImageUrl(champion.imageSeed); 
-        winnerPopupImage.alt = champion.title;
-        winnerPopupTitle.textContent = champion.title; 
-        winnerPopupDescription.textContent = champion.description;
-    }
-    // handleCardSelection içinde ve advanceToNextStage içinde showScreen('winnerPopup') öncesi çağrılacak.
-    // Veya showScreen('winnerPopup') içinde çağrılır.
+        let iconName = ''; 
+        let title = '';
+        let message = '';
+        let showTransition = false;
 
-    screens.winnerPopup.addEventListener('transitionend', () => {
-        if (screens.winnerPopup.classList.contains('hidden-screen')) {
-            // Eğer gizleniyorsa ve başka bir ekrana geçiş yapılıyorsa bir şey yapma
+        if (currentStage === STAGES.QUARTERFINALS) {
+            iconName = 'sports_score'; 
+            title = 'Çeyrek Finaller!';
+            message = 'En iyi 8 hayal bir üst tura yükseldi. Mücadele devam ediyor!';
+            showTransition = true;
+        } else if (currentStage === STAGES.SEMIFINALS) {
+            iconName = 'stars';
+            title = 'Yarı Finaller!';
+            message = 'Şampiyonluğa çok az kaldı! Son 4 hayal yarışıyor.';
+            showTransition = true;
+        } else if (currentStage === STAGES.FINAL) {
+            iconName = 'emoji_events';
+            title = 'BÜYÜK FİNAL!';
+            message = 'İşte şampiyonu belirleyecek o efsanevi karşılaşma!';
+            showTransition = true;
+        }
+
+        if (showTransition && stageTransitionModal) {
+            stageTransitionIcon.textContent = iconName;
+            stageTransitionTitle.textContent = title;
+            stageTransitionMessage.textContent = message;
+            
+            showModal(stageTransitionModal, stageTransitionModalContent, stageTransitionModalBackdrop);
+
+            setTimeout(() => {
+                // MODIFICATION: Pop-up kapanma süresi kısaltıldı
+                hideModal(stageTransitionModal, stageTransitionModalContent, stageTransitionModalBackdrop, () => {
+                     showNextMatchSetup();
+                });
+            }, 2000); // MODIFICATION: Süre 2000ms'ye düşürüldü
         } else {
-            // Eğer gösteriliyorsa içeriği doldur
-            displayWinnerPopupContent();
+            showNextMatchSetup();
         }
-    });
-
+    }
+    
+    function displayWinnerPopupContent() { 
+        if (!champion) { 
+             console.warn("Şampiyon bulunamadı, varsayılan kullanılıyor.");
+             champion = wishes[0]; 
+        }
+        if(winnerPopupSubtitle) winnerPopupSubtitle.textContent = `UtopiArena'da senin ve diğerlerinin oylarıyla geleceğin hayali bu oldu:`;
+        if(winnerPopupImage) {
+            winnerPopupImage.src = getImageUrl(champion.imageSeed); 
+            winnerPopupImage.alt = champion.title;
+        }
+        if(winnerPopupTitle) winnerPopupTitle.textContent = champion.title; 
+        if(winnerPopupDescription) winnerPopupDescription.textContent = champion.description;
+    }
 
     function displayResultsScreen() { 
+        const totalSeedingVotes = Object.values(voteCounts).reduce((sum, count) => sum + count, 0);
+
         if (!champion) { 
             const sortedByVotes = Object.keys(voteCounts).sort((a,b) => voteCounts[b] - voteCounts[a]);
-            champion = wishes.find(w => w.id == sortedByVotes[0]) || wishes[0];
+            if (sortedByVotes.length > 0) {
+                champion = wishes.find(w => w.id == sortedByVotes[0]);
+            }
+            if (!champion) champion = wishes[0]; 
         }
+        
+        const championVoteCount = voteCounts[champion.id] || 0;
+        const championPercentage = totalSeedingVotes > 0 ? ((championVoteCount / totalSeedingVotes) * 100).toFixed(1) : "0.0";
+        
         championTitleResults.textContent = champion.title;
         championImageResults.src = getImageUrl(champion.imageSeed); 
-        championInfoResults.textContent = `Bu dilek UtopiArena şampiyonu!`;
-        resultsCardContainer.innerHTML = ''; resultsCardContainer.appendChild(championCardDisplay);
-        const oPW = Object.entries(voteCounts).map(([id,c])=>({...wishes.find(w=>w.id==id),voteCount:c})).filter(w=>w.id!==champion.id&&w.title).sort((a,b)=>b.voteCount-a.voteCount).slice(0,4);
+        // MODIFICATION: Sonuç ekranı şampiyon metni güncellendi
+        championInfoResults.textContent = `Başlangıç oylarının %${championPercentage}'i ile şampiyon oldu!`;
+
+        resultsCardContainer.innerHTML = ''; 
+        resultsCardContainer.appendChild(championCardDisplay);
+
+        const oPW = Object.entries(voteCounts)
+            .map(([id, c]) => {
+                const wish = wishes.find(w => w.id == id);
+                return wish ? { ...wish, voteCount: c } : null;
+            })
+            .filter(w => w && w.id !== champion.id && w.title)
+            .sort((a, b) => b.voteCount - a.voteCount)
+            .slice(0, 4);
+
         oPW.forEach(w => {
-            resultsCardContainer.insertAdjacentHTML('beforeend', `<div class="bg-white shadow-lg rounded-2xl overflow-hidden"><div class="relative"><img alt="${w.title}" class="w-full h-40 object-cover" src="${getImageUrl(w.imageSeed, 600, 300)}"/><div class="absolute inset-0 bg-hero-gradient"></div><div class="absolute bottom-0 left-0 p-4"><p class="text-white text-xl font-bold leading-tight">${w.title}</p><div class="flex items-center mt-1.5"><span class="material-icons text-red-400 mr-1" style="font-size: 18px;">favorite_border</span><p class="text-white text-sm font-medium">${w.voteCount||0} başlangıç oyu</p></div></div></div></div>`);
+            if (!w || typeof w.voteCount === 'undefined') return; 
+            const wishPercentage = totalSeedingVotes > 0 ? ((w.voteCount / totalSeedingVotes) * 100).toFixed(1) : "0.0";
+            // MODIFICATION: Sonuç ekranı diğer kartlar metni güncellendi
+            resultsCardContainer.insertAdjacentHTML('beforeend', 
+                `<div class="bg-white shadow-lg rounded-2xl overflow-hidden">
+                    <div class="relative">
+                        <img alt="${w.title}" class="w-full h-40 object-cover" src="${getImageUrl(w.imageSeed, 600, 300)}"/>
+                        <div class="absolute inset-0 bg-hero-gradient"></div>
+                        <div class="absolute bottom-0 left-0 p-4">
+                            <p class="text-white text-xl font-bold leading-tight">${w.title}</p>
+                            <div class="flex items-center mt-1.5">
+                                <span class="material-icons text-red-400 mr-1" style="font-size: 18px;">favorite_border</span>
+                                <p class="text-white text-sm font-medium">Başlangıç oylarının %${wishPercentage}'ini aldı</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>`);
         });
         showScreen('results');
     }
@@ -745,60 +904,60 @@
         showScreen('finish');
     }
     
-    // MODIFICATION: startGameButton event listener'ı güncellendi
-    startGameButton.addEventListener('click', () => resetGameAndPlay(true)); // Onboarding modal'ını göster
+    startGameButton.addEventListener('click', () => resetGameAndPlay(true)); 
 
-    // MODIFICATION: proceedFromOnboardingButton event listener'ı eklendi
     if (proceedFromOnboardingButton) {
         proceedFromOnboardingButton.addEventListener('click', () => {
-            onboardingModalContent.classList.remove('opacity-100', 'scale-100');
-            onboardingModalContent.classList.add('opacity-0', 'scale-90');
-            onboardingModalBackdrop.classList.remove('opacity-100');
-            onboardingModalBackdrop.classList.add('opacity-0');
-            
-            setTimeout(() => {
-                onboardingModal.classList.add('hidden-screen');
-                onboardingModal.classList.remove('flex');
-                
+            hideModal(onboardingModal, onboardingModalContent, onboardingModalBackdrop, () => {
                 updateProgressBar();
                 loadNextMatchUI();
                 showScreen('game');
-            }, 310); // Animasyon süresi + küçük bir pay
+            });
         });
     }
-    // MODIFICATION END
 
     gameScreenCards.forEach(card => card.addEventListener('click', () => handleCardSelection(card)));
-    // ... (diğer event listener'lar olduğu gibi kalır, resetGameAndPlay() çağrıları artık onboarding'siz versiyonu kullanır) ...
-    document.getElementById('closeTournamentTransitionButton')?.addEventListener('click', () => { resetGameAndPlay(); showScreen('start'); }); // resetGameAndPlay() default false
-    proceedToFinalMatchButton.addEventListener('click', () => {
-        loadingScreenTournamentTransition.classList.remove('hidden');
-        setTimeout(() => {
-            loadingScreenTournamentTransition.classList.add('hidden');
-            currentStage = STAGES.FINAL; updateProgressBar(); loadNextMatchUI(); showScreen('game');
-        }, 1000);
-    });
-    closeWinnerPopupButton.addEventListener('click', () => { 
-        screens.winnerPopup.classList.add('hidden-screen'); // Popup'ı gizle
-        displayResultsScreen(); 
-    });
-    winnerPopupToResultsButton.addEventListener('click', () => {
-        screens.winnerPopup.classList.add('hidden-screen'); // Popup'ı gizle
-        displayResultsScreen();
-    });
+    
+    if(closeWinnerPopupButton) {
+        closeWinnerPopupButton.addEventListener('click', () => { 
+            hideModal(screens.winnerPopup, winnerPopupContentContainer, null, () => {
+                displayResultsScreen(); 
+            });
+        });
+    }
+    if(winnerToResultsButton) {
+        winnerToResultsButton.addEventListener('click', () => {
+            hideModal(screens.winnerPopup, winnerPopupContentContainer, null, () => {
+                displayResultsScreen();
+            });
+        });
+    }
+    if(winnerShareButton) {
+        winnerShareButton.addEventListener('click', () => {
+            if(navigator.share && champion) {
+                navigator.share({
+                    title: '🏆 UtopiArena Şampiyonu!',
+                    text: `Benim UtopiArena hayalim ve şampiyonu: "${champion.title}"! Sen de oyna ve kendi ütopyanı seç! #UtopiArena`,
+                    url: window.location.href 
+                }).catch(error => console.log('Paylaşım hatası:', error));
+            } else if (champion) {
+                alert(`Şampiyon hayal: ${champion.title}!\n\n"${champion.title}" dileğini arkadaşlarınla paylaşarak bu harika geleceği yayabilirsin! #UtopiArena`);
+            } else { 
+                alert("Paylaşılacak bir şampiyon bulunamadı."); 
+            }
+        });
+    }
 
     globalHowToPlayButton.addEventListener('click', () => showScreen('howToPlay'));
-    closeHowToPlayButton.addEventListener('click', () => showScreen(previousScreenId || 'start')); // previousScreenId doğru yönetilmeli
+    closeHowToPlayButton.addEventListener('click', () => showScreen(previousScreenId || 'start')); 
     
-    navHomeButton.addEventListener('click', (e) => { e.preventDefault(); showScreen('start'); }); // resetGameAndPlay() start'a özel değil
-    navPlayButton.addEventListener('click', (e) => { e.preventDefault(); resetGameAndPlay(); });
+    navHomeButton.addEventListener('click', (e) => { e.preventDefault(); showScreen('start'); }); 
+    navPlayButton.addEventListener('click', (e) => { e.preventDefault(); resetGameAndPlay(); }); 
     navResultsButton.addEventListener('click', (e) => { e.preventDefault(); displayResultsScreen(); });
     
-    // Finish ekranındaki butonlar resetGameAndPlay() çağıracak
     document.getElementById('finishPlayAgainButton')?.addEventListener('click', () => { resetGameAndPlay(); });
 
-
-    shareChampionButton.addEventListener('click', () => {
+    shareChampionButton.addEventListener('click', () => { 
         if(navigator.share && champion) {
             navigator.share({
                 title: '🏆 UtopiArena Şampiyonu!',
@@ -813,10 +972,6 @@
         preloadImages(); 
         if (screens.start.classList.contains('screen-content')) {
             screens.start.style.paddingBottom = '0px';
-        }
-        // Winner popup içeriğini başlangıçta doldurmak için (eğer DOM'da ise)
-        if (screens.winnerPopup && champion) { // Eğer bir şampiyon varsa (örneğin, sayfa yenilendi vs)
-            displayWinnerPopupContent();
         }
         showScreen('start'); 
     });
