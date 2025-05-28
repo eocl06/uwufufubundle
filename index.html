@@ -16,8 +16,12 @@
             overscroll-behavior-y: contain; margin: 0;
         }
         .hidden-screen { display: none !important; }
-        .screen-content { padding-bottom: 70px; box-sizing: border-box; min-height: 100dvh; }
-        #startScreen.screen-content { padding-bottom: 0; }
+        .screen-content { 
+            padding-bottom: 70px; /* Alt navigasyon için boşluk, h-screen kullanan ekranlarda bu padding hesaba katılır */
+            box-sizing: border-box; 
+        }
+        #startScreen.screen-content { padding-bottom: 0; } /* Start screen özel durumu */
+
 
         @keyframes backgroundMorph { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         .background-animate { background: linear-gradient(270deg, #faf8f6, #e0e0e0, #faf8f6); background-size: 600% 600%; animation: backgroundMorph 15s ease infinite; }
@@ -29,7 +33,6 @@
         .card.selected { transform: scale(1.05); z-index: 10; }
         .card.not-selected { opacity: 0; transform: translateX(100px); }
         
-        /* MODIFICATION START: card-description-clamp max-height'e küçük bir pay eklendi */
         .card-description-clamp {
             display: -webkit-box;
             -webkit-line-clamp: 2; 
@@ -38,9 +41,8 @@
             text-overflow: ellipsis;
             line-height: 1.4em; 
             min-height: calc(1.4em * 2); 
-            max-height: calc(1.4em * 2 + 2px); /* Alt satırın kesilmemesi için +2px eklendi */
+            max-height: calc(1.4em * 2 + 2px); 
         }
-        /* MODIFICATION END */
 
         #winnerPopupDescription.card-description-clamp { 
             -webkit-line-clamp: 4; 
@@ -106,15 +108,16 @@
         </div>
     </div>
 
-    <div id="gameScreen" class="hidden-screen screen-content relative flex size-full min-h-screen flex-col justify-between group/design-root overflow-hidden bg-slate-50">
-        <div class="flex flex-col flex-grow">
-            <div class="sticky top-0 z-20 bg-slate-50 shadow-sm game-header-bar">
-                <p id="progressTextElement" class="text-[#0d131b] text-sm font-medium leading-normal truncate pr-8">Eleme: 1/8</p>
-                <div class="h-1.5 rounded-full bg-[#cfd9e7] relative overflow-hidden mt-1">
-                    <div id="progressBarFill" class="h-full rounded-full bg-[#428aef]" style="width: 0%;"></div>
-                </div>
+    <div id="gameScreen" class="hidden-screen screen-content relative flex flex-col h-screen bg-slate-50 overflow-y-hidden">
+    <div class="sticky top-0 z-20 bg-slate-50 shadow-sm game-header-bar">
+            <p id="progressTextElement" class="text-[#0d131b] text-sm font-medium leading-normal truncate pr-8">Eleme: 1/8</p>
+            <div class="h-1.5 rounded-full bg-[#cfd9e7] relative overflow-hidden mt-1">
+                <div id="progressBarFill" class="h-full rounded-full bg-[#428aef]" style="width: 0%;"></div>
             </div>
-            <div class="flex-grow flex flex-col items-center justify-center p-4 space-y-6 @md:space-y-0 @md:flex-row @md:space-x-6 @md:items-center @md:justify-center">
+        </div>
+
+        <div class="flex-1 min-h-0 overflow-y-auto p-4">
+            <div class="flex flex-col items-center space-y-6 @md:flex-row @md:justify-center @md:items-center @md:space-y-0 @md:space-x-6 w-full">
                 <div class="card w-full max-w-md @md:max-w-sm bg-white rounded-xl shadow-xl overflow-hidden relative">
                     <div class="confetti-burst hidden"></div>
                     <div class="w-full h-48 overflow-hidden"> 
@@ -125,7 +128,7 @@
                         <p class="card-description text-[#4c6c9a] text-sm font-normal leading-relaxed card-description-clamp"></p>
                     </div>
                 </div>
-                <div class="flex items-center justify-center my-0 @md:my-0 @md:mx-2">
+                <div class="flex items-center justify-center @md:mx-2"> 
                     <span id="vsButtonSpan" class="bg-[#428aef] text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-md transform rotate-[-15deg] @md:rotate-0">VS</span>
                 </div>
                 <div class="card w-full max-w-md @md:max-w-sm bg-white rounded-xl shadow-xl overflow-hidden relative">
@@ -141,8 +144,7 @@
             </div>
         </div>
     </div>
-    
-    <div id="tournamentTransitionScreen" class="hidden-screen screen-content relative flex size-full min-h-screen flex-col bg-slate-100 justify-between group/design-root overflow-x-hidden">
+    <div id="tournamentTransitionScreen" class="hidden-screen screen-content relative flex flex-col h-screen bg-slate-100 overflow-y-hidden justify-between group/design-root">
         <div>
             <header class="sticky top-0 z-10 bg-slate-100 shadow-sm game-header-bar">
                 <div class="flex items-center p-0 justify-between relative">
@@ -152,7 +154,7 @@
                 </div>
                 <h2 id="tournamentTransitionSubtitle" class="text-slate-600 text-sm font-medium px-6 text-center pb-1 pt-1">Şampiyonluğa bir adım kaldı!</h2>
             </header>
-            <main id="tournamentTransitionCardContainer" class="p-4 space-y-6"></main>
+            <main id="tournamentTransitionCardContainer" class="p-4 space-y-6 overflow-y-auto flex-1 min-h-0"></main>
         </div>
         <div id="loadingScreenTournamentTransition" class="fixed inset-0 bg-slate-900 bg-opacity-80 hidden flex-col items-center justify-center z-50">
             <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-400 mb-6"></div>
@@ -186,8 +188,8 @@
         </div>
     </div>
 
-    <div id="resultsScreen" class="hidden-screen screen-content relative flex size-full min-h-screen flex-col justify-between group/design-root overflow-x-hidden bg-slate-50">
-        <div>
+    <div id="resultsScreen" class="hidden-screen screen-content relative flex flex-col h-screen bg-slate-50 overflow-y-hidden group/design-root">
+        <div class="flex flex-col flex-1 min-h-0"> 
             <header class="sticky top-0 z-10 bg-slate-50/80 backdrop-blur-sm shadow-sm game-header-bar">
                 <div class="flex items-center justify-between relative">
                     <div class="w-10"></div>
@@ -195,7 +197,7 @@
                     <div class="w-10"></div>
                 </div>
             </header>
-            <main class="pb-4">
+            <main class="pb-4 overflow-y-auto flex-1 min-h-0"> 
                 <h2 class="text-slate-800 text-2xl font-semibold leading-tight px-6 text-center pb-6 pt-5">Ve şampiyon dilek...</h2>
                 <div id="resultsCardContainer" class="px-4 space-y-4">
                     <div id="championCardDisplay" class="bg-white shadow-xl rounded-2xl overflow-hidden border-2 border-yellow-400 transform scale-105">
@@ -219,9 +221,10 @@
         </div>
     </div>
 
-    <div id="finishScreen" class="hidden-screen screen-content relative flex size-full min-h-screen flex-col bg-slate-50 group/design-root overflow-x-hidden">
-        <div class="flex-grow">
-            <header class="flex items-center bg-slate-50 p-3 justify-end sticky top-0 z-10 shadow-sm game-header-bar"></header>
+    <div id="finishScreen" class="hidden-screen screen-content relative flex flex-col h-screen bg-slate-50 group/design-root overflow-y-hidden">
+      <div class="flex flex-col flex-1 min-h-0">
+        <header class="flex items-center bg-slate-50 p-3 justify-end sticky top-0 z-10 shadow-sm game-header-bar"></header>
+        <div class="overflow-y-auto flex-1 min-h-0"> 
             <div class="px-6 pt-6 pb-4 text-center">
                 <svg class="w-16 h-16 mx-auto text-yellow-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
                 <h1 class="text-[#0d131b] text-3xl font-bold leading-tight pb-2">UtopiArena Tamamlandı!</h1>
@@ -244,38 +247,41 @@
                 <div id="moreDreamsContainer" class="flex items-stretch gap-4"></div>
             </div>
         </div>
+      </div>
     </div>
 
-    <div id="howToPlayScreen" class="hidden-screen screen-content relative flex size-full min-h-screen flex-col bg-slate-50 group/design-root overflow-x-hidden p-0">
-        <header class="sticky top-0 z-10 bg-slate-50/80 backdrop-blur-sm py-2 px-4 shadow-sm game-header-bar">
-            <div class="flex items-center justify-between">
-                <h1 class="text-slate-900 text-xl font-bold leading-tight">Nasıl Oynanır?</h1>
-                <button id="closeHowToPlayButton" aria-label="Kapat" class="text-slate-700 flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-slate-200 transition-colors">
-                    <span class="material-icons-outlined">close</span>
-                </button>
-            </div>
-        </header>
-        <main class="p-4 space-y-4 text-slate-700">
-                <p class="text-lg">UtopiArena'ya hoş geldiniz!</p>
-            <ol class="list-decimal list-inside space-y-2">
-                <li>Size sunulan iki "gelecek senaryosu" arasından favorinizi seçin.</li>
-                <li>Seçimlerinizle senaryolar turnuvada ilerleyecek:
-                    <ul class="list-disc list-inside pl-6 space-y-1 mt-1">
-                        <li><strong>Eleme Turu:</strong> 16 senaryo arasından 8 kazanan (8 maç).</li>
-                        <li><strong>Çeyrek Final:</strong> 8 senaryodan 4 kazanan (4 maç).</li>
-                        <li><strong>Yarı Final:</strong> 4 senaryodan 2 finalist (2 maç).</li>
-                        <li><strong>Final:</strong> 2 finalistten şampiyon senaryo seçilir (1 maç)!</li>
-                    </ul>
-                </li>
-                <li>Oyun sonunda şampiyon olan senaryoyu ve diğer popüler seçimleri görebilirsiniz.</li>
-                <li>Alt menüden istediğiniz zaman Anasayfa, Oyna veya Sonuçlar ekranlarına geçebilirsiniz.</li>
-                <li>Sağ üstteki <span class="material-icons-outlined text-sm">help_outline</span> ikonundan bu ekrana tekrar ulaşabilirsiniz (oyun sırasında).</li>
-                <li>İyi eğlenceler ve en iyi geleceği seçin!</li>
-            </ol>
-            <p class="text-sm text-slate-500 mt-8 border-t border-slate-300 pt-4">
-                <strong>Lütfen Dikkat:</strong> Bu oyunda yer alan tüm "dilekler", "gelecek senaryoları", "haber başlıkları" ve açıklamalar tamamen hayal ürünü olup kurgusaldır. Gerçek kişi, kurum veya olaylarla hiçbir ilgisi bulunmamaktadır. UtopiArena yalnızca eğlence amacıyla tasarlanmıştır.
-            </p>
-        </main>
+    <div id="howToPlayScreen" class="hidden-screen screen-content relative flex flex-col h-screen bg-slate-50 group/design-root overflow-y-hidden p-0">
+        <div class="flex flex-col flex-1 min-h-0">
+            <header class="sticky top-0 z-10 bg-slate-50/80 backdrop-blur-sm py-2 px-4 shadow-sm game-header-bar">
+                <div class="flex items-center justify-between">
+                    <h1 class="text-slate-900 text-xl font-bold leading-tight">Nasıl Oynanır?</h1>
+                    <button id="closeHowToPlayButton" aria-label="Kapat" class="text-slate-700 flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-slate-200 transition-colors">
+                        <span class="material-icons-outlined">close</span>
+                    </button>
+                </div>
+            </header>
+            <main class="p-4 space-y-4 text-slate-700 overflow-y-auto flex-1 min-h-0"> 
+                    <p class="text-lg">UtopiArena'ya hoş geldiniz!</p>
+                <ol class="list-decimal list-inside space-y-2">
+                    <li>Size sunulan iki "gelecek senaryosu" arasından favorinizi seçin.</li>
+                    <li>Seçimlerinizle senaryolar turnuvada ilerleyecek:
+                        <ul class="list-disc list-inside pl-6 space-y-1 mt-1">
+                            <li><strong>Eleme Turu:</strong> 16 senaryo arasından 8 kazanan (8 maç).</li>
+                            <li><strong>Çeyrek Final:</strong> 8 senaryodan 4 kazanan (4 maç).</li>
+                            <li><strong>Yarı Final:</strong> 4 senaryodan 2 finalist (2 maç).</li>
+                            <li><strong>Final:</strong> 2 finalistten şampiyon senaryo seçilir (1 maç)!</li>
+                        </ul>
+                    </li>
+                    <li>Oyun sonunda şampiyon olan senaryoyu ve diğer popüler seçimleri görebilirsiniz.</li>
+                    <li>Alt menüden istediğiniz zaman Anasayfa, Oyna veya Sonuçlar ekranlarına geçebilirsiniz.</li>
+                    <li>Sağ üstteki <span class="material-icons-outlined text-sm">help_outline</span> ikonundan bu ekrana tekrar ulaşabilirsiniz (oyun sırasında).</li>
+                    <li>İyi eğlenceler ve en iyi geleceği seçin!</li>
+                </ol>
+                <p class="text-sm text-slate-500 mt-8 border-t border-slate-300 pt-4">
+                    <strong>Lütfen Dikkat:</strong> Bu oyunda yer alan tüm "dilekler", "gelecek senaryoları", "haber başlıkları" ve açıklamalar tamamen hayal ürünü olup kurgusaldır. Gerçek kişi, kurum veya olaylarla hiçbir ilgisi bulunmamaktadır. UtopiArena yalnızca eğlence amacıyla tasarlanmıştır.
+                </p>
+            </main>
+        </div>
     </div>
 
     <nav id="bottomNav" class="fixed bottom-0 left-0 right-0 bg-slate-50 border-t border-slate-200 z-30">
@@ -345,23 +351,23 @@
     let voteCounts = {};
     let champion = null;
 
-    const wishes = [
-        { id:1, title: "İzmir Belediyesi: Kadınlar İçin Gece 22:00–05:00 Arası Ücretsiz Taksi Hizmeti Başladı", description: "Gece çalışan, okuyan ya da çıkan her kadına bir tuşla güvenli ulaşım. Bu destek, kadınların gece saatlerinde daha güvende hissetmelerini ve sosyal hayata katılımlarını artırmayı hedefliyor.", imageSeed: "https://i.ibb.co/vvjLGRgT/Ads-z-tasar-m.png" },
-        { id:2, title: "Üsküdar Belediyesi 21 Yaş Altı Her Gence Sinema Bileti Sponsoru Oldu", description: "“Bir film izledim, hayatım değişti” diyen gençler için düzenli sinema desteği. Kültürel aktivitelere erişimi kolaylaştırarak gençlerin vizyonunu genişletmek amaçlanıyor.", imageSeed: "uskudar_genc_sinema_v3" },
-        { id:3, title: "E-Devlet Üzerinden Terapi Randevusu Dönemi Başladı: İlk 3 Seans Devletten", description: "Giriş yap, uzman seç, ücretsiz başla. Ruh sağlığı artık herkes için erişilebilir bir hak olarak tanınıyor ve önemseniyor.", imageSeed: "edevlet_terapi_v3" },
-        { id:4, title: "Avrupa Birliği Türkiye’ye Vizeyi Kaldırdı", description: "2026’dan itibaren kimlik kartıyla serbest geçiş. Vize randevu kuyruğu tarih oldu, seyahat özgürlüğü arttı.", imageSeed: "ab_vize_kalkti_v3" },
-        { id:5, title: "WhatsApp’a “Yazdı Geri Sildi Ne Yazdı?” Özelliği Geldi", description: "Artık sildiği mesajı 5 saniyeliğine görebiliyorsun. “Az önce ne diyordun?” devri başladı, merak ortadan kalktı.", imageSeed: "whatsapp_geri_sil_v3" },
-        { id:6, title: "Instagram “Yanlışlıkla Beğendiğin Fotoğrafı 10 Saniye İçinde Geri Al” Özelliğini Açtı", description: "2017 fotoğrafına kalp bırakma kabusu bitti. Geri al, unutulsun gitsin; sosyal medya kazaları artık sorun değil.", imageSeed: "instagram_geri_al_v3" },
-        { id:7, title: "İlk Türk Formula 1 Pilotu: 19 Yaşındaki Emir Aslan, Monza’da Williams’la Start Aldı", description: "İlk yarışında 8. sırada bitirdi, puan aldı. Garajda Türk bayrağı vardı, motor sporlarında yeni bir sayfa açıldı.", imageSeed: "turk_f1_pilot_v3" },
-        { id:8, title: "Türkiye, Kadın-Erkek Eşitliği Endeksinde İlk 20’ye Girdi", description: "Eğitimde, işte, evde eşitlik raporlarla tescillendi. “Artık yarı yarıya değil, tam tamına eşitiz” dönemi başladı.", imageSeed: "kadin_erkek_esitlik_v3" },
-        { id:9, title: "Beren Yıldız, Nobel Fizik Ödülünü Kazandı: “Evrenin Nabzını Dinledik”", description: "ODTÜ’lü bilim kadını, kuantum kütleçekim denklemini çözdü. İsveç’te tarih yazdı, bilim dünyasında büyük yankı uyandırdı.", imageSeed: "nobel_fizik_beren_v3" },
-        { id:10, title: "Türkiye, 2029’da Eurovision’a Geri Döndü: Temsilcimiz Rüya Güner Avrupa’yı Salladı", description: "Şarkısı “Derinlik”, sahnede ebru animasyonu ve bağlama solosuyla Avrupa’yı büyüledi, kültürel bir köprü kurdu.", imageSeed: "eurovision_turkiye_dondu_v3" },
-        { id:11, title: "Haftada 4 Gün Çalışma Yasası Resmi Gazete’de Yayınlandı", description: "Artık cuma günü resmi tatil. Aynı maaşla, daha az stresle yeni bir hayat başlıyor, iş-yaşam dengesi iyileşiyor.", imageSeed: "4_gun_calisma_v3" },
-        { id:12, title: "Boğaziçi Üniversitesi, Dünya Üniversite Sıralamasında İlk 100’e Girdi!", description: "Times Higher Education listesine göre Türkiye’den ilk kez bir üniversite 98. sırada. Eğitimde uluslararası başarı tescillendi.", imageSeed: "bogazici_ilk_100_v3" },
-        { id:13, title: "Merkez Bankası, Enflasyon Tahminini %4’ten %3,5’e Düşürdü!", description: "Gıda ve kiralarda düşüş başladı. Manav: “Halk artık domates alırken saymıyor.” Ekonomik refah artıyor.", imageSeed: "enflasyon_dustu_v3" },
-        { id:14, title: "Türkiye’de Şehir Parkları ve Yeşil Alanlar 5 Yılda %42 Arttı", description: "Betonun yerini gölge, otobüsün yerini bisiklet aldı. “Nefes Al Türkiye” projesi başarıyla tamamlandı, yaşam kalitesi yükseldi.", imageSeed: "sehir_parklari_artti_v3" },
-        { id:15, title: "Türkiye, Avrupa Futbol Şampiyonu Oldu!", description: "Finalde Almanya’yı 3-2 yendik. 89. dakikada Arda Güler frikiğiyle tarih yazdı, tüm ülke sevince boğuldu.", imageSeed: "turkiye_avrupa_sampiyonu_v3" },
-        { id:16, title: "Filenin Sultanları, Paris 2028’de Altın Madalya Kazandı!", description: "Final Brezilya’ya karşı 3-1. Bayraklar, gözyaşları, omuz omuza zafer. Türk voleybolu zirvede!", imageSeed: "https://i.ibb.co/R4jrvBMx/Ads-z-tasar-m-1.png" }
+    const wishes = [ // Açıklamalar biraz daha uzatıldı, 2 satırda nasıl durduğu daha iyi test edilebilir.
+        { id:1, title: "İzmir Belediyesi: Kadınlar İçin Gece 22:00–05:00 Arası Ücretsiz Taksi Hizmeti Başladı", description: "Gece çalışan, okuyan ya da çıkan her kadına bir tuşla güvenli ulaşım imkanı sunuluyor. Bu önemli destek, kadınların gece saatlerinde daha güvende hissetmelerini ve sosyal hayata katılımlarını artırmayı amaçlıyor.", imageSeed: "https://i.ibb.co/vvjLGRgT/Ads-z-tasar-m.png" },
+        { id:2, title: "Üsküdar Belediyesi 21 Yaş Altı Her Gence Sinema Bileti Sponsoru Oldu", description: "“Bir film izledim, hayatım değişti” diyen gençler için düzenli sinema desteği sağlanıyor. Kültürel aktivitelere erişimi kolaylaştırarak gençlerin vizyonunu genişletmek ve sanatsal bakış açıları kazandırmak hedefleniyor.", imageSeed: "uskudar_genc_sinema_v3" },
+        { id:3, title: "E-Devlet Üzerinden Terapi Randevusu Dönemi Başladı: İlk 3 Seans Devletten", description: "Giriş yap, uzman seç, ücretsiz başla. Ruh sağlığı artık herkes için çok daha erişilebilir bir hak olarak tanınıyor ve toplum genelinde önemseniyor.", imageSeed: "edevlet_terapi_v3" },
+        { id:4, title: "Avrupa Birliği Türkiye’ye Vizeyi Kaldırdı", description: "2026’dan itibaren kimlik kartıyla serbest geçiş dönemi başlıyor. Vize randevu kuyruğu tarih oldu, böylece vatandaşların seyahat özgürlüğü önemli ölçüde arttı.", imageSeed: "ab_vize_kalkti_v3" },
+        { id:5, title: "WhatsApp’a “Yazdı Geri Sildi Ne Yazdı?” Özelliği Geldi", description: "Artık sildiği mesajı 5 saniyeliğine görebiliyorsun. “Az önce ne diyordun?” devri başladı, o büyük merak sonunda ortadan kalktı.", imageSeed: "whatsapp_geri_sil_v3" },
+        { id:6, title: "Instagram “Yanlışlıkla Beğendiğin Fotoğrafı 10 Saniye İçinde Geri Al” Özelliğini Açtı", description: "2017 yılındaki bir fotoğrafa yanlışlıkla kalp bırakma kabusu bitti. Geri al, unutulsun gitsin; sosyal medya kullanımındaki bu tür küçük kazalar artık sorun değil.", imageSeed: "instagram_geri_al_v3" },
+        { id:7, title: "İlk Türk Formula 1 Pilotu: 19 Yaşındaki Emir Aslan, Monza’da Williams’la Start Aldı", description: "Genç pilot ilk yarışında sekizinci sırada bitirerek puan almayı başardı. Garajda gururla dalgalanan Türk bayrağı vardı, motor sporlarında yepyeni bir sayfa açıldı.", imageSeed: "turk_f1_pilot_v3" },
+        { id:8, title: "Türkiye, Kadın-Erkek Eşitliği Endeksinde İlk 20’ye Girdi", description: "Eğitimde, iş hayatında ve evde kadın-erkek eşitliği uluslararası raporlarla tescillendi. “Artık yarı yarıya değil, tam tamına eşitiz” denilebilen bir dönem başladı.", imageSeed: "kadin_erkek_esitlik_v3" },
+        { id:9, title: "Beren Yıldız, Nobel Fizik Ödülünü Kazandı: “Evrenin Nabzını Dinledik”", description: "ODTÜ’lü başarılı bilim kadını, kuantum kütleçekim alanındaki temel denklemi çözdü. İsveç’te düzenlenen törende tarih yazdı, bilim dünyasında büyük yankı uyandırdı.", imageSeed: "nobel_fizik_beren_v3" },
+        { id:10, title: "Türkiye, 2029’da Eurovision’a Geri Döndü: Temsilcimiz Rüya Güner Avrupa’yı Salladı", description: "Yarışmada seslendirdiği “Derinlik” adlı şarkısı, sahnede kullanılan ebru animasyonu ve etkileyici bağlama solosuyla tüm Avrupa’yı büyüledi, kültürel bir köprü kuruldu.", imageSeed: "eurovision_turkiye_dondu_v3" },
+        { id:11, title: "Haftada 4 Gün Çalışma Yasası Resmi Gazete’de Yayınlandı", description: "Artık cuma günü de resmi tatil ilan edildi. Aynı maaşla, daha az stresle yepyeni bir hayat başlıyor, genel iş-yaşam dengesi önemli ölçüde iyileşiyor.", imageSeed: "4_gun_calisma_v3" },
+        { id:12, title: "Boğaziçi Üniversitesi, Dünya Üniversite Sıralamasında İlk 100’e Girdi!", description: "Times Higher Education'ın saygın listesine göre Türkiye’den ilk kez bir üniversite 98. sırada yer aldı. Bu, eğitimde uluslararası bir başarı olarak tescillendi.", imageSeed: "bogazici_ilk_100_v3" },
+        { id:13, title: "Merkez Bankası, Enflasyon Tahminini %4’ten %3,5’e Düşürdü!", description: "Temel gıda ürünlerinde ve kiralarda belirgin bir düşüş başladı. Pazarcı esnafı: “Halk artık domatesi alırken saymıyor.” Ekonomik refah seviyesi artıyor.", imageSeed: "enflasyon_dustu_v3" },
+        { id:14, title: "Türkiye’de Şehir Parkları ve Yeşil Alanlar 5 Yılda %42 Arttı", description: "Şehirlerde betonun yerini artık ağaç gölgeleri, otobüsün yerini ise bisiklet yolları aldı. “Nefes Al Türkiye” projesi başarıyla tamamlandı, yaşam kalitesi gözle görülür şekilde yükseldi.", imageSeed: "sehir_parklari_artti_v3" },
+        { id:15, title: "Türkiye, Avrupa Futbol Şampiyonu Oldu!", description: "Unutulmaz finalde Almanya’yı 3-2 yendik. Maçın 89. dakikasında Arda Güler'in attığı frikik golüyle millilerimiz tarih yazdı, tüm ülke büyük bir sevince boğuldu.", imageSeed: "turkiye_avrupa_sampiyonu_v3" },
+        { id:16, title: "Filenin Sultanları, Paris 2028’de Altın Madalya Kazandı!", description: "Nefes kesen finalde Brezilya’ya karşı alınan 3-1'lik skorla şampiyonluk geldi. Bayraklar, gözyaşları ve omuz omuza kazanılan bu büyük zaferle Türk voleybolu adını zirveye yazdırdı.", imageSeed: "https://i.ibb.co/R4jrvBMx/Ads-z-tasar-m-1.png" }
     ];
 
     function getImageUrl(imageIdentifier, width = 600, height = 400) {
@@ -395,32 +401,40 @@
 
     function updateBottomNav() {
         [navHomeButton, navPlayButton, navResultsButton].forEach(btn => btn.classList.remove('active', 'text-blue-600'));
-        let currentPadding = '70px';
+                
         if (currentScreenId === 'start') {
             navHomeButton.classList.add('active', 'text-blue-600'); bottomNav.classList.add('hidden-screen');
-            globalHowToPlayButton.classList.add('hidden-screen'); currentPadding = '0px';
+            globalHowToPlayButton.classList.add('hidden-screen');
         } else {
             bottomNav.classList.remove('hidden-screen'); globalHowToPlayButton.classList.remove('hidden-screen');
             if (currentScreenId === 'game' || currentScreenId === 'tournamentTransition') { navPlayButton.classList.add('active', 'text-blue-600'); }
             else if (currentScreenId === 'results' || currentScreenId === 'finish' || currentScreenId === 'winnerPopup') { navResultsButton.classList.add('active', 'text-blue-600'); }
             else if (currentScreenId === 'howToPlay') { globalHowToPlayButton.classList.add('hidden-screen'); }
         }
-        Object.values(screens).forEach(s => { if(s && s.id !== 'winnerPopupScreen') s.style.paddingBottom = currentPadding;});
     }
 
     function showScreen(screenIdToShow) {
         if (!screens[screenIdToShow]) { console.error("Ekran bulunamadı:", screenIdToShow); return; }
         if (currentScreenId !== screenIdToShow && screenIdToShow !== 'howToPlay' && screenIdToShow !== 'winnerPopup') { previousScreenId = currentScreenId; }
         else if ((screenIdToShow === 'howToPlay' || screenIdToShow === 'winnerPopup') && currentScreenId !== screenIdToShow) { previousScreenId = currentScreenId; }
+        
         Object.values(screens).forEach(screen => { if(screen) screen.classList.add('hidden-screen'); });
         screens[screenIdToShow].classList.remove('hidden-screen'); currentScreenId = screenIdToShow;
-        const bodyClassList = document.body.classList; screens.game.classList.remove('final-match-theme');
-        bodyClassList.remove('background-animate', 'bg-[#FAF8F6]', 'bg-slate-50', 'bg-slate-100', 'final-match-theme');
+        
+        const bodyClassList = document.body.classList; 
+        if (screens.game) screens.game.classList.remove('final-match-theme');
+        
+        bodyClassList.remove('background-animate', 'bg-[#FAF8F6]', 'bg-slate-50', 'bg-slate-100'); // final-match-theme body'den kaldırıldı
+
         if (screenIdToShow === 'start') bodyClassList.add('background-animate', 'bg-[#FAF8F6]');
         else if (screenIdToShow === 'tournamentTransition') bodyClassList.add('bg-slate-100');
-        else if (screenIdToShow === 'game' && currentStage === STAGES.FINAL) { screens.game.classList.add('final-match-theme'); }
+        else if (screenIdToShow === 'game' && currentStage === STAGES.FINAL && screens.game) { 
+            screens.game.classList.add('final-match-theme'); 
+        }
         else bodyClassList.add('bg-slate-50');
-        updateBottomNav(); window.scrollTo(0,0);
+        
+        updateBottomNav(); 
+        window.scrollTo(0,0);
     }
     
     function resetGameAndPlay() {
@@ -608,7 +622,13 @@
             alert(`Şampiyon dilek: ${champion.title}!\n\n"${champion.title}" dileğini arkadaşlarınla paylaşarak bu harika geleceği yayabilirsin! #UtopiArena`);
         } else { alert("Paylaşılacak bir şampiyon bulunamadı."); }
     });
-    document.addEventListener('DOMContentLoaded', () => { preloadImages(); showScreen('start'); });
+    document.addEventListener('DOMContentLoaded', () => { 
+        preloadImages(); 
+        if (screens.start.classList.contains('screen-content')) {
+            screens.start.style.paddingBottom = '0px';
+        }
+        showScreen('start'); 
+    });
 </script>
 </body>
 </html>
