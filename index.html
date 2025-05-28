@@ -22,7 +22,6 @@
             overflow: hidden !important; /* Ekran içi scroll'u engelle */
             height: 100dvh; /* Tüm ekranların tam yükseklik almasını sağla */
         }
-        /* #startScreen.screen-content { padding-bottom: 0; } /* Bu DOMContentLoaded içinde JS ile yönetiliyor, gerekirse kaldırılabilir veya önceliklendirilebilir */
 
         @keyframes backgroundMorph { 
             0% { background-position: 0% 50%; } 
@@ -151,9 +150,9 @@
         <span class="material-icons-outlined">help_outline</span>
     </button>
 
-    <div id="startScreen" class="screen-content relative flex h-screen flex-col justify-center items-center group/design-root px-4 pt-8 pb-4 sm:pt-12 sm:pb-6 background-animate">
+    <div id="startScreen" class="screen-content relative flex h-screen flex-col justify-between items-center group/design-root px-4 pt-8 pb-4 sm:pt-12 sm:pb-6 background-animate">
         <div class="flex flex-col items-center justify-center flex-grow z-10 text-center">
-            <h1 class="text-[#1a1a1a] tracking-tight text-[40px] sm:text-[56px] font-bold leading-tight pt-4 sm:pt-6 pb-2">UtopiArena</h1>
+            <h1 class="text-[#1a1a1a] tracking-tight text-[40px] sm:text-[56px] font-bold leading-tight pt-0 sm:pt-2 pb-2">UtopiArena</h1>
             <p class="text-[#333333] text-lg sm:text-xl font-normal leading-relaxed pb-4 max-w-md">Gönlündeki Türkiye'yi UtopiArena'da yaşat! Seçiminle geleceğe yön ver.</p>
         </div>
         <div class="w-full flex justify-center z-10 pb-0">
@@ -163,7 +162,8 @@
         </div>
     </div>
 
-    <div id="gameScreen" class="hidden-screen screen-content relative flex flex-col bg-slate-50"> <div class="sticky top-0 z-20 bg-slate-50 shadow-sm game-header-bar">
+    <div id="gameScreen" class="hidden-screen screen-content relative flex flex-col bg-slate-50">
+        <div class="sticky top-0 z-20 bg-slate-50 shadow-sm game-header-bar">
             <p id="progressTextElement" class="text-[#0d131b] text-sm font-medium leading-normal truncate pr-8">Eleme: 1/8</p>
             <div class="h-1.5 rounded-full bg-[#cfd9e7] relative overflow-hidden mt-1">
                 <div id="progressBarFill" class="h-full rounded-full bg-[#428aef]" style="width: 0%;"></div>
@@ -171,7 +171,7 @@
         </div>
 
         <div class="flex-1 min-h-0 px-3 flex flex-col items-center justify-center">
-            <div class="flex flex-col items-center space-y-2 @md:flex-row @md:justify-center @md:items-center @md:space-y-0 @md:space-x-2 w-full">
+            <div class="flex flex-col items-center @md:flex-row @md:justify-center @md:items-center w-full">
                 <div class="card w-full max-w-md @md:max-w-sm bg-white rounded-xl shadow-xl overflow-hidden relative">
                     <div class="confetti-burst hidden"></div>
                     <div class="w-full h-40 overflow-hidden"> 
@@ -182,7 +182,7 @@
                         <p class="card-description text-[#4c6c9a] text-sm font-normal leading-relaxed card-description-clamp"></p>
                     </div>
                 </div>
-                <div class="flex items-center justify-center @md:mx-2 my-1 @md:my-0"> 
+                <div class="flex items-center justify-center my-3 @md:my-0 @md:mx-4"> 
                     <span id="vsButtonSpan" class="bg-[#428aef] text-white text-xs font-bold px-2 py-1 rounded-full shadow-md transform rotate-[-15deg] @md:rotate-0">VS</span>
                 </div>
                 <div class="card w-full max-w-md @md:max-w-sm bg-white rounded-xl shadow-xl overflow-hidden relative">
@@ -373,7 +373,6 @@
         </div>
     </div>
 
-
     <nav id="bottomNav" class="fixed bottom-0 left-0 right-0 bg-slate-50 border-t border-slate-200 z-30">
         <div class="flex justify-around items-center h-full max-w-2xl mx-auto px-1">
             <a id="navHomeButton" href="#" class="flex flex-col items-center justify-center gap-0.5 text-slate-600 hover:text-blue-600 transition-colors w-1/3 py-2 h-full">
@@ -414,7 +413,7 @@
     const winnerPopupSubtitle = document.getElementById('winnerPopupSubtitle'); 
     const winnerPopupDescription = document.getElementById('winnerPopupDescription');
     const winnerToResultsButton = document.getElementById('winnerToResultsButton'); 
-    const winnerShareButton = document.getElementById('winnerShareButton'); 
+    const winnerShareButtonPopup = document.getElementById('winnerShareButton'); 
     const closeWinnerPopupButton = document.getElementById('closeWinnerPopupButton');
     
     const resultsCardContainer = document.getElementById('resultsCardContainer');
@@ -423,7 +422,7 @@
     const championTitleResults = document.getElementById('championTitleResults');
     const championInfoResults = document.getElementById('championInfoResults');
     const winningWishTextFinishElement = document.getElementById('winningWishTextFinish');
-    const shareChampionButton = document.getElementById('shareChampionButton'); // Bu finishScreen'deki buton olmalı
+    const shareChampionButtonFinish = document.getElementById('shareChampionButton'); 
     const moreDreamsContainer = document.getElementById('moreDreamsContainer');
     const closeHowToPlayButton = document.getElementById('closeHowToPlayButton');
     const bottomNav = document.getElementById('bottomNav');
@@ -509,22 +508,22 @@
 
     function shuffleArray(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } }
 
-    // updateBottomNav DÜZENLENDİ: Ekranlara paddingBottom ekleyip çıkarma
     function updateBottomNav() {
-        [navHomeButton, navPlayButton, navResultsButton].forEach(btn => btn.classList.remove('active', 'text-blue-600'));
+        if(navHomeButton) navHomeButton.classList.remove('active', 'text-blue-600');
+        if(navPlayButton) navPlayButton.classList.remove('active', 'text-blue-600');
+        if(navResultsButton) navResultsButton.classList.remove('active', 'text-blue-600');
         
         const isOverlayActive = (onboardingModal && !onboardingModal.classList.contains('hidden-screen')) || 
                                   (screens.winnerPopup && !screens.winnerPopup.classList.contains('hidden-screen')) ||
                                   (stageTransitionModal && !stageTransitionModal.classList.contains('hidden-screen'));
         
-        const navHeightWithSpace = '70px'; // 60px nav + 10px boşluk
-        const basePaddingBottom = '1rem'; // Alt navigasyon olmadığında ekranların altındaki varsayılan boşluk
+        const navHeightWithSpace = '70px'; 
+        const basePaddingBottom = '1rem'; // fallback padding
 
-        Object.values(screens).forEach(screen => { // Önce tüm ekranlardan padding'i sıfırla veya base ayarla
+        Object.values(screens).forEach(screen => {
             if (screen && screen.style) {
-                 // startScreen kendi padding'ini class'lardan alacak, bottomNav'dan etkilenmeyecek
                 if (screen.id === 'startScreen') {
-                     screen.style.paddingBottom = ''; // Class'taki padding'e geri dön
+                     screen.style.paddingBottom = ''; // Let CSS classes handle startScreen's own bottom padding
                 } else {
                     screen.style.paddingBottom = basePaddingBottom;
                 }
@@ -539,7 +538,6 @@
             if (bottomNav) bottomNav.classList.remove('hidden-screen'); 
             if (globalHowToPlayButton) globalHowToPlayButton.classList.remove('hidden-screen');
 
-            // Navigasyonun göründüğü ekranlara özel paddingBottom ekle
             const screensThatNeedNavPadding = ['game', 'results', 'finish', 'howToPlay'];
             if (screensThatNeedNavPadding.includes(currentScreenId) && screens[currentScreenId] && screens[currentScreenId].style) {
                 screens[currentScreenId].style.paddingBottom = navHeightWithSpace;
@@ -548,7 +546,7 @@
             if (currentScreenId === 'game' && navPlayButton) { navPlayButton.classList.add('active', 'text-blue-600'); } 
             else if ((currentScreenId === 'results' || currentScreenId === 'finish') && navResultsButton) { navResultsButton.classList.add('active', 'text-blue-600'); }
             else if (currentScreenId === 'howToPlay' && globalHowToPlayButton) { globalHowToPlayButton.classList.add('hidden-screen'); }
-            else if (navHomeButton) { // Diğer durumlarda Anasayfa aktif olabilir (örneğin, bilinmeyen bir ekrandaysa)
+            else if (navHomeButton && !isOverlayActive && !screensThatNeedNavPadding.includes(currentScreenId)) { 
                  navHomeButton.classList.add('active', 'text-blue-600');
             }
         }
@@ -572,7 +570,7 @@
         });
         
         currentScreenId = modalElement.id; 
-        updateBottomNav(); // Modal açıldığında da nav durumu güncellenmeli
+        updateBottomNav();
         if (tempPreviousScreenId !== 'onboardingHowToPlayModal' && tempPreviousScreenId !== 'stageTransitionModal' && tempPreviousScreenId !== 'winnerPopupScreen') {
             previousScreenId = tempPreviousScreenId;
         }
@@ -595,7 +593,7 @@
             if (currentScreenId === modalElement.id) {
                 currentScreenId = previousScreenId || 'start'; 
             }
-            updateBottomNav(); // Modal kapandığında da nav durumu güncellenmeli
+            updateBottomNav();
             if (callback) callback();
         }, 300); 
     }
@@ -635,16 +633,19 @@
             if (screens.game) screens.game.classList.remove('final-match-theme');
             bodyClassList.remove('background-animate', 'bg-[#FAF8F6]', 'bg-slate-50', 'bg-slate-100'); 
 
-            if (screenIdToShow === 'start') bodyClassList.add('background-animate', 'bg-[#FAF8F6]');
-            else if (screenIdToShow === 'game' && currentStage === STAGES.FINAL && screens.game) { 
-                screens.game.classList.add('final-match-theme'); 
-            }
-            else if (screens[screenIdToShow]) { // Diğer ekranlar için ana gövde rengi
-                 bodyClassList.add(screens[screenIdToShow].classList.contains('bg-slate-50') ? 'bg-slate-50' : 'bg-[#FAF8F6]');
+            if (screenIdToShow === 'start') {
+                 bodyClassList.add('background-animate', 'bg-[#FAF8F6]');
+            } else if (screens[screenIdToShow]) { 
+                 const screenBg = screens[screenIdToShow].classList.contains('bg-slate-50') ? 'bg-slate-50' : 
+                                  screens[screenIdToShow].classList.contains('bg-[#FAF8F6]') ? 'bg-[#FAF8F6]' : 'bg-slate-50'; 
+                 bodyClassList.add(screenBg);
+                 if (screenIdToShow === 'game' && currentStage === STAGES.FINAL && screens.game) { 
+                    screens.game.classList.add('final-match-theme'); 
+                 }
             }
             
             updateBottomNav(); 
-            window.scrollTo(0,0); // Her ekran değişiminde en üste scroll et (gerçi scroll olmaması lazım)
+            window.scrollTo(0,0);
         };
 
         if (activeModal && activeModal.el.id !== screenIdToShow) { 
@@ -667,18 +668,15 @@
         if (showOnboarding) {
             showScreen('onboardingModal');
         } else {
-            updateProgressBar();
-            loadNextMatchUI();
             showScreen('game');
+            updateProgressBar(); 
+            loadNextMatchUI();
         }
     }
 
     function getMatchPair() {
         if (wishesForCurrentStage.length < (currentMatchInStage * 2) + 2) { 
-            // Bu durum normalde olmamalı, olursa bir hata vardır veya son eleman kalmıştır.
-            // Test için geçici olarak ilk ikiyi döndür, ama normalde advanceToNextStage'in bunu yönetmesi lazım.
-            console.warn("getMatchPair: Yeterli dilek yok, başlangıçtakiler kullanılıyor.", wishesForCurrentStage, currentMatchInStage);
-            return [wishes[0], wishes[1]]; 
+            return [null, null]; 
         } 
         return [wishesForCurrentStage[currentMatchInStage * 2], wishesForCurrentStage[(currentMatchInStage * 2) + 1]];
     }
@@ -686,16 +684,14 @@
     function loadNextMatchUI() {
         const [wish1, wish2] = getMatchPair();
         if (!wish1 || !wish2) { 
-            console.error("loadNextMatchUI: Eşleşme için dilekler yüklenemedi.", wish1, wish2);
-            advanceToNextStage(); // Eğer bir sorun varsa bir sonraki aşamaya geçmeyi dene
+            advanceToNextStage(); 
             return; 
         }
         if (vsButtonSpan) {
             vsButtonSpan.classList.remove('vs-animate'); 
-            void vsButtonSpan.offsetWidth; // Reflow tetikle
+            void vsButtonSpan.offsetWidth; 
             vsButtonSpan.classList.add('vs-animate');
         }
-
 
         const card1TitleEl = gameScreenCards[0].querySelector('.card-title');
         const card1DescEl = gameScreenCards[0].querySelector('.card-description');
@@ -732,19 +728,26 @@
         else if (currentStage === STAGES.FINAL) { totalMatches = 1; stageName = "FİNAL!"; }
         else return;
         
-        if (currentMatchInStage >= totalMatches && totalMatches > 0) matchNum = totalMatches; // İlerleme tamamlansa bile max'ta kalsın
+        if (currentMatchInStage >= totalMatches && totalMatches > 0) matchNum = totalMatches;
         
         const progress = totalMatches > 0 ? (currentMatchInStage / totalMatches) * 100 : 0;
-        if (progressBarFill) progressBarFill.style.width = `${Math.min(progress, 100)}%`; // %100'ü geçmesin
-        if (progressTextElement) progressTextElement.textContent = (currentStage === STAGES.FINAL && currentMatchInStage === 0) ? stageName : `${stageName}: ${matchNum}/${totalMatches}`;
+        if (progressBarFill) progressBarFill.style.width = `${Math.min(progress, 100)}%`;
+        if (progressTextElement) {
+            if (currentStage === STAGES.FINAL && currentMatchInStage === 0 && progress < 100) {
+                 progressTextElement.textContent = stageName;
+            } else if (progress >= 100 && currentStage === STAGES.FINAL) { 
+                 progressTextElement.textContent = "ŞAMPİYON!";
+            } else {
+                 progressTextElement.textContent = `${stageName}: ${matchNum}/${totalMatches}`;
+            }
+        }
         
         if (matchNum > 0 && totalMatches > 0 && progressBarFill) {
             const oldSpark = progressBarFill.querySelector('.progress-bar-spark'); if (oldSpark) oldSpark.remove();
             const spark = document.createElement('div'); spark.className = 'progress-bar-spark';
             let sparkPos = (matchNum / totalMatches * 100);
-            // Spark pozisyonunu düzeltme
-            if (currentMatchInStage >= totalMatches) sparkPos = 100; // Eğer aşama bittiyse %100
-            else if (progress >= 100) sparkPos = 99; // Henüz bitmedi ama %100'e ulaştıysa (nadiren)
+            if (currentMatchInStage >= totalMatches) sparkPos = 100;
+            else if (progress >= 100 && currentMatchInStage < totalMatches) sparkPos = 99;
             
             spark.style.left = `calc(${Math.min(sparkPos,100)}% - 5px)`; 
             progressBarFill.appendChild(spark);
@@ -758,8 +761,9 @@
         
         if (currentStage === STAGES.FINAL) { 
             champion = winner; 
+            currentMatchInStage++; 
+            updateProgressBar(); 
             setTimeout(()=> {
-                updateProgressBar(); // Final seçimi sonrası progress bar'ı %100 yap
                 showScreen('winnerPopup'); 
             }, 1000); 
             return; 
@@ -778,7 +782,7 @@
         
         setTimeout(() => {
             currentMatchInStage++;
-            updateProgressBar(); // Önce progress bar güncellensin
+            updateProgressBar(); 
 
             let totalMatchesInThisStage = 0;
             if (currentStage === STAGES.SEEDING) totalMatchesInThisStage = 8;
@@ -804,27 +808,26 @@
             case STAGES.SEEDING: nextLogicalStage = STAGES.QUARTERFINALS; break;
             case STAGES.QUARTERFINALS: nextLogicalStage = STAGES.SEMIFINALS; break;
             case STAGES.SEMIFINALS: nextLogicalStage = STAGES.FINAL; break; 
-            default:
-                console.error("Mevcut aşamadan ilerlenemiyor:", currentStage);
-                resetGameAndPlay(); // Oyunu sıfırla
+            default: 
+                if (champion) { displayResultsScreen(); } else { resetGameAndPlay(); }
                 return;
         }
         
         currentStage = nextLogicalStage; 
-        // updateProgressBar(); // Yeni aşamaya geçince progress bar'ı sıfırdan başlat
 
         const showNextMatchSetup = () => {
-            updateProgressBar(); // Yeni aşamanın progress bar'ını ayarla
+            updateProgressBar(); 
             if (wishesForCurrentStage.length >= 2 || (currentStage === STAGES.FINAL && wishesForCurrentStage.length === 2) ) {
                  loadNextMatchUI(); 
                  showScreen('game'); 
-            } else if (wishesForCurrentStage.length === 1 && currentStage !== STAGES.FINAL) { // Normalde olmamalı
-                console.warn("Aşamaya tek bir dilekle devam ediliyor, şampiyon ilan ediliyor:", wishesForCurrentStage[0]);
+            } else if (wishesForCurrentStage.length === 1 && currentStage !== STAGES.FINAL) {
                 champion = wishesForCurrentStage[0];
+                currentStage = STAGES.FINAL; 
+                currentMatchInStage = 1; 
+                updateProgressBar();
                 showScreen('winnerPopup');
-            } else { // Kritik hata
-                console.error("HATA (advanceToNextStage): Aşamaya devam etmek için yeterli dilek yok veya final için yanlış sayıda:", currentStage, wishesForCurrentStage);
-                resetGameAndPlay(); // Oyunu sıfırla
+            } else { 
+                resetGameAndPlay();
             }
         };
 
@@ -855,8 +858,7 @@
     
     function displayWinnerPopupContent() { 
         if (!champion) { 
-             console.warn("Şampiyon bulunamadı, varsayılan kullanılıyor.");
-             champion = wishes[0]; 
+             champion = wishes[0];
         }
         if(winnerPopupSubtitle) winnerPopupSubtitle.textContent = `UtopiArena'da senin ve diğerlerinin oylarıyla geleceğin hayali bu oldu:`;
         if(winnerPopupImage) {
@@ -951,9 +953,9 @@
     if (proceedFromOnboardingButton) {
         proceedFromOnboardingButton.addEventListener('click', () => {
             hideModal(onboardingModal, onboardingModalContent, onboardingModalBackdrop, () => {
-                updateProgressBar(); // Onboarding sonrası progress bar'ı ayarla
-                loadNextMatchUI();
                 showScreen('game');
+                updateProgressBar(); 
+                loadNextMatchUI();
             });
         });
     }
@@ -985,10 +987,8 @@
         }
     };
 
-    if(winnerShareButton) winnerShareButton.addEventListener('click', genericShareFunction);
-    // finishScreen'deki shareChampionButton için de aynı fonksiyon
-    const finishScreenShareButton = document.getElementById('shareChampionButton'); // Bu finishScreen'deki butondur
-    if(finishScreenShareButton) finishScreenShareButton.addEventListener('click', genericShareFunction);
+    if(winnerShareButtonPopup) winnerShareButtonPopup.addEventListener('click', genericShareFunction);
+    if(shareChampionButtonFinish) shareChampionButtonFinish.addEventListener('click', genericShareFunction);
 
 
     if(globalHowToPlayButton) globalHowToPlayButton.addEventListener('click', () => showScreen('howToPlay'));
@@ -1003,9 +1003,6 @@
 
     document.addEventListener('DOMContentLoaded', () => { 
         preloadImages(); 
-        // Start screen için özel paddingBottom ayarı DOMContentLoaded'den kaldırıldı, updateBottomNav yönetecek veya class'lar.
-        // Ancak startScreen'in class'ları zaten padding'i ayarlıyor.
-        // initialScreen'i başlatırken updateBottomNav'i çağır.
         showScreen('start'); 
     });
 </script>
