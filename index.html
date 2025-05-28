@@ -169,35 +169,34 @@
             </div>
         </div>
 
-        <div class="flex-1 min-h-0 p-4 flex flex-col items-center justify-center"> 
-            <div class="flex flex-col items-center space-y-4 @md:flex-row @md:justify-center @md:items-center @md:space-y-0 @md:space-x-4 w-full">
+        <div class="flex-1 min-h-0 p-3 flex flex-col items-center justify-center"> 
+            <div class="flex flex-col items-center space-y-2 @md:flex-row @md:justify-center @md:items-center @md:space-y-0 @md:space-x-2 w-full">
                 <div class="card w-full max-w-md @md:max-w-sm bg-white rounded-xl shadow-xl overflow-hidden relative">
                     <div class="confetti-burst hidden"></div>
-                    <div class="w-full h-48 overflow-hidden"> 
+                    <div class="w-full h-40 overflow-hidden"> 
                         <img data-role="card-image-img" src="" alt="" class="w-full h-full object-cover">
                     </div>
-                    <div class="p-5">
-                        <h2 class="card-title text-[#0d131b] font-bold leading-tight mb-1"></h2> 
+                    <div class="p-4">
+                        <h2 class="card-title text-[#0d131b] font-bold leading-tight mb-0.5"></h2> 
                         <p class="card-description text-[#4c6c9a] text-sm font-normal leading-relaxed card-description-clamp"></p>
                     </div>
                 </div>
-                <div class="flex items-center justify-center @md:mx-3"> 
+                <div class="flex items-center justify-center @md:mx-2"> 
                     <span id="vsButtonSpan" class="bg-[#428aef] text-white text-xs font-bold px-2 py-1 rounded-full shadow-md transform rotate-[-15deg] @md:rotate-0">VS</span>
                 </div>
                 <div class="card w-full max-w-md @md:max-w-sm bg-white rounded-xl shadow-xl overflow-hidden relative">
                     <div class="confetti-burst hidden"></div>
-                    <div class="w-full h-48 overflow-hidden">
+                    <div class="w-full h-40 overflow-hidden">
                         <img data-role="card-image-img" src="" alt="" class="w-full h-full object-cover">
                     </div>
-                    <div class="p-5">
-                        <h2 class="card-title text-[#0d131b] font-bold leading-tight mb-1"></h2>
+                    <div class="p-4">
+                        <h2 class="card-title text-[#0d131b] font-bold leading-tight mb-0.5"></h2>
                         <p class="card-description text-[#4c6c9a] text-sm font-normal leading-relaxed card-description-clamp"></p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
     <div id="winnerPopupScreen" class="hidden-screen fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay opacity-0">
         <div id="winnerPopupContentContainer" class="modal-content-box bg-gray-800 rounded-xl shadow-2xl w-full max-w-md text-center text-white relative">
             <button id="closeWinnerPopupButton" class="absolute top-3 right-3 text-gray-400 hover:text-white z-10 p-1 rounded-full hover:bg-gray-700">
@@ -530,7 +529,7 @@
     
     function showModal(modalElement, modalContentElement, backdropElement = null) {
         if (!modalElement || !modalContentElement) return;
-        let tempPreviousScreenId = currentScreenId; // Mevcut ana ekranı sakla
+        let tempPreviousScreenId = currentScreenId; 
 
         modalElement.classList.remove('hidden-screen');
         modalElement.classList.add('flex', 'active'); 
@@ -547,7 +546,6 @@
         
         currentScreenId = modalElement.id; 
         updateBottomNav();
-        // Eğer bir modal açılıyorsa ve önceki ekran bir modal değilse, previousScreenId'yi güncelle
         if (tempPreviousScreenId !== 'onboardingHowToPlayModal' && tempPreviousScreenId !== 'stageTransitionModal' && tempPreviousScreenId !== 'winnerPopupScreen') {
             previousScreenId = tempPreviousScreenId;
         }
@@ -567,7 +565,6 @@
         setTimeout(() => {
             modalElement.classList.add('hidden-screen');
             modalElement.classList.remove('flex');
-            // Modal kapandığında, eğer aktif ekran bu modal id ise, bir önceki ana ekrana dön
             if (currentScreenId === modalElement.id) {
                 currentScreenId = previousScreenId || 'start'; 
             }
@@ -579,7 +576,7 @@
     function showScreen(screenIdToShow) {
         let activeModal = null;
         if (onboardingModal && !onboardingModal.classList.contains('hidden-screen')) activeModal = { el: onboardingModal, content: onboardingModalContent, backdrop: onboardingModalBackdrop };
-        else if (screens.winnerPopup && !screens.winnerPopup.classList.contains('hidden-screen')) activeModal = { el: screens.winnerPopup, content: winnerPopupContentContainer, backdrop: null };
+        else if (screens.winnerPopup && !screens.winnerPopup.classList.contains('hidden-screen')) activeModal = { el: screens.winnerPopup, content: winnerPopupContentContainer, backdrop: null }; // Winner popup kendi overlay stiline sahip
         else if (stageTransitionModal && !stageTransitionModal.classList.contains('hidden-screen')) activeModal = { el: stageTransitionModal, content: stageTransitionModalContent, backdrop: stageTransitionModalBackdrop };
 
         const displayActualScreen = () => {
@@ -589,26 +586,24 @@
             }
             if (screenIdToShow === 'winnerPopup') {
                 displayWinnerPopupContent(); 
-                showModal(screens.winnerPopup, winnerPopupContentContainer);
+                showModal(screens.winnerPopup, winnerPopupContentContainer); // Winner popup'ın kendi overlay'i var, backdrop null
                 return;
             }
-            // Stage transition modal'ı advanceToNextStage içinde showModal ile çağrılır, showScreen ile değil.
+            // stageTransitionModal advanceToNextStage içinde yönetiliyor.
 
             if (!screens[screenIdToShow]) { console.error("Ekran bulunamadı:", screenIdToShow); return; }
             
-            if (currentScreenId !== screenIdToShow) { // Sadece gerçekten ana ekran değişiyorsa previousScreenId'yi güncelle
-                 if (currentScreenId !== 'onboardingModal' && currentScreenId !== 'stageTransitionModal' && currentScreenId !== 'winnerPopupScreen') {
-                    previousScreenId = currentScreenId;
-                 }
+            if (currentScreenId !== screenIdToShow && currentScreenId !== 'onboardingModal' && currentScreenId !== 'stageTransitionModal' && currentScreenId !== 'winnerPopupScreen') {
+                 previousScreenId = currentScreenId;
             }
             
             Object.values(screens).forEach(screen => { 
-                if(screen && screen.id !== screenIdToShow && screen.id !== 'winnerPopupScreen' && screen.id !== 'onboardingHowToPlayModal' && screen.id !== 'stageTransitionModal') { // Modalları hariç tut
+                if(screen && screen.id !== screenIdToShow) { 
                     screen.classList.add('hidden-screen'); 
                 }
             });
             screens[screenIdToShow].classList.remove('hidden-screen'); 
-            currentScreenId = screenIdToShow; // Ana ekranı ayarla
+            currentScreenId = screenIdToShow; 
             
             const bodyClassList = document.body.classList; 
             if (screens.game) screens.game.classList.remove('final-match-theme');
@@ -626,7 +621,7 @@
             window.scrollTo(0,0);
         };
 
-        if (activeModal && activeModal.el.id !== screenIdToShow) { // Eğer bir modal açıksa ve farklı bir ana ekrana geçiliyorsa
+        if (activeModal && activeModal.el.id !== screenIdToShow) { 
             hideModal(activeModal.el, activeModal.content, activeModal.backdrop, displayActualScreen);
         } else {
             displayActualScreen();
@@ -808,11 +803,10 @@
             showModal(stageTransitionModal, stageTransitionModalContent, stageTransitionModalBackdrop);
 
             setTimeout(() => {
-                // MODIFICATION: Pop-up kapanma süresi kısaltıldı
                 hideModal(stageTransitionModal, stageTransitionModalContent, stageTransitionModalBackdrop, () => {
                      showNextMatchSetup();
                 });
-            }, 2000); // MODIFICATION: Süre 2000ms'ye düşürüldü
+            }, 2000); 
         } else {
             showNextMatchSetup();
         }
@@ -848,7 +842,6 @@
         
         championTitleResults.textContent = champion.title;
         championImageResults.src = getImageUrl(champion.imageSeed); 
-        // MODIFICATION: Sonuç ekranı şampiyon metni güncellendi
         championInfoResults.textContent = `Başlangıç oylarının %${championPercentage}'i ile şampiyon oldu!`;
 
         resultsCardContainer.innerHTML = ''; 
@@ -866,7 +859,6 @@
         oPW.forEach(w => {
             if (!w || typeof w.voteCount === 'undefined') return; 
             const wishPercentage = totalSeedingVotes > 0 ? ((w.voteCount / totalSeedingVotes) * 100).toFixed(1) : "0.0";
-            // MODIFICATION: Sonuç ekranı diğer kartlar metni güncellendi
             resultsCardContainer.insertAdjacentHTML('beforeend', 
                 `<div class="bg-white shadow-lg rounded-2xl overflow-hidden">
                     <div class="relative">
