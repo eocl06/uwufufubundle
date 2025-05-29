@@ -212,7 +212,7 @@
                 </div>
                 <div class="card w-full max-w-md @md:max-w-sm bg-white rounded-xl shadow-xl overflow-hidden relative">
                     <div class="confetti-burst hidden"></div>
-                    <div class="w-full overflow-hidden" style="height: 10.5rem;"> {/* MODIFIED: h-40 to inline style */}
+                    <div class="w-full overflow-hidden" style="height: 10.5rem;"> 
                         <img data-role="card-image-img" src="" alt="" class="w-full h-full object-cover">
                     </div>
                     <div class="p-4">
@@ -237,7 +237,7 @@
                 <p id="winnerPopupSubtitle" class="text-sm sm:text-base text-gray-300 px-2">UtopiArena'da senin ve diğerlerinin oylarıyla haberlerin şampiyonu bu oldu:</p>
 
                 <div class="bg-gray-700 rounded-lg p-3 sm:p-4 border border-gray-600 shadow-md">
-                    {/* MODIFIED: Removed h-40 sm:h-48, added .image-h-winner-popup class */}
+            
                     <img id="winnerPopupImage" src="" alt="Şampiyon Dilek" class="w-full image-h-winner-popup object-cover rounded-md mb-3 shadow-sm">
                     <h3 id="winnerPopupTitle" class="text-lg sm:text-xl font-semibold text-white mb-1"></h3>
                     <p id="winnerPopupDescription" class="text-xs sm:text-sm text-gray-300 card-description-clamp leading-relaxed"></p>
@@ -288,7 +288,6 @@
                 <div id="resultsCardContainer" class="px-4 space-y-4">
                     <div id="championCardDisplay" class="bg-white shadow-xl rounded-2xl overflow-hidden border-2 border-yellow-400 transform scale-105">
                         <div class="relative">
-                             {/* MODIFIED: Removed h-48, added inline style */}
                             <img alt="Şampiyon dilek" id="championImageResults" class="w-full object-cover" style="height: 12.6rem;"/>
                             <div class="absolute inset-0 bg-hero-gradient"></div>
                             <div class="absolute top-2 right-2 gold-crown">
@@ -1088,7 +1087,7 @@
                 resultsCardContainer.insertAdjacentHTML('beforeend',
                     `<div class="bg-white shadow-lg rounded-2xl overflow-hidden mt-4">
                         <div class="relative">
-                            <img alt="${w.title}" class="w-full object-cover" style="height: 10.5rem;" src="${getImageUrl(w.imageSeed, 600, 300)}"/> {/* MODIFIED: h-40 to inline style */}
+                            <img alt="${w.title}" class="w-full object-cover" style="height: 10.5rem;" src="${getImageUrl(w.imageSeed, 600, 300)}"/> 
                             <div class="absolute inset-0 bg-hero-gradient"></div>
                             <div class="absolute bottom-0 left-0 p-4">
                                 <p class="text-white text-xl font-bold leading-tight">${w.title}</p>
@@ -1128,7 +1127,7 @@
                 if(!d||!d.title)continue;
                 moreDreamsContainer.insertAdjacentHTML('beforeend',
                 `<div class="flex flex-col gap-3 rounded-xl min-w-[280px] max-w-[280px] bg-white shadow-lg p-4">
-                    <div class="w-full overflow-hidden rounded-lg" style="height: 165.375px;"> {/* MODIFIED: aspect-video to inline style */}
+                    <div class="w-full overflow-hidden rounded-lg" style="height: 165.375px;"> 
                         <img src="${getImageUrl(d.imageSeed, 400, 225)}" alt="${d.title}" class="w-full h-full object-cover">
                     </div>
                     <p class="text-[#0d131b] text-base font-medium leading-normal flex-grow card-description-clamp" style="-webkit-line-clamp: 3; min-height: calc(1.4em * 3); max-height: calc(1.4em * 3 + 2px);">${d.title}</p>
