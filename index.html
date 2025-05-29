@@ -166,9 +166,9 @@
 <body class="bg-[#FAF8F6]">
 
     <div id="appContainer"> 
-       <button id="globalHowToPlayButton" class="hidden-screen fixed top-3 right-3 z-40 text-slate-700 hover:text-blue-600">
-            <span class="material-icons-outlined">help_outline</span>
-</button>
+        <button id="globalHowToPlayButton" class="hidden-screen fixed top-3 right-3 z-40 text-slate-700 hover:text-blue-600">
+            <span class="material-icons-outlined">help_outline</span>
+        </button>
 
         <div id="startScreen" class="screen-content relative flex h-screen flex-col justify-center items-center group/design-root px-4 pt-6 pb-2 sm:pt-10 sm:pb-4 background-animate">
             <div class="flex flex-col items-center justify-center min-h-0 z-10 text-center mb-10 sm:mb-12">
@@ -189,7 +189,7 @@
                     <div id="progressBarFill" class="h-full rounded-full bg-[#428aef]" style="width: 0%;"></div>
                 </div>
             </div>
-<div class="flex-1 min-h-0 px-3 flex flex-col items-center justify-center transform translate-y-6 sm:translate-y-10">
+            <div class="flex-1 min-h-0 px-3 flex flex-col items-center justify-center transform translate-y-6 sm:translate-y-10">
                 <div class="flex flex-col items-center @md:flex-row @md:justify-center @md:items-center w-full">
                     <div class="card w-full max-w-md @md:max-w-sm bg-white rounded-xl shadow-xl overflow-hidden relative">
                         <div class="confetti-burst hidden"></div>
@@ -396,12 +396,12 @@
                 </a>
             </div>
         </nav>
-    </div> <div id="desktopWarningScreen" class="hidden-screen fixed inset-0 z-[200] flex flex-col items-center justify-center bg-slate-900 text-white p-8 text-center leading-relaxed">
+    </div>
+    <div id="desktopWarningScreen" class="hidden-screen fixed inset-0 z-[200] flex flex-col items-center justify-center bg-slate-900 text-white p-8 text-center leading-relaxed">
         <span class="material-icons-outlined text-7xl text-sky-400 mb-6">phone_iphone</span>
         <h2 class="text-3xl font-bold mb-4 text-sky-300">UtopiArena Mobil Deneyimi!</h2>
         <p class="text-lg mb-3">Bu macera en güzel mobil cihazlarda yaşanır.</p>
         <p class="text-md text-slate-300 mb-6">En iyi deneyim için lütfen UtopiArena'yı telefonunuzdan ziyaret edin.</p>
-        </div>
     </div>
 
 <script>
@@ -412,7 +412,7 @@
         winnerPopup: document.getElementById('winnerPopupScreen'),
         results: document.getElementById('resultsScreen'),
         finish: document.getElementById('finishScreen'),
-        howToPlay: document.getElementById('howToPlayScreen'),
+        howToPlay: document.getElementById('howToPlayScreen'), // Key: 'howToPlay', Element ID: 'howToPlayScreen'
         sponsoredPopup: document.getElementById('sponsoredPopupScreen')
     };
     const globalHowToPlayButton = document.getElementById('globalHowToPlayButton');
@@ -469,7 +469,7 @@
         SEEDING: 'Eleme Turu', QUARTERFINALS: 'Çeyrek Final', SEMIFINALS: 'Yarı Final',
         FINAL: 'Final Maçı', RESULTS: 'Sonuçlar', FINISHED: 'Bitti', HOW_TO_PLAY: 'Nasıl Oynanır'
     };
-    let currentScreenId = 'start';
+    let currentScreenId = 'start'; // Uses keys from 'screens' object, e.g., 'start', 'game', 'howToPlay'
     let previousScreenId = 'start';
     let currentStage = STAGES.SEEDING;
     let currentMatchInStage = 0;
@@ -540,43 +540,55 @@
         if(navHomeButton) navHomeButton.classList.remove('active', 'text-blue-600');
         if(navPlayButton) navPlayButton.classList.remove('active', 'text-blue-600');
         if(navResultsButton) navResultsButton.classList.remove('active', 'text-blue-600');
+        
         const isOverlayActive = (onboardingModal && !onboardingModal.classList.contains('hidden-screen')) ||
                                 (screens.winnerPopup && !screens.winnerPopup.classList.contains('hidden-screen')) ||
                                 (screens.sponsoredPopup && !screens.sponsoredPopup.classList.contains('hidden-screen')) ||
                                 (stageTransitionModal && !stageTransitionModal.classList.contains('hidden-screen'));
+        
         const navHeightWithSpace = '70px';
         const basePaddingBottom = '1rem';
+        
         Object.values(screens).forEach(screen => {
             if (screen && screen.style && screen.id !== 'sponsoredPopupScreen') {
                 screen.style.paddingBottom = (screen.id === 'startScreen') ? '' : basePaddingBottom;
             }
         });
+
         if (currentScreenId === 'start' || isOverlayActive) {
             if (navHomeButton) navHomeButton.classList.add('active', 'text-blue-600');
             if (bottomNav) bottomNav.classList.add('hidden-screen');
             if (globalHowToPlayButton) globalHowToPlayButton.classList.add('hidden-screen');
         } else {
             if (bottomNav) bottomNav.classList.remove('hidden-screen');
-            if (globalHowToPlayButton) globalHowToPlayButton.classList[currentScreenId !== 'howToPlayScreen' ? 'remove' : 'add']('hidden-screen');
+            
+            // --- CORRECTED LINE ---
+            // Compare currentScreenId (e.g., 'howToPlay') with the key 'howToPlay'
+            if (globalHowToPlayButton) {
+                 globalHowToPlayButton.classList[currentScreenId !== 'howToPlay' ? 'remove' : 'add']('hidden-screen');
+            }
+            // --- END OF CORRECTION ---
+
             const screensThatNeedNavPadding = ['game', 'results', 'finish', 'howToPlay'];
             if (screensThatNeedNavPadding.includes(currentScreenId) && screens[currentScreenId]?.style) {
                 const mainContentArea = screens[currentScreenId].querySelector('main, .overflow-y-auto, .flex-1.min-h-0');
                 if (mainContentArea?.style) mainContentArea.style.paddingBottom = navHeightWithSpace;
                 else if (screens[currentScreenId].style) screens[currentScreenId].style.paddingBottom = navHeightWithSpace;
             }
+            
             if (currentScreenId === 'game' && navPlayButton) navPlayButton.classList.add('active', 'text-blue-600');
             else if ((currentScreenId === 'results' || currentScreenId === 'finish') && navResultsButton) navResultsButton.classList.add('active', 'text-blue-600');
-            else if (navHomeButton && !isOverlayActive && !screensThatNeedNavPadding.includes(currentScreenId)) navHomeButton.classList.add('active', 'text-blue-600');
+            else if (navHomeButton && !isOverlayActive && !screensThatNeedNavPadding.includes(currentScreenId) && currentScreenId !== 'howToPlay') navHomeButton.classList.add('active', 'text-blue-600');
         }
     }
 
     function showModal(modalElement, modalContentElement, backdropElement = null) {
         if (!modalElement || !modalContentElement) return;
-        let tempPreviousScreenId = currentScreenId;
+        let tempPreviousScreenId = currentScreenId; 
         modalElement.classList.remove('hidden-screen', 'opacity-0');
         modalElement.classList.add('flex', 'active', 'opacity-100');
         if (backdropElement) { backdropElement.classList.remove('opacity-0'); backdropElement.classList.add('opacity-100'); }
-        currentScreenId = modalElement.id;
+        currentScreenId = modalElement.id; 
         updateBottomNav();
         if (!['onboardingHowToPlayModal', 'stageTransitionModal', 'winnerPopupScreen', 'sponsoredPopupScreen'].includes(tempPreviousScreenId)) {
             previousScreenId = tempPreviousScreenId;
@@ -597,7 +609,7 @@
         }, 300);
     }
 
-    function showScreen(screenIdToShow) {
+    function showScreen(screenIdToShow) { // screenIdToShow is a key like 'start', 'game', 'howToPlay'
         let activeModal = null;
         if (onboardingModal && !onboardingModal.classList.contains('hidden-screen')) activeModal = { el: onboardingModal, content: onboardingModalContent, backdrop: onboardingModalBackdrop };
         else if (screens.winnerPopup && !screens.winnerPopup.classList.contains('hidden-screen')) activeModal = { el: screens.winnerPopup, content: winnerPopupContentContainer, backdrop: null };
@@ -615,26 +627,28 @@
                 showModal(screens.sponsoredPopup, sponsoredPopupContent); return;
             }
             if (!screens[screenIdToShow]) { console.error("Ekran bulunamadı:", screenIdToShow); return; }
-            if (currentScreenId !== screenIdToShow && !['onboardingHowToPlayModal', 'stageTransitionModal', 'winnerPopupScreen', 'sponsoredPopupScreen'].includes(currentScreenId)) {
-                previousScreenId = currentScreenId;
+            
+            // Store previous screen ID correctly
+            if (currentScreenId !== screenIdToShow && screens[currentScreenId] && !['onboardingHowToPlayModal', 'stageTransitionModal', 'winnerPopupScreen', 'sponsoredPopupScreen'].includes(screens[currentScreenId].id)) {
+                 previousScreenId = currentScreenId;
             }
-            Object.values(screens).forEach(screen => { if(screen && screen.id !== screenIdToShow) screen.classList.add('hidden-screen'); });
+
+            Object.values(screens).forEach(screen => { if(screen && screen.id !== screens[screenIdToShow].id) screen.classList.add('hidden-screen'); });
             screens[screenIdToShow].classList.remove('hidden-screen');
-            currentScreenId = screenIdToShow;
+            currentScreenId = screenIdToShow; // currentScreenId is now the key, e.g., 'howToPlay'
+            
             const bodyClassList = document.body.classList;
-            if (screens.game) screens.game.classList.remove('final-match-theme', 'sponsored-round-theme'); // Temaları temizle
+            if (screens.game) screens.game.classList.remove('final-match-theme', 'sponsored-round-theme'); 
             bodyClassList.remove('background-animate', 'bg-[#FAF8F6]', 'bg-slate-50', 'bg-slate-100');
             if (screenIdToShow === 'start') bodyClassList.add('background-animate', 'bg-[#FAF8F6]');
             else if (screens[screenIdToShow]) {
-                // Oyun ekranıysa ve özel tema gerekiyorsa onu uygula
                 if (screenIdToShow === 'game') {
                     if (currentStage === STAGES.FINAL) {
                         screens.game.classList.add('final-match-theme');
-                    } else if (isSponsoredInterstitialActive) { // Bu kontrol showSponsoredInterstitial'da da var ama burada da olması iyi
+                    } else if (isSponsoredInterstitialActive) { 
                         screens.game.classList.add('sponsored-round-theme');
                     }
                 }
-                 // Diğer ekranlar için varsayılan arkaplan
                 const screenBg = screens[screenIdToShow].classList.contains('bg-slate-50') ? 'bg-slate-50' : 
                                  (screens[screenIdToShow].classList.contains('bg-[#FAF8F6]') ? 'bg-[#FAF8F6]' : 
                                  (screens[screenIdToShow].classList.contains('bg-[#F0F4F8]') && isSponsoredInterstitialActive ? 'bg-[#F0F4F8]' :'bg-slate-50'));
@@ -643,8 +657,9 @@
             updateBottomNav();
             window.scrollTo(0,0);
         };
-        if (activeModal && activeModal.el.id !== screenIdToShow) hideModal(activeModal.el, activeModal.content, activeModal.backdrop, displayActualScreen);
-        else displayActualScreen();
+        if (activeModal && activeModal.el.id !== (screens[screenIdToShow] ? screens[screenIdToShow].id : screenIdToShow) ) { // Compare with actual ID if it's a screen
+             hideModal(activeModal.el, activeModal.content, activeModal.backdrop, displayActualScreen);
+        } else displayActualScreen();
     }
 
     function resetGameAndPlay(showOnboarding = false) {
@@ -652,7 +667,7 @@
         localStorage.removeItem('sponsoredRoundShownThisSession');
         let wishesForSeeding = [...wishes]; shuffleArray(wishesForSeeding); wishesForCurrentStage = wishesForSeeding.slice(0, 16);
         if (screens.game) screens.game.classList.remove('sponsored-round-theme', 'final-match-theme');
-        if (showOnboarding) showScreen('onboardingModal');
+        if (showOnboarding) showScreen('onboardingModal'); // This will set currentScreenId to 'onboardingHowToPlayModal'
         else { showScreen('game'); updateProgressBar(); loadNextMatchUI(); }
     }
 
@@ -664,13 +679,13 @@
     function showSponsoredInterstitial() {
         isSponsoredInterstitialActive = true; localStorage.setItem('sponsoredRoundShownThisSession', 'true');
         if (screens.game) { 
-            screens.game.classList.remove('final-match-theme'); // Diğer temaları kaldır
+            screens.game.classList.remove('final-match-theme'); 
             screens.game.classList.add('sponsored-round-theme'); 
-            document.body.classList.remove('bg-slate-50', 'bg-[#FAF8F6]'); // Body classlarını temizle
-            document.body.classList.add('bg-[#F0F4F8]'); // Sponsorlu tema body arkaplanı
+            document.body.classList.remove('bg-slate-50', 'bg-[#FAF8F6]'); 
+            document.body.classList.add('bg-[#F0F4F8]'); 
         }
         if (progressTextElement) progressTextElement.textContent = "Sponsorlu Etap";
-        if (progressBarFill) progressBarFill.style.width = `${(4 / 8) * 100}%`; // Örnek ilerleme
+        if (progressBarFill) progressBarFill.style.width = `${(4 / 8) * 100}%`; 
         const sponsoredCardContent1 = { id: 'sp_card_1', title: "Ne Pişireceğinize Artık Buzdolabımız Karar Verebilecek!", description: "AI destekli buzdolabı, içerikteki malzemelere göre her gün yeni tarif öneriyor.", imageSeed: "https://i.ibb.co/ZzT2LKCb/image-21.png" };
         const sponsoredCardContent2 = { id: 'sp_card_2', title: "İçindekileri Tanıyan ve Alışveriş Listesi Hazırlayan Buzdolabı duyuruldu! ", description: "Yapay zekâlı buzdolabı, eksikleri algılayıp ihtiyacın olan ürünleri liste halinde bildiriyor.", imageSeed: "https://i.ibb.co/n8cjQ8pV/Chat-GPT-Image-May-29-2025-02-20-27-PM.png" };
         const card1TitleEl = gameScreenCards[0].querySelector('.card-title'), card1DescEl = gameScreenCards[0].querySelector('.card-description'), card1ImgEl = gameScreenCards[0].querySelector('img[data-role="card-image-img"]');
@@ -683,12 +698,11 @@
         gameScreenCards[1].dataset.wishId = sponsoredCardContent2.id;
         if (vsButtonSpan) { vsButtonSpan.classList.remove('vs-animate'); void vsButtonSpan.offsetWidth; vsButtonSpan.classList.add('vs-animate'); }
         gameScreenCards.forEach(c => { c.classList.remove('selected', 'not-selected'); c.style.pointerEvents = 'auto'; c.querySelector('.confetti-burst')?.classList.add('hidden'); });
-        showScreen('game'); // Bu satır sponsorlu tema class'ını set ettikten sonra gameScreen'i tekrar yükler ve class'ı uygular.
+        showScreen('game'); 
     }
 
     function loadNextMatchUI() {
         if (currentStage === STAGES.SEEDING && currentMatchInStage === 4 && !localStorage.getItem('sponsoredRoundShownThisSession')) { showSponsoredInterstitial(); return; }
-        // Eğer sponsorlu tur aktifse ve loadNextMatchUI tekrar çağrılırsa (mesela handleCardSelection sonrası), temayı koru
         if (isSponsoredInterstitialActive && screens.game && !screens.game.classList.contains('sponsored-round-theme')) {
              screens.game.classList.remove('final-match-theme');
              screens.game.classList.add('sponsored-round-theme');
@@ -697,9 +711,8 @@
         } else if (!isSponsoredInterstitialActive && currentStage !== STAGES.FINAL && screens.game) {
              screens.game.classList.remove('sponsored-round-theme', 'final-match-theme');
              document.body.classList.remove('bg-[#F0F4F8]');
-             document.body.classList.add('bg-slate-50'); // Varsayılan oyun arkaplanı
+             document.body.classList.add('bg-slate-50'); 
         }
-
 
         const [wish1, wish2] = getMatchPair();
         if (!wish1 || !wish2) { advanceToNextStage(); return; }
@@ -777,10 +790,8 @@
             default: if (champion) displayResultsScreen(); else resetGameAndPlay(); return;
         }
         currentStage = nextLogicalStage;
-        // Tema sıfırlama
-        isSponsoredInterstitialActive = false; // Bir sonraki aşama sponsorlu değilse bu sıfırlanmalı
+        isSponsoredInterstitialActive = false; 
         if (screens.game) screens.game.classList.remove('sponsored-round-theme');
-
 
         const showNextMatchSetup = () => {
             updateProgressBar();
@@ -817,7 +828,7 @@
             const sortedByVotes = Object.keys(voteCounts).sort((a,b) => voteCounts[b] - voteCounts[a]);
             if (sortedByVotes.length > 0) champion = wishes.find(w => w.id == sortedByVotes[0]);
             if (!champion && wishes.length > 0) champion = wishes[0];
-            else if (!champion) { console.error("Sonuç ekranı için şampiyon belirlenemedi."); /* ... error handling ... */ showScreen('results'); return; }
+            else if (!champion) { console.error("Sonuç ekranı için şampiyon belirlenemedi."); showScreen('results'); return; }
         }
         const championVoteCount = voteCounts[champion.id] || 0;
         const championPercentage = totalSeedingVotes > 0 ? ((championVoteCount / totalSeedingVotes) * 100).toFixed(1) : "0.0";
@@ -888,8 +899,8 @@
             isSponsoredInterstitialActive = false; 
             if (screens.game) {
                 screens.game.classList.remove('sponsored-round-theme');
-                document.body.classList.remove('bg-[#F0F4F8]'); // Sponsorlu body arkaplanını kaldır
-                document.body.classList.add('bg-slate-50'); // Varsayılan oyun arkaplanı
+                document.body.classList.remove('bg-[#F0F4F8]'); 
+                document.body.classList.add('bg-slate-50'); 
             }
             updateProgressBar(); 
             loadNextMatchUI(); 
@@ -904,17 +915,23 @@
     };
     if(winnerShareButtonPopup) winnerShareButtonPopup.addEventListener('click', genericShareFunction);
     if(shareChampionButtonFinish) shareChampionButtonFinish.addEventListener('click', genericShareFunction);
+    
     if(globalHowToPlayButton) globalHowToPlayButton.addEventListener('click', () => showScreen('howToPlay'));
     if(closeHowToPlayButton) closeHowToPlayButton.addEventListener('click', () => showScreen(previousScreenId || 'game'));
+    
     if(navHomeButton) navHomeButton.addEventListener('click', (e) => { e.preventDefault(); showScreen('start'); });
 
     if(navPlayButton) navPlayButton.addEventListener('click', (e) => {
         e.preventDefault();
-        const isGamePausedForInfo = previousScreenId === 'game' &&
-                                   ['howToPlayScreen', 'stageTransitionModal'].includes(currentScreenId);
-        const canReturnToActiveGame = (currentScreenId === 'game' || isGamePausedForInfo) && !champion;
+        // Check if the current screen is a modal overlaying the game or the game itself
+        const isGameRelatedScreen = currentScreenId === 'game' || 
+                                   (screens[previousScreenId]?.id === 'gameScreen' && 
+                                    (currentScreenId === 'howToPlay' || // Check against key 'howToPlay'
+                                     currentScreenId === 'stageTransitionModal' ||
+                                     currentScreenId === 'winnerPopupScreen' || 
+                                     currentScreenId === 'sponsoredPopupScreen'));
 
-        if (canReturnToActiveGame) {
+        if (isGameRelatedScreen && !champion) { // If game is active or was paused, and not finished
             showScreen('game'); 
         } else {
             resetGameAndPlay(); 
