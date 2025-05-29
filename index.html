@@ -37,20 +37,19 @@
         .start-button { background: linear-gradient(90deg, #76A9FA, #FF6F61); transition: transform 0.2s ease-out, box-shadow 0.2s ease-out; }
         .start-button:hover, .start-button:focus { transform: scale(1.05); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15); }
 
-#startGameButton {
-  position: fixed;
-  bottom: clamp(80px, 18vh, 150px); /* Adjusted from 32px */
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 30;
-}
+        #startGameButton {
+            position: fixed;
+            bottom: clamp(80px, 18vh, 150px); /* Adjusted from 32px */
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 30;
+        }
         .game-header-bar {
             padding-top: 0.5rem;
             padding-bottom: 0.5rem;
             padding-left: 1.5rem;
             padding-right: 4.5rem; /* Adjusted from 1.5rem to make space for the help button */
-}
-
+        }
 
         .card { transition: transform 0.3s ease-out, opacity 0.3s ease-out; cursor: pointer; }
         .card.selected { transform: scale(1.05); z-index: 10; }
@@ -101,13 +100,22 @@
             box-shadow: 0 0 15px #FFD700;
             background-color: #374151;
         }
-        .final-match-theme .card .card-title {
-            color: #f3f4f6;
-        }
-        .final-match-theme .card .card-description {
-            color: #9ca3af;
-        }
+        .final-match-theme .card .card-title { color: #f3f4f6; }
+        .final-match-theme .card .card-description { color: #9ca3af; }
         .final-match-theme #vsButtonSpan { background: linear-gradient(45deg, #FFD700, #fbd38d) !important; color: #1A202C !important; box-shadow: 0 0 10px #FFD700; }
+
+        /* Sponsored Round Theme */
+        .sponsored-round-theme { background-color: #E0F2FE !important; /* Light Blueish */ }
+        .sponsored-round-theme .game-header-bar { background-color: #B9E0F8 !important; }
+        .sponsored-round-theme #progressTextElement { color: #0B578A !important; font-weight: bold !important; }
+        .sponsored-round-theme .card {
+            border: 2px solid #0B578A; /* Darker blue border */
+            background-color: #F0F9FF; /* Very light blue card bg */
+        }
+        .sponsored-round-theme .card .card-title { color: #0B578A; }
+        .sponsored-round-theme .card .card-description { color: #3B82F6; } /* Medium blue description */
+        .sponsored-round-theme #vsButtonSpan { background: #0B578A !important; color: white !important; }
+
 
         .tournament-card-glow { box-shadow: 0 0 15px 5px rgba(66, 138, 239, 0.5), 0 0 30px 10px rgba(66, 138, 239, 0.3); animation: pulse-glow-qf 2s infinite; }
         .tournament-final-card-glow { background: linear-gradient(135deg, #fff1c0 0%, #ffe082 100%); box-shadow: 0 0 20px 8px rgba(255, 215, 0, 0.6), 0 0 40px 15px rgba(255, 215, 0, 0.4); }
@@ -236,6 +244,23 @@
             </div>
         </div>
     </div>
+
+    <div id="sponsoredPopupScreen" class="hidden-screen fixed inset-0 z-[60] flex items-center justify-center p-4 modal-overlay opacity-0">
+        <div id="sponsoredPopupContent" class="modal-content-box bg-white rounded-xl shadow-2xl w-full max-w-md text-center relative">
+            <button id="closeSponsoredPopupButton" class="absolute top-3 right-3 text-slate-600 hover:text-slate-900 z-10 p-1 rounded-full hover:bg-slate-200 transition-colors">
+                <span class="material-icons">close</span>
+            </button>
+            <div class="p-6 space-y-4">
+                <h2 id="sponsoredPopupTitleText" class="text-xl sm:text-2xl font-bold text-slate-800">Sponsorlu İçerik</h2>
+                <img id="sponsoredPopupImage" src="" alt="Sponsorlu Reklam" class="w-full h-48 object-contain rounded-md mb-3 border border-slate-200">
+                <p id="sponsoredPopupDescriptionText" class="text-sm sm:text-base text-slate-600 px-2"></p>
+                <a id="sponsoredPopupLink" href="#" target="_blank" rel="noopener noreferrer" class="inline-block w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-4 rounded-lg transition-colors text-base shadow-md hover:shadow-lg">
+                    Hemen Keşfet!
+                </a>
+            </div>
+        </div>
+    </div>
+
 
     <div id="resultsScreen" class="hidden-screen screen-content relative flex flex-col bg-slate-50">
         <div class="flex flex-col flex-1 min-h-0">
@@ -405,7 +430,8 @@
         winnerPopup: document.getElementById('winnerPopupScreen'),
         results: document.getElementById('resultsScreen'),
         finish: document.getElementById('finishScreen'),
-        howToPlay: document.getElementById('howToPlayScreen')
+        howToPlay: document.getElementById('howToPlayScreen'),
+        sponsoredPopup: document.getElementById('sponsoredPopupScreen') // New screen
     };
     const globalHowToPlayButton = document.getElementById('globalHowToPlayButton');
     const startGameButton = document.getElementById('startGameButton');
@@ -422,6 +448,16 @@
     const winnerToResultsButton = document.getElementById('winnerToResultsButton');
     const winnerShareButtonPopup = document.getElementById('winnerShareButton');
     const closeWinnerPopupButton = document.getElementById('closeWinnerPopupButton');
+
+    // Sponsored Popup Elements
+    const sponsoredPopupScreen = document.getElementById('sponsoredPopupScreen');
+    const sponsoredPopupContent = document.getElementById('sponsoredPopupContent');
+    const closeSponsoredPopupButton = document.getElementById('closeSponsoredPopupButton');
+    const sponsoredPopupTitleText = document.getElementById('sponsoredPopupTitleText');
+    const sponsoredPopupImage = document.getElementById('sponsoredPopupImage');
+    const sponsoredPopupDescriptionText = document.getElementById('sponsoredPopupDescriptionText');
+    const sponsoredPopupLink = document.getElementById('sponsoredPopupLink');
+
 
     const resultsCardContainer = document.getElementById('resultsCardContainer');
     const championCardDisplay = document.getElementById('championCardDisplay');
@@ -466,6 +502,19 @@
     let nextStageWishes = [];
     let voteCounts = {};
     let champion = null;
+    let isSponsoredInterstitialActive = false;
+
+    // --- SPONSOR DETAILS ---
+    // !!! REPLACE THESE WITH ACTUAL SPONSOR CONTENT !!!
+    const SPONSORED_AD_DETAILS = {
+        title: "Kaçırılmayacak Fırsat!",
+        description: "Bu özel teklif UtopiArena izleyicilerine özel! Hemen tıkla, avantajları yakala.",
+        image: "https://i.ibb.co/gVPgQ0D/chatgptutopiarenasponsorplaceholder.png", // Replace with actual image URL (e.g., uploaded to IBB or similar)
+        imageSeed: null, // If you want to use Picsum for the ad image (not recommended for actual ad)
+        link: "https://www.example.com/utopiarena-special" // Replace with actual sponsor link
+    };
+    // --- END SPONSOR DETAILS ---
+
 
     const wishes = [
         { id:1, title: "İzmir Belediyesi: Kadınlar İçin Gece 22:00–05:00 Arası Ücretsiz Taksi Hizmeti Başladı", description: "Gece çalışan, okuyan ya da çıkan her kadına bir tuşla güvenli ulaşım imkanı sunuluyor. Bu önemli destek, kadınların gece saatlerinde daha güvende hissetmelerini ve sosyal hayata katılımlarını artırmayı amaçlıyor.", imageSeed: "https://i.ibb.co/vvjLGRgT/Ads-z-tasar-m.png" },
@@ -490,25 +539,24 @@
         if (typeof imageIdentifier === 'string' && imageIdentifier.startsWith('http')) {
             return imageIdentifier;
         }
-        // Ensure placeholder seeds are distinct if imageIdentifier might be problematic
         const seed = imageIdentifier || `placeholder_${Math.random().toString(36).substring(7)}`;
         return `https://picsum.photos/seed/${seed}/${width}/${height}`;
     }
-
 
     let imagesToPreload = [];
     wishes.forEach(w => {
         imagesToPreload.push(getImageUrl(w.imageSeed, 600, 400));
         imagesToPreload.push(getImageUrl(w.imageSeed, 400, 225));
-         imagesToPreload.push(getImageUrl(w.imageSeed, 600, 300)); // For results cards
+        imagesToPreload.push(getImageUrl(w.imageSeed, 600, 300)); // For results cards
     });
+    imagesToPreload.push(getImageUrl(SPONSORED_AD_DETAILS.imageSeed || SPONSORED_AD_DETAILS.image)); // Preload sponsor ad image
     imagesToPreload.push(getImageUrl('champion_placeholder_final/600/400'));
     imagesToPreload.push(getImageUrl('error_placeholder_results/600/400'));
     imagesToPreload = [...new Set(imagesToPreload)];
 
     function preloadImages() {
         if (imagesToPreload.length === 0) { if(startGameButton) startGameButton.disabled = false; return; }
-        if(startGameButton) startGameButton.disabled = false;
+        if(startGameButton) startGameButton.disabled = false; // Enable button regardless for now
         let loadedCount = 0;
         imagesToPreload.forEach(imageUrl => {
             const img = new Image();
@@ -526,46 +574,42 @@
         if(navResultsButton) navResultsButton.classList.remove('active', 'text-blue-600');
 
         const isOverlayActive = (onboardingModal && !onboardingModal.classList.contains('hidden-screen')) ||
-                                  (screens.winnerPopup && !screens.winnerPopup.classList.contains('hidden-screen')) ||
-                                  (stageTransitionModal && !stageTransitionModal.classList.contains('hidden-screen'));
+                                (screens.winnerPopup && !screens.winnerPopup.classList.contains('hidden-screen')) ||
+                                (screens.sponsoredPopup && !screens.sponsoredPopup.classList.contains('hidden-screen')) || // Check sponsored popup
+                                (stageTransitionModal && !stageTransitionModal.classList.contains('hidden-screen'));
 
-        const navHeightWithSpace = '70px'; // Includes 60px nav + 10px buffer approx
-        const basePaddingBottom = '1rem'; // Default padding for screens without nav consideration
+        const navHeightWithSpace = '70px';
+        const basePaddingBottom = '1rem';
 
         Object.values(screens).forEach(screen => {
-            if (screen && screen.style) {
+            if (screen && screen.style && screen.id !== 'sponsoredPopupScreen') { // Exclude sponsored popup from this padding logic
                 if (screen.id === 'startScreen') {
-                     // Start screen has its own padding via Tailwind (pb-2 sm:pb-4), plus fixed button position
-                    screen.style.paddingBottom = ''; // Let Tailwind handle it or no padding if fixed button is lower
+                    screen.style.paddingBottom = '';
                 } else {
-                    // Set a base padding, might be overwritten if nav is visible
                     screen.style.paddingBottom = basePaddingBottom;
                 }
             }
         });
 
-
         if (currentScreenId === 'start' || isOverlayActive) {
-            if (navHomeButton) navHomeButton.classList.add('active', 'text-blue-600'); // Still set active for logical state
+            if (navHomeButton) navHomeButton.classList.add('active', 'text-blue-600');
             if (bottomNav) bottomNav.classList.add('hidden-screen');
             if (globalHowToPlayButton) globalHowToPlayButton.classList.add('hidden-screen');
         } else {
             if (bottomNav) bottomNav.classList.remove('hidden-screen');
-            if (globalHowToPlayButton && currentScreenId !== 'howToPlayScreen') { // Hide on its own screen
-                 globalHowToPlayButton.classList.remove('hidden-screen');
+            if (globalHowToPlayButton && currentScreenId !== 'howToPlayScreen') {
+                globalHowToPlayButton.classList.remove('hidden-screen');
             } else if (globalHowToPlayButton) {
-                 globalHowToPlayButton.classList.add('hidden-screen');
+                globalHowToPlayButton.classList.add('hidden-screen');
             }
-
 
             const screensThatNeedNavPadding = ['game', 'results', 'finish', 'howToPlay'];
             if (screensThatNeedNavPadding.includes(currentScreenId) && screens[currentScreenId] && screens[currentScreenId].style) {
-                // Ensure content doesn't go under the nav bar
                 const mainContentArea = screens[currentScreenId].querySelector('main, .overflow-y-auto, .flex-1.min-h-0');
                 if (mainContentArea && mainContentArea.style) {
-                     mainContentArea.style.paddingBottom = navHeightWithSpace;
+                    mainContentArea.style.paddingBottom = navHeightWithSpace;
                 } else if (screens[currentScreenId].style) {
-                     screens[currentScreenId].style.paddingBottom = navHeightWithSpace;
+                    screens[currentScreenId].style.paddingBottom = navHeightWithSpace;
                 }
             }
 
@@ -573,7 +617,7 @@
             else if ((currentScreenId === 'results' || currentScreenId === 'finish') && navResultsButton) { navResultsButton.classList.add('active', 'text-blue-600'); }
             else if (currentScreenId === 'howToPlay' && globalHowToPlayButton) { /* Handled above */ }
             else if (navHomeButton && !isOverlayActive && !screensThatNeedNavPadding.includes(currentScreenId)) {
-                 navHomeButton.classList.add('active', 'text-blue-600');
+                navHomeButton.classList.add('active', 'text-blue-600');
             }
         }
     }
@@ -582,21 +626,15 @@
         if (!modalElement || !modalContentElement) return;
         let tempPreviousScreenId = currentScreenId;
 
-        modalElement.classList.remove('hidden-screen', 'opacity-0'); // Remove opacity-0 if it's a Tailwind class on the overlay
-        modalElement.classList.add('flex', 'active', 'opacity-100'); // Add opacity-100 for overlay, 'active' for CSS rules
+        modalElement.classList.remove('hidden-screen', 'opacity-0');
+        modalElement.classList.add('flex', 'active', 'opacity-100');
         if (backdropElement) {
             backdropElement.classList.remove('opacity-0');
             backdropElement.classList.add('opacity-100');
         }
-        // Content animation relies on .modal-overlay.active .modal-content-box CSS
-        // Or direct Tailwind class changes if preferred.
-        // For now, relying on CSS: .modal-content-box has opacity 0, scale .95 by default
-        // .modal-overlay.active .modal-content-box has opacity 1, scale 1
-        // The transition is on .modal-content-box itself.
-
-        currentScreenId = modalElement.id;
+        currentScreenId = modalElement.id; // Set currentScreenId to the modal's ID
         updateBottomNav();
-        if (tempPreviousScreenId !== 'onboardingHowToPlayModal' && tempPreviousScreenId !== 'stageTransitionModal' && tempPreviousScreenId !== 'winnerPopupScreen') {
+        if (tempPreviousScreenId !== 'onboardingHowToPlayModal' && tempPreviousScreenId !== 'stageTransitionModal' && tempPreviousScreenId !== 'winnerPopupScreen' && tempPreviousScreenId !== 'sponsoredPopupScreen') {
             previousScreenId = tempPreviousScreenId;
         }
     }
@@ -604,31 +642,29 @@
     function hideModal(modalElement, modalContentElement, backdropElement = null, callback) {
         if (!modalElement || !modalContentElement) { if (callback) callback(); return; }
 
-        modalElement.classList.remove('active', 'opacity-100'); // Remove active from overlay
-        modalElement.classList.add('opacity-0'); // Make overlay transparent for fade out
+        modalElement.classList.remove('active', 'opacity-100');
+        modalElement.classList.add('opacity-0');
 
         if (backdropElement) {
             backdropElement.classList.remove('opacity-100');
             backdropElement.classList.add('opacity-0');
         }
-        // Content will animate out due to .modal-content-box styles when .active is removed from overlay
-
         setTimeout(() => {
             modalElement.classList.add('hidden-screen');
-            modalElement.classList.remove('flex'); // Remove display:flex
-            if (currentScreenId === modalElement.id) {
-                currentScreenId = previousScreenId || 'start';
+            modalElement.classList.remove('flex');
+            if (currentScreenId === modalElement.id) { // If current screen was this modal
+                currentScreenId = previousScreenId || 'start'; // Revert to actual previous screen
             }
             updateBottomNav();
             if (callback) callback();
-        }, 300); // Match CSS transition duration
+        }, 300);
     }
-
 
     function showScreen(screenIdToShow) {
         let activeModal = null;
         if (onboardingModal && !onboardingModal.classList.contains('hidden-screen')) activeModal = { el: onboardingModal, content: onboardingModalContent, backdrop: onboardingModalBackdrop };
         else if (screens.winnerPopup && !screens.winnerPopup.classList.contains('hidden-screen')) activeModal = { el: screens.winnerPopup, content: winnerPopupContentContainer, backdrop: null };
+        else if (screens.sponsoredPopup && !screens.sponsoredPopup.classList.contains('hidden-screen')) activeModal = { el: screens.sponsoredPopup, content: sponsoredPopupContent, backdrop: null };
         else if (stageTransitionModal && !stageTransitionModal.classList.contains('hidden-screen')) activeModal = { el: stageTransitionModal, content: stageTransitionModalContent, backdrop: stageTransitionModalBackdrop };
 
         const displayActualScreen = () => {
@@ -641,10 +677,25 @@
                 showModal(screens.winnerPopup, winnerPopupContentContainer);
                 return;
             }
+             if (screenIdToShow === 'sponsoredPopup') { // Should be handled by handleCardSelection during interstitial
+                // This direct call might not be needed if flow is correct
+                // For safety, we can ensure content is set.
+                if(sponsoredPopupTitleText) sponsoredPopupTitleText.textContent = SPONSORED_AD_DETAILS.title;
+                if(sponsoredPopupImage) sponsoredPopupImage.src = getImageUrl(SPONSORED_AD_DETAILS.imageSeed || SPONSORED_AD_DETAILS.image);
+                if(sponsoredPopupDescriptionText) sponsoredPopupDescriptionText.textContent = SPONSORED_AD_DETAILS.description;
+                if(sponsoredPopupLink) sponsoredPopupLink.href = SPONSORED_AD_DETAILS.link;
+                showModal(screens.sponsoredPopup, sponsoredPopupContent);
+                return;
+            }
+
 
             if (!screens[screenIdToShow]) { console.error("Ekran bulunamadı:", screenIdToShow); return; }
 
-            if (currentScreenId !== screenIdToShow && currentScreenId !== 'onboardingHowToPlayModal' && currentScreenId !== 'stageTransitionModal' && currentScreenId !== 'winnerPopupScreen') {
+            if (currentScreenId !== screenIdToShow &&
+                currentScreenId !== 'onboardingHowToPlayModal' &&
+                currentScreenId !== 'stageTransitionModal' &&
+                currentScreenId !== 'winnerPopupScreen' &&
+                currentScreenId !== 'sponsoredPopupScreen') { // Make sure modals don't overwrite previousScreenId
                 previousScreenId = currentScreenId;
             }
 
@@ -657,7 +708,7 @@
             currentScreenId = screenIdToShow;
 
             const bodyClassList = document.body.classList;
-            if (screens.game) screens.game.classList.remove('final-match-theme');
+            if (screens.game) screens.game.classList.remove('final-match-theme', 'sponsored-round-theme'); // Remove both themes
             bodyClassList.remove('background-animate', 'bg-[#FAF8F6]', 'bg-slate-50', 'bg-slate-100');
 
             if (screenIdToShow === 'start') {
@@ -669,6 +720,7 @@
                 if (screenIdToShow === 'game' && currentStage === STAGES.FINAL && screens.game) {
                     screens.game.classList.add('final-match-theme');
                 }
+                // Sponsored theme is handled by showSponsoredInterstitial and its closing logic
             }
 
             updateBottomNav();
@@ -688,9 +740,15 @@
         nextStageWishes = [];
         voteCounts = {};
         champion = null;
+        isSponsoredInterstitialActive = false; // Reset sponsored flag
+        localStorage.removeItem('sponsoredRoundShownThisSession'); // Clear for new game
+
         let wishesForSeeding = [...wishes];
         shuffleArray(wishesForSeeding);
-        wishesForCurrentStage = wishesForSeeding.slice(0, 16); // Assuming 16 items for seeding
+        wishesForCurrentStage = wishesForSeeding.slice(0, 16);
+
+        if (screens.game) screens.game.classList.remove('sponsored-round-theme', 'final-match-theme');
+
 
         if (showOnboarding) {
             showScreen('onboardingModal');
@@ -708,7 +766,67 @@
         return [wishesForCurrentStage[currentMatchInStage * 2], wishesForCurrentStage[(currentMatchInStage * 2) + 1]];
     }
 
+    function showSponsoredInterstitial() {
+        isSponsoredInterstitialActive = true;
+        localStorage.setItem('sponsoredRoundShownThisSession', 'true');
+
+        if (screens.game) screens.game.classList.add('sponsored-round-theme');
+        if (progressTextElement) progressTextElement.textContent = "Sponsorlu Etap";
+        // Progress bar should reflect that 4 matches are done (4/8)
+        if (progressBarFill) progressBarFill.style.width = `${(4 / 8) * 100}%`;
+
+
+        const sponsoredCardContent1 = { id: 'sp_card_1', title: "Sponsor A Özel İçeriği", description: "Bu fırsatı keşfetmek için tıkla!", imageSeed: "sponsor_card_A" };
+        const sponsoredCardContent2 = { id: 'sp_card_2', title: "Sponsor B'den Haberler", description: "Yenilikleri görmek için tıkla!", imageSeed: "sponsor_card_B" };
+
+        const card1TitleEl = gameScreenCards[0].querySelector('.card-title');
+        const card1DescEl = gameScreenCards[0].querySelector('.card-description');
+        const card1ImgEl = gameScreenCards[0].querySelector('img[data-role="card-image-img"]');
+        if (card1TitleEl) card1TitleEl.textContent = sponsoredCardContent1.title;
+        if (card1DescEl) card1DescEl.textContent = sponsoredCardContent1.description;
+        if (card1ImgEl) {
+            card1ImgEl.src = getImageUrl(sponsoredCardContent1.imageSeed);
+            card1ImgEl.alt = sponsoredCardContent1.title;
+        }
+        gameScreenCards[0].dataset.wishId = sponsoredCardContent1.id; // Use a generic ID
+
+        const card2TitleEl = gameScreenCards[1].querySelector('.card-title');
+        const card2DescEl = gameScreenCards[1].querySelector('.card-description');
+        const card2ImgEl = gameScreenCards[1].querySelector('img[data-role="card-image-img"]');
+        if (card2TitleEl) card2TitleEl.textContent = sponsoredCardContent2.title;
+        if (card2DescEl) card2DescEl.textContent = sponsoredCardContent2.description;
+        if (card2ImgEl) {
+            card2ImgEl.src = getImageUrl(sponsoredCardContent2.imageSeed);
+            card2ImgEl.alt = sponsoredCardContent2.title;
+        }
+        gameScreenCards[1].dataset.wishId = sponsoredCardContent2.id; // Use a generic ID
+
+
+        if (vsButtonSpan) {
+            vsButtonSpan.classList.remove('vs-animate');
+            void vsButtonSpan.offsetWidth; // Trigger reflow
+            vsButtonSpan.classList.add('vs-animate');
+        }
+        gameScreenCards.forEach(c => {
+            c.classList.remove('selected', 'not-selected');
+            c.style.pointerEvents = 'auto';
+            c.querySelector('.confetti-burst')?.classList.add('hidden');
+        });
+        showScreen('game'); // Ensure game screen is visible with the new theme
+    }
+
+
     function loadNextMatchUI() {
+        // Check if it's time for the sponsored interlude (before the 5th match, which has index 4)
+        if (currentStage === STAGES.SEEDING && currentMatchInStage === 4 && !localStorage.getItem('sponsoredRoundShownThisSession')) {
+            showSponsoredInterstitial();
+            return; // Stop here, interstitial will handle next step
+        }
+
+        // If not sponsored, remove theme (safety)
+        if (screens.game) screens.game.classList.remove('sponsored-round-theme');
+
+
         const [wish1, wish2] = getMatchPair();
         if (!wish1 || !wish2) {
             advanceToNextStage();
@@ -748,11 +866,19 @@
     }
 
     function updateProgressBar() {
+        if (isSponsoredInterstitialActive) { // If sponsored round is active, override
+            if (progressTextElement) progressTextElement.textContent = "Sponsorlu Etap";
+            if (progressBarFill) progressBarFill.style.width = `${(4/8)*100}%`; // Show 4/8 progress
+             // No spark during sponsored etap
+            const oldSpark = progressBarFill.querySelector('.progress-bar-spark'); if (oldSpark) oldSpark.remove();
+            return;
+        }
+
         let totalMatches = 0, stageName = currentStage, matchNum = currentMatchInStage + 1;
-        if (currentStage === STAGES.SEEDING) { totalMatches = 8; stageName = "Eleme"; } // 16 wishes -> 8 matches
-        else if (currentStage === STAGES.QUARTERFINALS) { totalMatches = 4; stageName = "Ç.Final"; } // 8 wishes -> 4 matches
-        else if (currentStage === STAGES.SEMIFINALS) { totalMatches = 2; stageName = "Y.Final"; } // 4 wishes -> 2 matches
-        else if (currentStage === STAGES.FINAL) { totalMatches = 1; stageName = "FİNAL!"; } // 2 wishes -> 1 match
+        if (currentStage === STAGES.SEEDING) { totalMatches = 8; stageName = "Eleme"; }
+        else if (currentStage === STAGES.QUARTERFINALS) { totalMatches = 4; stageName = "Ç.Final"; }
+        else if (currentStage === STAGES.SEMIFINALS) { totalMatches = 2; stageName = "Y.Final"; }
+        else if (currentStage === STAGES.FINAL) { totalMatches = 1; stageName = "FİNAL!"; }
         else return;
 
         if (currentMatchInStage >= totalMatches && totalMatches > 0) matchNum = totalMatches;
@@ -773,16 +899,29 @@
             const oldSpark = progressBarFill.querySelector('.progress-bar-spark'); if (oldSpark) oldSpark.remove();
             const spark = document.createElement('div'); spark.className = 'progress-bar-spark';
             let sparkPos = (matchNum / totalMatches * 100);
-            if (currentMatchInStage >= totalMatches) sparkPos = 100; // Ensure spark is at the end if matches are complete
-            else if (progress >= 100 && currentMatchInStage < totalMatches) sparkPos = 99; // Slight offset if progress is full but match isn't last visually
+            if (currentMatchInStage >= totalMatches) sparkPos = 100;
+            else if (progress >= 100 && currentMatchInStage < totalMatches) sparkPos = 99;
 
-            spark.style.left = `calc(${Math.min(sparkPos,100)}% - 5px)`; // Adjust for spark width
+            spark.style.left = `calc(${Math.min(sparkPos,100)}% - 5px)`;
             progressBarFill.appendChild(spark);
-            setTimeout(() => { if(spark.parentElement) spark.remove(); }, 500); // Animation duration
+            setTimeout(() => { if(spark.parentElement) spark.remove(); }, 500);
         }
     }
 
     function handleCardSelection(selectedCardNode) {
+        if (isSponsoredInterstitialActive) {
+            // Show the actual sponsor ad popup
+            if(sponsoredPopupTitleText) sponsoredPopupTitleText.textContent = SPONSORED_AD_DETAILS.title;
+            if(sponsoredPopupImage) sponsoredPopupImage.src = getImageUrl(SPONSORED_AD_DETAILS.imageSeed || SPONSORED_AD_DETAILS.image);
+            if(sponsoredPopupDescriptionText) sponsoredPopupDescriptionText.textContent = SPONSORED_AD_DETAILS.description;
+            if(sponsoredPopupLink) sponsoredPopupLink.href = SPONSORED_AD_DETAILS.link;
+
+            showModal(screens.sponsoredPopup, sponsoredPopupContent);
+            // DO NOT advance game state (currentMatchInStage, nextStageWishes, voteCounts)
+            return;
+        }
+
+        // Regular card selection logic
         gameScreenCards.forEach(c => c.style.pointerEvents = 'none'); selectedCardNode.classList.add('selected');
         const chosenId = selectedCardNode.dataset.wishId; const winner = wishes.find(w => w.id == chosenId);
 
@@ -792,12 +931,12 @@
             updateProgressBar();
             setTimeout(()=> {
                 showScreen('winnerPopup');
-            }, 1000); // Delay for selection animation
+            }, 1000);
             return;
         }
 
         if (winner) nextStageWishes.push(winner);
-        if (currentStage === STAGES.SEEDING) { // Only count initial votes in seeding for simplicity of ranking
+        if (currentStage === STAGES.SEEDING) {
             voteCounts[chosenId] = (voteCounts[chosenId] || 0) + 1;
         }
 
@@ -821,9 +960,9 @@
             if (currentMatchInStage >= totalMatchesInThisStage && currentStage !== STAGES.FINAL) {
                 advanceToNextStage();
             } else if (currentStage !== STAGES.FINAL) {
-                loadNextMatchUI();
+                loadNextMatchUI(); // This will also check for sponsored interstitial if it's the right time
             }
-        }, 1000); // Delay for animations
+        }, 1000);
     }
 
     function advanceToNextStage() {
@@ -838,10 +977,9 @@
             case STAGES.QUARTERFINALS: nextLogicalStage = STAGES.SEMIFINALS; break;
             case STAGES.SEMIFINALS: nextLogicalStage = STAGES.FINAL; break;
             default:
-                if (champion) { displayResultsScreen(); } else { resetGameAndPlay(); } // Should not happen if logic is correct
+                if (champion) { displayResultsScreen(); } else { resetGameAndPlay(); }
                 return;
         }
-
         currentStage = nextLogicalStage;
 
         const showNextMatchSetup = () => {
@@ -849,21 +987,19 @@
             if (wishesForCurrentStage.length >= 2 || (currentStage === STAGES.FINAL && wishesForCurrentStage.length === 2) ) {
                 loadNextMatchUI();
                 showScreen('game');
-            } else if (wishesForCurrentStage.length === 1 && currentStage !== STAGES.FINAL) { // Auto-win if only one left before final
+            } else if (wishesForCurrentStage.length === 1 && currentStage !== STAGES.FINAL) {
                 champion = wishesForCurrentStage[0];
-                currentStage = STAGES.FINAL; // Mark as final
-                currentMatchInStage = 1; // Mark final match as complete
+                currentStage = STAGES.FINAL;
+                currentMatchInStage = 1;
                 updateProgressBar();
                 showScreen('winnerPopup');
             } else {
-                // Not enough wishes to continue, something went wrong or tournament structure issue
                 console.error("Not enough wishes for the current stage:", currentStage, wishesForCurrentStage);
-                resetGameAndPlay(); // Reset as a fallback
+                resetGameAndPlay();
             }
         };
 
         let iconName = '', title = '', message = '', showTransition = false;
-
         if (currentStage === STAGES.QUARTERFINALS) {
             iconName = 'sports_score'; title = 'Çeyrek Finaller!'; message = 'En iyi 8 hayal bir üst tura yükseldi. Mücadele devam ediyor!'; showTransition = true;
         } else if (currentStage === STAGES.SEMIFINALS) {
@@ -876,12 +1012,10 @@
             if(stageTransitionIcon) stageTransitionIcon.textContent = iconName;
             if(stageTransitionTitle) stageTransitionTitle.textContent = title;
             if(stageTransitionMessage) stageTransitionMessage.textContent = message;
-
             showModal(stageTransitionModal, stageTransitionModalContent, stageTransitionModalBackdrop);
-
             setTimeout(() => {
                 hideModal(stageTransitionModal, stageTransitionModalContent, stageTransitionModalBackdrop, showNextMatchSetup);
-            }, 2000); // Duration of stage transition modal display
+            }, 2000);
         } else {
             showNextMatchSetup();
         }
@@ -889,17 +1023,15 @@
 
     function displayWinnerPopupContent() {
         if (!champion) {
-            // Fallback: if champion isn't set for some reason (should be set by handleCardSelection in FINAL)
-            // This indicates a potential logic flaw if reached without 'champion'
-             console.warn("Şampiyon popup gösterilirken şampiyon belirlenmemişti. Fallback kullanılıyor.");
-             if (wishesForCurrentStage.length > 0) champion = wishesForCurrentStage[0]; // Last selected or first of final pair
-             else if (wishes.length > 0) champion = wishes[0]; // Absolute fallback
-             else { // No wishes available, fatal error for this display
-                 if(winnerPopupTitle) winnerPopupTitle.textContent = "Hata";
-                 if(winnerPopupDescription) winnerPopupDescription.textContent = "Şampiyon bilgisi bulunamadı.";
-                 if(winnerPopupImage) winnerPopupImage.src = "";
-                 return;
-             }
+            console.warn("Şampiyon popup gösterilirken şampiyon belirlenmemişti. Fallback kullanılıyor.");
+            if (wishesForCurrentStage.length > 0) champion = wishesForCurrentStage[0];
+            else if (wishes.length > 0) champion = wishes[0];
+            else {
+                if(winnerPopupTitle) winnerPopupTitle.textContent = "Hata";
+                if(winnerPopupDescription) winnerPopupDescription.textContent = "Şampiyon bilgisi bulunamadı.";
+                if(winnerPopupImage) winnerPopupImage.src = "";
+                return;
+            }
         }
         if(winnerPopupSubtitle) winnerPopupSubtitle.textContent = `UtopiArena'da senin ve diğerlerinin oylarıyla geleceğin hayali bu oldu:`;
         if(winnerPopupImage) {
@@ -910,24 +1042,20 @@
         if(winnerPopupDescription) winnerPopupDescription.textContent = champion.description;
     }
 
-    // CORRECTED displayResultsScreen function
     function displayResultsScreen() {
         const totalSeedingVotes = Object.values(voteCounts).reduce((sum, count) => sum + count, 0);
-
         if (!champion) {
             const sortedByVotes = Object.keys(voteCounts).sort((a, b) => voteCounts[b] - voteCounts[a]);
             if (sortedByVotes.length > 0) {
                 champion = wishes.find(w => w.id == sortedByVotes[0]);
             }
-            // Ensure champion is set, even if no votes, fallback to first wish.
             if (!champion && wishes.length > 0) {
                 champion = wishes[0];
             } else if (!champion) {
-                // This case should ideally not happen if 'wishes' array is always populated.
-                console.error("Champion could not be determined and wishes array might be empty or no votes were cast.");
+                console.error("Champion could not be determined.");
                 if(championTitleResults) championTitleResults.textContent = "Şampiyon belirlenemedi";
                 if(championImageResults) {
-                    championImageResults.src = getImageUrl('error_placeholder_results/600/400'); // A generic placeholder
+                    championImageResults.src = getImageUrl('error_placeholder_results/600/400');
                     championImageResults.alt = "Hata";
                 }
                 if(championInfoResults) championInfoResults.textContent = "Sonuçlar hesaplanırken bir sorun oluştu.";
@@ -948,31 +1076,21 @@
         if(championInfoResults) championInfoResults.textContent = `Başlangıç oylarının %${championPercentage}'i ile şampiyon oldu!`;
 
         if(resultsCardContainer && championCardDisplay) {
-            resultsCardContainer.innerHTML = ''; // Clear previous cards, including any old "other wishes"
-            resultsCardContainer.appendChild(championCardDisplay); // Add the champion card first
-
-            // Logic for displaying other fixed wishes, ensuring they are not the champion
-            const fixedOtherWishIds = [8, 13, 4, 14]; // Specified IDs: Kadın-Erkek Eşitliği, Enflasyon, Vize, Yeşil Alanlar
-
+            resultsCardContainer.innerHTML = '';
+            resultsCardContainer.appendChild(championCardDisplay);
+            const fixedOtherWishIds = [8, 13, 4, 14];
             const otherWishesToDisplay = fixedOtherWishIds.map(id => {
                 const wish = wishes.find(w => w.id === id);
-                if (!wish) return null; // Wish with this ID not found in the main 'wishes' array
-                // Do not display this wish if it is the current champion
+                if (!wish) return null;
                 if (champion && wish.id === champion.id) return null;
-                return {
-                    ...wish,
-                    voteCount: voteCounts[id] || 0 // Get actual vote count for this wish, or 0 if none
-                };
-            }).filter(w => w); // Remove nulls (e.g., if a wish was the champion or not found)
+                return { ...wish, voteCount: voteCounts[id] || 0 };
+            }).filter(w => w);
 
             otherWishesToDisplay.forEach(w => {
-                // Ensure w and w.voteCount are valid (filter should handle w, but good for safety)
                 if (!w || typeof w.voteCount === 'undefined') return;
-
                 const wishPercentage = totalSeedingVotes > 0 ? ((w.voteCount / totalSeedingVotes) * 100).toFixed(1) : "0.0";
-
                 resultsCardContainer.insertAdjacentHTML('beforeend',
-                    `<div class="bg-white shadow-lg rounded-2xl overflow-hidden mt-4"> {/* Added mt-4 for spacing */}
+                    `<div class="bg-white shadow-lg rounded-2xl overflow-hidden mt-4">
                         <div class="relative">
                             <img alt="${w.title}" class="w-full h-40 object-cover" src="${getImageUrl(w.imageSeed, 600, 300)}"/>
                             <div class="absolute inset-0 bg-hero-gradient"></div>
@@ -987,19 +1105,16 @@
                     </div>`);
             });
         } else {
-            // Fallback if resultsCardContainer or championCardDisplay is not found in the DOM
             console.error("Results card container or champion card display element not found.");
         }
         showScreen('results');
     }
 
-
     function displayFinishScreen() {
         if (!champion) {
-            // Fallback if champion is somehow not set (e.g., direct navigation to finish screen if possible)
             console.warn("Bitiş ekranı şampiyon olmadan gösteriliyor. Fallback kullanılıyor.");
             if (wishes.length > 0) champion = wishes[0];
-            else { // No champion, no wishes, show generic message
+            else {
                 if(winningWishTextFinishElement) winningWishTextFinishElement.textContent = "Turnuva tamamlandı! #UtopiArena";
                 if(moreDreamsContainer) moreDreamsContainer.innerHTML = '';
                 showScreen('finish');
@@ -1030,6 +1145,7 @@
         showScreen('finish');
     }
 
+    // ---------- Event Listeners ----------
     if(startGameButton) startGameButton.addEventListener('click', () => resetGameAndPlay(true));
 
     if (proceedFromOnboardingButton) {
@@ -1055,6 +1171,19 @@
         });
     }
 
+    if(closeSponsoredPopupButton) {
+        closeSponsoredPopupButton.addEventListener('click', () => {
+            hideModal(screens.sponsoredPopup, sponsoredPopupContent, null, () => {
+                isSponsoredInterstitialActive = false;
+                if (screens.game) screens.game.classList.remove('sponsored-round-theme');
+                // currentMatchInStage is still 4 (for the 5th match)
+                updateProgressBar(); // Will show "Eleme: 5/8"
+                loadNextMatchUI();   // Will load the actual 5th match
+            });
+        });
+    }
+
+
     const genericShareFunction = () => {
         if(navigator.share && champion) {
             navigator.share({
@@ -1072,9 +1201,8 @@
     if(winnerShareButtonPopup) winnerShareButtonPopup.addEventListener('click', genericShareFunction);
     if(shareChampionButtonFinish) shareChampionButtonFinish.addEventListener('click', genericShareFunction);
 
-
     if(globalHowToPlayButton) globalHowToPlayButton.addEventListener('click', () => showScreen('howToPlay'));
-    if(closeHowToPlayButton) closeHowToPlayButton.addEventListener('click', () => showScreen(previousScreenId || 'game')); // Go back to game or previous valid screen
+    if(closeHowToPlayButton) closeHowToPlayButton.addEventListener('click', () => showScreen(previousScreenId || 'game'));
 
     if(navHomeButton) navHomeButton.addEventListener('click', (e) => { e.preventDefault(); showScreen('start'); });
     if(navPlayButton) navPlayButton.addEventListener('click', (e) => { e.preventDefault(); resetGameAndPlay(); });
