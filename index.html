@@ -11,16 +11,41 @@
     <link rel="icon" href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABFSURBVDhPYxgFo2AUjIJRMDIgBaMWAMGWg40CGGARKIcFFhAFqiBELKwL0RAUEpZSYYAAKUmZASwYGLAESJgRKMIAAGVyBqwSAFXRAAAAAElFTkSuQmCC" type="image/x-icon"/>
     <style>
         body {
-            min-height: 100dvh;
+            min-height: 100dvh; /* Prefer dvh for dynamic viewport, but consider fallback */
+            min-height: 100vh; /* Fallback for browsers not fully supporting dvh */
             font-family: 'Lexend', "Manrope", "Noto Sans", sans-serif;
-            overscroll-behavior-y: contain; margin: 0;
-            overflow: hidden !important; /* Tüm body için scroll'u engelle */
+            overscroll-behavior-y: contain;
+            margin: 0;
+            overflow-y: hidden; /* Allow y-scroll only if explicitly needed by a child */
+            overflow-x: hidden; /* Prevent horizontal scroll */
+            position: relative; /* For ensuring fixed elements are relative to body */
         }
-        .hidden-screen { display: none !important; }
-        .screen-content {
-            box-sizing: border-box;
-            overflow: hidden !important; /* Ekran içi scroll'u engelle */
-            height: 100dvh; /* Tüm ekranların tam yükseklik almasını sağla */
+
+        .hidden-screen {
+            display: none !important;
+        }
+
+       .screen-content {
+    height: 100dvh;
+    overflow: hidden; /* scroll'u burada da engelle */
+    padding: 0; /* boşlukları sıfırla */
+    margin: 0;
+}
+
+        /* Adjust padding for screens that sit above the bottom nav */
+        #gameScreen, #resultsScreen, #finishScreen, #howToPlayScreen {
+            /* padding-bottom is now handled dynamically by JS for main content areas */
+            /* This ensures better compatibility with iOS address bar */
+        }
+
+        /* Adjust main content areas within screens to properly handle height */
+        #gameScreen > div:nth-child(2), /* The main content flex-1 div in game screen */
+        #resultsScreen main,
+        #finishScreen .overflow-y-auto,
+        #howToPlayScreen main {
+            flex: 1; /* Allow these sections to grow and take available space */
+            overflow-y: auto; /* Enable scrolling for main content areas */
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
         }
 
         @keyframes backgroundMorph {
@@ -34,8 +59,14 @@
             animation: backgroundMorph 12s ease infinite;
         }
 
-        .start-button { background: linear-gradient(90deg, #76A9FA, #FF6F61); transition: transform 0.2s ease-out, box-shadow 0.2s ease-out; }
-        .start-button:hover, .start-button:focus { transform: scale(1.05); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15); }
+        .start-button {
+            background: linear-gradient(90deg, #76A9FA, #FF6F61);
+            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+        }
+        .start-button:hover, .start-button:focus {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
 
         #startGameButton {
             position: fixed;
@@ -49,11 +80,27 @@
             padding-bottom: 0.5rem;
             padding-left: 1.5rem;
             padding-right: 4.5rem;
+            flex-shrink: 0; /* Prevent header from shrinking */
         }
 
-        .card { transition: transform 0.3s ease-out, opacity 0.3s ease-out; cursor: pointer; }
-        .card.selected { transform: scale(1.05); z-index: 10; }
-        .card.not-selected { opacity: 0; transform: translateX(100px); }
+        .card {
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            height: auto; /* Allow card to adjust to content */
+            margin-bottom: 1rem; /* Add some space between cards on mobile */
+            max-width: 90%; /* Limit card width on small screens relative to viewport */
+            width: 100%; /* Ensure card takes full width of its container up to max-width */
+        }
+        .card.selected {
+            transform: scale(1.05);
+            z-index: 10;
+        }
+        .card.not-selected {
+            opacity: 0;
+            transform: translateX(100px);
+        }
 
         .card-description-clamp {
             display: -webkit-box;
@@ -89,7 +136,10 @@
 
         #vsButtonSpan.vs-animate { animation: vsPulse 0.4s ease-in-out; }
         @keyframes vsPulse { 0% { transform: scale(1) rotate(-15deg); } 50% { transform: scale(1.3) rotate(5deg); } 100% { transform: scale(1) rotate(-15deg); } }
-        @media (min-width: 768px) { #vsButtonSpan.vs-animate { animation: vsPulseDesktop 0.4s ease-in-out; } @keyframes vsPulseDesktop { 0% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.3) rotate(0deg); } 100% { transform: scale(1) rotate(0deg); } } }
+        @media (min-width: 768px) {
+            #vsButtonSpan.vs-animate { animation: vsPulseDesktop 0.4s ease-in-out; }
+            @keyframes vsPulseDesktop { 0% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.3) rotate(0deg); } 100% { transform: scale(1) rotate(0deg); } }
+        }
 
         .final-match-theme { background-color: #2d3748 !important; }
         .final-match-theme .game-header-bar { background-color: #1a202c !important; }
@@ -104,7 +154,7 @@
         .final-match-theme .card .card-description { color: #9ca3af; }
         .final-match-theme #vsButtonSpan { background: linear-gradient(45deg, #FFD700, #fbd38d) !important; color: #1A202C !important; box-shadow: 0 0 10px #FFD700; }
 
-        /* === YENİ SPONSORLU TEMA BAŞLANGICI === */
+        /* === SPONSORLU TEMA BAŞLANGICI === */
         .sponsored-round-theme { background-color: #F0F4F8 !important; } /* Daha temiz, hafif soğuk gri */
         .sponsored-round-theme .game-header-bar { background-color: #E1E8F0 !important; } /* Ana BG'den biraz koyu */
         .sponsored-round-theme #progressTextElement { color: #1E40AF !important; font-weight: bold !important; } /* Güçlü mavi (Tailwind blue-800) */
@@ -124,7 +174,7 @@
             padding: 0.25rem 0.75rem !important; /* Padding ayarı */
             font-size: 0.8rem !important; /* Font boyutu */
         }
-        /* === YENİ SPONSORLU TEMA BİTİŞİ === */
+        /* === SPONSORLU TEMA BİTİŞİ === */
 
         .tournament-card-glow { box-shadow: 0 0 15px 5px rgba(66, 138, 239, 0.5), 0 0 30px 10px rgba(66, 138, 239, 0.3); animation: pulse-glow-qf 2s infinite; }
         .tournament-final-card-glow { background: linear-gradient(135deg, #fff1c0 0%, #ffe082 100%); box-shadow: 0 0 20px 8px rgba(255, 215, 0, 0.6), 0 0 40px 15px rgba(255, 215, 0, 0.4); }
@@ -134,7 +184,11 @@
         .gold-crown { color: #FFD700; }
         .material-icons, .material-icons-outlined { vertical-align: middle; }
 
-        #bottomNav { height: 60px; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); }
+        #bottomNav {
+            height: 60px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            flex-shrink: 0; /* Prevent navigation from shrinking */
+        }
         #bottomNav a.active { color: #2563eb; }
 
         #globalHowToPlayButton { transition: background-color 0.2s, color 0.2s; }
@@ -142,6 +196,7 @@
         .modal-overlay {
             background-color: rgba(30, 41, 59, 0.7);
             backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px); /* Safari support */
         }
         .modal-content-box {
             transform: scale(0.95);
@@ -149,6 +204,9 @@
             transition-property: transform, opacity;
             transition-timing-function: ease-out;
             transition-duration: 300ms;
+            width: calc(100% - 2rem); /* Add some horizontal padding */
+            max-width: 480px; /* Limit max width for modals */
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.08); /* Stronger shadow */
         }
         .modal-overlay.active { opacity: 1; }
         .modal-overlay.active .modal-content-box { transform: scale(1); opacity: 1; }
@@ -156,16 +214,165 @@
         @keyframes pulseTitle {
             0%, 100% { opacity: 1; transform: scale(1); }
             50% { opacity: 0.9; transform: scale(1.02); }
+            100% { opacity: 1; transform: scale(1); }
         }
         #startScreen h1 { animation: pulseTitle 4s ease-in-out infinite; }
 
-        .image-h-winner-popup { height: 10.5rem; }
-        @media (min-width: 640px) { .image-h-winner-popup { height: 12.6rem; } }
+        .image-h-winner-popup {
+            height: 10.5rem;
+            width: 100%; /* Ensure image fills its container */
+            object-fit: cover; /* Maintain aspect ratio */
+        }
+        @media (min-width: 640px) {
+            .image-h-winner-popup { height: 12.6rem; }
+        }
+
+        /* Game Screen specific layout for responsiveness */
+        #gameScreen > div:nth-child(2) { /* flex-1 min-h-0 px-3 flex flex-col items-center justify-center */
+            padding: 0 1rem; /* Consistent horizontal padding */
+            display: flex;
+            flex-direction: column; /* Stack cards vertically by default */
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        #gameScreen .flex-col.items-center { /* flex flex-col items-center @md:flex-row ... */
+            width: 100%;
+            max-width: 600px; /* Limit total width of card area */
+            margin: auto; /* Center the card pair */
+            box-sizing: border-box;
+        }
+        #gameScreen .card {
+            /* Adjusted for tighter spacing on mobile */
+            margin: 0.25rem 0; /* Further reduced space between cards on mobile from 0.5rem to 0.25rem */
+            width: 100%;
+            max-width: 380px; /* A reasonable max-width for individual cards on mobile */
+        }
+
+        /* Mobil (veya 768px altı tüm ekranlar) için VS butonunun etrafındaki boşluğu ayarla */
+        #gameScreen .flex.items-center.justify-center.my-3 {
+            margin-top: 0.5rem;    /* Reduced from my-3 (12px) to 0.5rem (8px) */
+            margin-bottom: 0.5rem; /* Reduced from my-3 (12px) to 0.5rem (8px) */
+        }
+        #vsButtonSpan {
+            /* No specific margin needed here as parent flex container handles spacing */
+            /* Ensure it retains its original transform for mobile animation */
+            transform: rotate(-15deg);
+        }
+
+        @media (min-width: 768px) {
+            #gameScreen .flex-col.items-center {
+                flex-direction: row; /* Cards side-by-side on desktop */
+                justify-content: center;
+                align-items: center;
+                max-width: 800px; /* Wider for desktop */
+            }
+            #gameScreen .card {
+                margin: 0 0.75rem; /* Space between cards on desktop (kept same as previous response) */
+                max-width: 380px; /* Individual card width */
+            }
+            #gameScreen > div:nth-child(2) { /* main content area */
+                transform: translateY(0); /* Remove mobile specific transform on desktop */
+                padding-top: 1rem; /* Adjust padding if needed */
+            }
+            #gameScreen .flex.items.center.justify-center.my-3 {
+                margin: 0 1rem; /* Space around VS on desktop (reduced from 1.5rem to 1rem) */
+            }
+            #vsButtonSpan {
+                /* Ensure desktop specific transform */
+                transform: rotate(0deg);
+            }
+        }
+
+        /* Results Screen specific layout */
+        #resultsScreen main {
+            padding: 0 1rem; /* Consistent padding */
+        }
+        #resultsCardContainer {
+            display: flex;
+            flex-direction: column; /* Stack results cards vertically */
+            align-items: center;
+            padding-bottom: 1rem; /* Padding at the bottom of the scrollable area */
+        }
+        #championCardDisplay {
+            width: calc(100% - 2rem); /* Account for padding */
+            max-width: 450px; /* Max width for champion card */
+            margin-bottom: 1.5rem; /* Space below champion card (increased slightly) */
+        }
+        #resultsCardContainer > div:not(#championCardDisplay) {
+            width: calc(100% - 2rem);
+            max-width: 400px;
+            margin-top: 1rem; /* Space between other result cards */
+        }
+
+        @media (min-width: 768px) {
+            #resultsCardContainer {
+                flex-direction: row; /* Arrange side-by-side for desktop */
+                flex-wrap: wrap; /* Allow wrapping */
+                justify-content: center;
+                align-items: flex-start; /* Align items to the top */
+                gap: 1.5rem; /* Space between cards */
+                padding-top: 1rem; /* Adjust padding for desktop */
+            }
+            #championCardDisplay {
+                width: 30%; /* Adjust width for desktop layout */
+                min-width: 280px;
+                max-width: 400px;
+                margin-bottom: 0; /* Remove mobile specific margin */
+            }
+            #resultsCardContainer > div:not(#championCardDisplay) {
+                width: 25%; /* Adjust width for desktop layout */
+                min-width: 250px;
+                max-width: 300px;
+                margin-top: 0; /* Remove mobile specific margin */
+            }
+        }
+
+        /* Finish Screen specific layout */
+        #finishScreen .flex-col.flex-1.min-h-0 {
+            /* padding-bottom is handled by JS based on bottom nav */
+        }
+        #finishScreen .flex.overflow-x-auto {
+            padding-right: 1.5rem; /* Adjust padding to match left */
+            justify-content: flex-start; /* Align items to the start */
+        }
+        #moreDreamsContainer {
+            justify-content: flex-start; /* Ensure alignment */
+        }
+        #moreDreamsContainer > div {
+            flex-shrink: 0; /* Prevent items from shrinking */
+            width: 280px; /* Fixed width for consistency */
+            height: auto; /* Allow height to adjust */
+        }
+
+        /* Onboarding Modal specific styles */
+        #onboardingHowToPlayModal main {
+            max-height: 60vh; /* Set a max height for content to prevent overflow */
+            overflow-y: auto; /* Enable scrolling for modal content */
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling */
+        }
+        #onboardingHowToPlayContent ol {
+            list-style: none; /* Remove default list style */
+            padding-left: 0; /* Remove default padding */
+        }
+        #onboardingHowToPlayContent ol li {
+            margin-bottom: 0.5rem; /* Space between list items */
+        }
+
+        /* Spinner veya yükleniyor efekti için */
+        .image-loading {
+            background-color: #e0e0e0; /* Gri bir arka plan */
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" stroke="#cccccc" stroke-width="4" fill="none"/><path d="M25 5 A20 20 0 0 1 45 25" stroke="#999999" stroke-width="4" fill="none" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="1s" repeatCount="indefinite"/></path></svg>'); /* Küçük bir SVG spinner */
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 30px 30px;
+        }
     </style>
 </head>
 <body class="bg-[#FAF8F6]">
 
-    <div id="appContainer"> 
+    <div id="appContainer">
         <button id="globalHowToPlayButton" class="hidden-screen fixed top-3 right-3 z-40 text-slate-700 hover:text-blue-600">
             <span class="material-icons-outlined">help_outline</span>
         </button>
@@ -189,7 +396,7 @@
                     <div id="progressBarFill" class="h-full rounded-full bg-[#428aef]" style="width: 0%;"></div>
                 </div>
             </div>
-<div class="flex-1 min-h-0 px-3 flex flex-col items-center justify-center transform translate-y-2 sm:translate-y-4">
+<div class="flex-1 min-h-0 px-3 flex flex-col items-center justify-center">
                 <div class="flex flex-col items-center @md:flex-row @md:justify-center @md:items-center w-full">
                     <div class="card w-full max-w-md @md:max-w-sm bg-white rounded-xl shadow-xl overflow-hidden relative">
                         <div class="confetti-burst hidden"></div>
@@ -292,28 +499,28 @@
         </div>
 
         <div id="finishScreen" class="hidden-screen screen-content relative flex flex-col bg-slate-50">
-          <div class="flex flex-col flex-1 min-h-0">
-            <header class="flex items-center bg-slate-50 p-3 justify-end sticky top-0 z-10 shadow-sm game-header-bar"></header>
-            <div class="overflow-y-auto flex-1 min-h-0">
-                <div class="px-6 pt-6 pb-4 text-center">
-                    <svg class="w-16 h-16 mx-auto text-yellow-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
-                    <h1 class="text-[#0d131b] text-3xl font-bold leading-tight pb-2">Senin Dileğin Belli Oldu!</h1>
-                    <p id="winningWishTextFinish" class="text-slate-600 text-lg font-normal leading-relaxed"></p>
-                </div>
-                <div class="flex flex-col gap-3 px-6 py-4">
-                    <button id="shareChampionButton" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-14 px-6 flex-1 bg-[#428aef] text-slate-50 text-lg font-bold shadow-md hover:shadow-lg">
-                        <span class="material-icons mr-2">share</span> <span class="truncate">Şampiyonu Paylaş</span>
-                    </button>
-                    <button id="finishPlayAgainButton" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-14 px-6 flex-1 bg-slate-200 text-[#0d131b] text-lg font-bold hover:bg-slate-300">
-                        <span class="material-icons mr-2">replay</span> <span class="truncate">Yeni Turnuva Başlat</span>
-                    </button>
-                </div>
-                <div class="px-6 pt-8 pb-4"><h2 class="text-[#0d131b] text-2xl font-bold leading-tight">Diğer Popüler Hayaller...</h2></div>
-                <div class="flex overflow-x-auto [-ms-scrollbar-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden pl-6 pr-2 pb-6">
-                    <div id="moreDreamsContainer" class="flex items-stretch gap-4"></div>
+            <div class="flex flex-col flex-1 min-h-0">
+                <header class="flex items-center bg-slate-50 p-3 justify-end sticky top-0 z-10 shadow-sm game-header-bar"></header>
+                <div class="overflow-y-auto flex-1 min-h-0">
+                    <div class="px-6 pt-6 pb-4 text-center">
+                        <svg class="w-16 h-16 mx-auto text-yellow-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+                        <h1 class="text-[#0d131b] text-3xl font-bold leading-tight pb-2">Senin Dileğin Belli Oldu!</h1>
+                        <p id="winningWishTextFinish" class="text-slate-600 text-lg font-normal leading-relaxed"></p>
+                    </div>
+                    <div class="flex flex-col gap-3 px-6 py-4">
+                        <button id="shareChampionButton" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-14 px-6 flex-1 bg-[#428aef] text-slate-50 text-lg font-bold shadow-md hover:shadow-lg">
+                            <span class="material-icons mr-2">share</span> <span class="truncate">Şampiyonu Paylaş</span>
+                        </button>
+                        <button id="finishPlayAgainButton" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-14 px-6 flex-1 bg-slate-200 text-[#0d131b] text-lg font-bold hover:bg-slate-300">
+                            <span class="material-icons mr-2">replay</span> <span class="truncate">Yeni Turnuva Başlat</span>
+                        </button>
+                    </div>
+                    <div class="px-6 pt-8 pb-4"><h2 class="text-[#0d131b] text-2xl font-bold leading-tight">Diğer Popüler Hayaller...</h2></div>
+                    <div class="flex overflow-x-auto [-ms-scrollbar-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden pl-6 pr-2 pb-6">
+                        <div id="moreDreamsContainer" class="flex items-stretch gap-4"></div>
+                    </div>
                 </div>
             </div>
-          </div>
         </div>
 
         <div id="howToPlayScreen" class="hidden-screen screen-content relative flex flex-col bg-slate-50 p-0">
@@ -331,17 +538,9 @@
                     <ol class="list-decimal list-inside space-y-2">
                         <li>Sana sunulan iki hayali haberden birini seç. Gerçek olmasını en çok istediğini oyla.</li>
                         <li>Seçimlerinizle dileğiniz olan haberler turnuvada ilerleyecek:
-                            <ul class="list-disc list-inside pl-6 space-y-1 mt-1">
-                                <li><strong>Eleme Turu:</strong> 16 senaryo arasından 8 kazanan (8 maç).</li>
-                                <li><strong>Çeyrek Final:</strong> 8 senaryodan 4 kazanan (4 maç).</li>
-                                <li><strong>Yarı Final:</strong> 4 senaryodan 2 finalist (2 maç).</li>
-                                <li><strong>Final:</strong> 2 finalistten şampiyon haber seçilir (1 maç)!</li>
-                            </ul>
-                        </li>
-                        <li>Oyun sonunda şampiyon olan dileğinizi ve diğer popüler dilekleri görebilirsiniz.</li>
-                        <li>Alt menüden istediğiniz zaman Anasayfa, Oyna veya Sonuçlar ekranlarına geçebilirsiniz.</li>
+                        <li>Oyun sonunda sizin gelecek için dileğinizi ve ülkenin en çok beklediği haberleri görebilirsiniz.</li>
                         <li>Sağ üstteki <span class="material-icons-outlined text-sm">help_outline</span> ikonundan bu ekrana tekrar ulaşabilirsiniz (oyun sırasında).</li>
-                        <li>İyi eğlenceler ve en iyi geleceği seçin!</li>
+                        <li>İyi eğlenceler!</li>
                     </ol>
                     <p class="text-sm text-slate-500 mt-8 border-t border-slate-300 pt-4">
                         <strong>Lütfen Dikkat:</strong> Bu oyunda yer alan tüm "dilekler", "gelecek senaryoları", "haber başlıkları" ve açıklamalar tamamen hayal ürünü olup kurgusaldır. Gerçek kişi, kurum veya olaylarla hiçbir ilgisi bulunmamaktadır. UtopiArena yalnızca eğlence amacıyla tasarlanmıştır.
@@ -397,12 +596,6 @@
             </div>
         </nav>
     </div>
-    <div id="desktopWarningScreen" class="hidden-screen fixed inset-0 z-[200] flex flex-col items-center justify-center bg-slate-900 text-white p-8 text-center leading-relaxed">
-        <span class="material-icons-outlined text-7xl text-sky-400 mb-6">phone_iphone</span>
-        <h2 class="text-3xl font-bold mb-4 text-sky-300">UtopiArena Mobil Deneyimi!</h2>
-        <p class="text-lg mb-3">Bu macera en güzel mobil cihazlarda yaşanır.</p>
-        <p class="text-md text-slate-300 mb-6">En iyi deneyim için lütfen UtopiArena'yı telefonunuzdan ziyaret edin.</p>
-    </div>
 
 <script>
     // ---------- DOM Elementleri ----------
@@ -412,7 +605,7 @@
         winnerPopup: document.getElementById('winnerPopupScreen'),
         results: document.getElementById('resultsScreen'),
         finish: document.getElementById('finishScreen'),
-        howToPlay: document.getElementById('howToPlayScreen'), // Key: 'howToPlay', Element ID: 'howToPlayScreen'
+        howToPlay: document.getElementById('howToPlayScreen'),
         sponsoredPopup: document.getElementById('sponsoredPopupScreen')
     };
     const globalHowToPlayButton = document.getElementById('globalHowToPlayButton');
@@ -435,7 +628,7 @@
     const sponsoredPopupContent = document.getElementById('sponsoredPopupContent');
     const closeSponsoredPopupButton = document.getElementById('closeSponsoredPopupButton');
     const sponsoredPopupTitleText = document.getElementById('sponsoredPopupTitleText');
-    const sponsoredPopupImage = document.getElementById('sponsoredPopupImage'); // Bu ID'li img elementi sponsor popup içinde
+    const sponsoredPopupImage = document.getElementById('sponsoredPopupImage');
     const sponsoredPopupDescriptionText = document.getElementById('sponsoredPopupDescriptionText');
     const sponsoredPopupLink = document.getElementById('sponsoredPopupLink');
 
@@ -483,56 +676,159 @@
         title: "Artık ikisi de ütopya değil!",
         description: "Samsung Bespoke AI Buzdolabı ile geleceğin teknolojileri evinize geldi.",
         image: "https://i.ibb.co/Kj70CdwF/image.png", imageSeed: null,
-        link: "https://www.samsung.com/tr/home-appliances/bespoke-home/?gad_source=1&gad_campaignid=21450180449&gbraid=0AAAAAD2gkfW5E2S3kMwBuWPlYFKrdtHfP&gclid=CjwKCAjwi-DBBhA5EiwAXOHsGUZ_AI9UaOv6drI3rnMCy15Ak3KhYxPdW7ZRU-lbD0FWs15154af7BoCwcQQAvD_BwE&gclsrc=aw.ds"
+        link: "https://www.samsung.com/tr/home-appliances/bespoke-home/?gad_source=1&gad_campaignid=21450180449&gbraid=0AAAAAD2gkfW5E2S3kMwBuWPlYFKrdtHfP&gclid=CjwKCAjwi-DBBhA5EiwAXOHsGUZ_AI9UaOv6drI3rnMC15Ak3KhYxPdW7ZRU-lbD0FWs15154af7BoCwcQQAvD_BwE&gclsrc=aw.ds"
     };
 
     const wishes = [
-        { id:1, title: "İzmir Belediyesi: Gece 00:00–05:00 Arası Ücretsiz Taksi Hizmeti Başladı", description: "Gece çalışan, okuyan ya da çıkan herkese bir tuşla güvenli ulaşım imkanı sunuluyor. ", imageSeed: "https://i.ibb.co/vvjLGRgT/Ads-z-tasar-m.png" },
-        { id:2, title: "Türkiye’de Öğrencilere Aylık 2000 TL Kültür-Sanat Bütçesi Verilecek", description: "Sinema, tiyatro, konser ve kitap harcamalarında kullanılmak üzere öğrenci kartlarına aylık 2000 TL destek sağlanıyor. Gençlerin kültürel hayata daha aktif katılımı ve entelektüel gelişimi amaçlanıyor.", imageSeed: "https://i.ibb.co/932xx9Wm/Chat-GPT-Image-May-29-2025-02-43-51-PM.png" },
-        { id:3, title: "Haluk Bilginer, Oscar Kazandı: “Yılın En İyi Yardımcı Erkek Oyuncusu”", description: "Sahnede yaptığı dokunaklı konuşmada Türkiye’ye selam gönderdi. Oyunculuk kariyerinde bir zirve daha: Dünya basını bu anı ayakta alkışladı.", imageSeed: "https://i.ibb.co/q33VvYd3/Chat-GPT-Image-May-29-2025-03-10-29-AM.png" },
-        { id:4, title: "Avrupa Birliği Türkiye’ye Vizeyi Kaldırdı", description: "2026’dan itibaren kimlik kartıyla serbest geçiş dönemi başlıyor. Vize randevu kuyruğu tarih oldu, böylece vatandaşların seyahat özgürlüğü önemli ölçüde arttı.", imageSeed: "https://i.ibb.co/JWWGksJx/Chat-GPT-Image-May-29-2025-02-48-58-PM.png" },
-        { id:5, title: "WhatsApp’a “Yazdı Geri Sildi Ne Yazdı?” Özelliği Geldi", description: "Artık sildiği mesajı 5 saniyeliğine görebiliyorsun. “Az önce ne diyordun?” devri başladı, o büyük merak sonunda ortadan kalktı.", imageSeed: "https://i.ibb.co/sp7GCqFv/Chat-GPT-Image-May-29-2025-02-53-37-PM.png" },
-        { id:6, title: "Instagram “Yanlışlıkla Beğendiğin Fotoğrafı 10 Saniye İçinde Geri Al” Özelliğini Açtı", description: "2017 yılındaki bir fotoğrafa yanlışlıkla kalp bırakma kabusu bitti.", imageSeed: "https://i.ibb.co/HfVHy1kb/Chat-GPT-Image-May-29-2025-03-09-39-PM.png" },
-        { id:7, title: "İlk Türk Formula 1 Pilotu: 19 Yaşındaki Emir Aslan, Monza’da start aldı!", description: "Genç pilot ilk yarışında sekizinci sırada bitirerek puan almayı başardı. ", imageSeed: "https://i.ibb.co/Kj0KX6Xq/Chat-GPT-Image-May-29-2025-12-59-58-PM.png" },
-        { id:8, title: "Türkiye, Kadın-Erkek Eşitliği Endeksinde İlk 20’ye Girdi", description: "Eğitimde, iş hayatında ve evde kadın-erkek eşitliği uluslararası raporlarla tescillendi. ", imageSeed: "https://i.ibb.co/8D5yXv0K/Chat-GPT-Image-May-29-2025-02-46-14-PM.png" },
-        { id:9, title: "Beren Yıldız, Nobel Fizik Ödülünü Kazandı: “Evrenin Nabzını Dinledik”", description: "ODTÜ’lü başarılı bilim kadını, kuantum kütleçekim alanındaki temel denklemi çözdü.", imageSeed: "https://i.ibb.co/N21NBh6S/Chat-GPT-Image-May-29-2025-02-51-54-PM.png" },
-        { id:10, title: "Türkiye, 2029’da Eurovision’a Geri Döndü: Mabel Matiz Avrupa’yı Salladı", description: "Yarışmada seslendirdiği “Surface” adlı şarkısı, sahnede kullanılan ebru animasyonu ve etkileyici bağlama solosuyla tüm Avrupa’yı büyüledi.", imageSeed: "https://i.ibb.co/ycYF3DTj/Chat-GPT-Image-May-29-2025-12-56-35-AM.png" },
-        { id:11, title: "Haftada 4 Gün Çalışma Yasası Resmi Gazete’de Yayınlandı", description: "Artık cuma günü de resmi tatil ilan edildi. Aynı maaşla, daha az stresle yepyeni bir hayat başlıyor, genel iş-yaşam dengesi önemli ölçüde iyileşiyor.", imageSeed: "https://i.ibb.co/tMNVV4qG/Chat-GPT-Image-May-29-2025-12-52-25-AM.png" },
-        { id:12, title: "Boğaziçi Üniversitesi, Dünya Üniversite Sıralamasında İlk 100’e Girdi!", description: "Times Higher Education'ın saygın listesine göre Türkiye’den ilk kez bir üniversite 98. sırada yer aldı. Bu, eğitimde uluslararası bir başarı olarak tescillendi.", imageSeed: "https://i.ibb.co/VYXvWZyb/Chat-GPT-Image-May-29-2025-03-13-00-PM.png" },
-        { id:13, title: "Merkez Bankası, Enflasyon Tahminini %4’ten %3,5’e Düşürdü!", description: "Temel gıda ürünlerinde ve kiralarda belirgin bir düşüş başladı.", imageSeed: "https://i.ibb.co/HfSjcb19/Chat-GPT-Image-May-29-2025-03-44-18-PM.png" },
-        { id:14, title: "Türkiye’de Şehir Parkları ve Yeşil Alanlar 5 Yılda %42 Arttı", description: "Şehirlerde betonun yerini artık ağaç gölgeleri, otobüsün yerini ise bisiklet yolları aldı. ", imageSeed: "https://i.ibb.co/r263M7rN/Chat-GPT-Image-May-29-2025-03-13-04-PM.png" },
-        { id:15, title: "Türkiye, 2028 Avrupa Futbol Şampiyonu Oldu!", description: "Unutulmaz finalde Almanya’yı 3-2 yendik. Maçın 89. dakikasında Arda Güler'in attığı frikik golüyle millilerimiz tarih yazdı, tüm ülke büyük bir sevince boğuldu.", imageSeed: "https://i.ibb.co/zV9g4Pdf/Chat-GPT-Image-May-29-2025-12-24-44-AM.png" },
-        { id:16, title: "Filenin Sultanları, Paris 2028’de Altın Madalya Kazandı!", description: "Nefes kesen finalde Brezilya’ya karşı alınan 3-1'lik skorla şampiyonluk geldi.", imageSeed: "https://i.ibb.co/R4jrvBMx/Ads-z-tasar-m-1.png" }
+        { id:1, title: "İzmir Belediyesi: Gece 00:00–05:00 Arası Ücretsiz Taksi Hizmeti Başladı", description: "Gece çalışan, okuyan ya da çıkan herkese bir tuşla güvenli ulaşım imkanı sunuluyor. ", imageSeed: "https://i.ibb.co/zhyF4pVq/Ads-z-tasar-m-4.png" },
+        { id:2, title: "Türkiye’de Öğrencilere Aylık 2000 TL Kültür-Sanat Bütçesi Verilecek", description: "Sinema, tiyatro, konser ve kitap harcamalarında kullanılmak üzere öğrenci kartlarına aylık 2000 TL destek sağlanıyor.", imageSeed: "https://i.ibb.co/sd5ZCLLp/Ads-z-tasar-m-3.png" },
+        { id:3, title: "Haluk Bilginer, Oscar Kazandı: “Yılın En İyi Yardımcı Erkek Oyuncusu”", description: "Sahnede yaptığı dokunaklı konuşmada Türkiye’ye selam gönderdi. Oyunculuk kariyerinde bir zirve daha: Dünya basını bu anı ayakta alkışladı.", imageSeed: "https://i.ibb.co/5X0C22T3/5.png" },
+        { id:4, title: "Avrupa Birliği Türkiye’ye Vizeyi Kaldırdı", description: "2026’dan itibaren kimlik kartıyla serbest geçiş dönemi başlıyor. Vize randevu kuyruğu tarih oldu.", imageSeed: "https://i.ibb.co/BKY6x5d6/14.png" },
+        { id:5, title: "WhatsApp’a “Yazdı Geri Sildi Ne Yazdı?” Özelliği Geldi", description: "Artık sildiği mesajı 5 saniyeliğine görebiliyorsun. “Az önce ne diyordun?” devri başladı, o büyük merak sonunda ortadan kalktı.", imageSeed: "https://i.ibb.co/84jDBzCZ/11.png" },
+        { id:6, title: "Instagram “Yanlışlıkla Beğendiğin Fotoğrafı 10 Saniye İçinde Geri Al” Özelliğini Açtı", description: "2017 yılındaki bir fotoğrafa yanlışlıkla kalp bırakma kabusu bitti.", imageSeed: "https://i.ibb.co/BVsrTTNS/15.png" },
+        { id:7, title: "İlk Türk Formula 1 Pilotu: 19 Yaşındaki Emir Aslan, Monza’da start aldı!", description: "Genç pilot ilk yarışında sekizinci sırada bitirerek puan almayı başardı. ", imageSeed: "https://i.ibb.co/mr6p5PNj/12.png" },
+        { id:8, title: "Türkiye, Kadın-Erkek Eşitliği Endeksinde İlk 20’ye Girdi", description: "Eğitimde, iş hayatında ve evde kadın-erkek eşitliği uluslararası raporlarla tescillendi. ", imageSeed: "https://i.ibb.co/h19j4PMW/16.png" },
+        { id:9, title: "Beren Yıldız, Nobel Fizik Ödülünü Kazandı: “Evrenin Nabzını Dinledik”", description: "ODTÜ’lü başarılı bilim kadını, kuantum kütleçekim alanındaki temel denklemi çözdü.", imageSeed: "https://i.ibb.co/wNd03smw/13.png" },
+        { id:10, title: "Türkiye, 2029’da Eurovision’a Geri Döndü: Mabel Matiz Avrupa’yı Salladı", description: "Yarışmada seslendirdiği “Surface” adlı şarkısı, sahnede kullanılan ebru animasyonu ve etkileyici bağlama solosuyla tüm Avrupa’yı büyüledi.", imageSeed: "https://i.ibb.co/tPHmQTkx/1.png" },
+        { id:11, title: "Haftada 4 Gün Çalışma Yasası Resmi Gazete’de Yayınlandı", description: "Artık cuma günü de resmi tatil ilan edildi. Aynı maaşla, daha az stresle yepyeni bir hayat başlıyor, genel iş-yaşam dengesi önemli ölçüde iyileşiyor.", imageSeed: "https://i.ibb.co/398Mt1t1/3.png" },
+        { id:12, title: "Boğaziçi Üniversitesi, Dünya Üniversite Sıralamasında İlk 100’e Girdi!", description: "Times Higher Education'ın saygın listesine göre Türkiye’den ilk kez bir üniversite 98. sırada yer aldı. ", imageSeed: "https://i.ibb.co/JWwgJP6w/7.png" },
+        { id:13, title: "Merkez Bankası, Enflasyon Tahminini %4’ten %3,5’e Düşürdü!", description: "Temel gıda ürünlerinde ve kiralarda belirgin bir düşüş başladı.", imageSeed: "https://i.ibb.co/4gfF8wJQ/6.png" },
+        { id:14, title: "Türkiye’de Şehir Parkları ve Yeşil Alanlar 5 Yılda %42 Arttı", description: "Şehirlerde betonun yerini artık ağaç gölgeleri, otobüsün yerini ise bisiklet yolları aldı. ", imageSeed: "https://i.ibb.co/1fDFZcS9/9.png" },
+        { id:15, title: "Türkiye, 2028 Avrupa Futbol Şampiyonu Oldu!", description: "Unutulmaz finalde Almanya’yı 3-2 yendik. Maçın 89. dakikasında Arda Güler'in attığı frikik golüyle millilerimiz tarih yazdı, tüm ülke büyük bir sevince boğuldu.", imageSeed: "https://i.ibb.co/KpGDpzbt/2.png" },
+        { id:16, title: "Filenin Sultanları, Paris 2028’de Altın Madalya Kazandı!", description: "Nefes kesen finalde Brezilya’ya karşı alınan 3-1'lik skorla şampiyonluk geldi.", imageSeed: "https://i.ibb.co/nNNH3Lgb/Ads-z-tasar-m-2.png" }
     ];
 
+    // Global cache for preloaded images
+    let preloadedImagesCache = {};
+
     function getImageUrl(imageIdentifier, width = 600, height = 400) {
-        if (typeof imageIdentifier === 'string' && imageIdentifier.startsWith('http')) { return imageIdentifier; }
+        if (typeof imageIdentifier === 'string' && imageIdentifier.startsWith('http')) {
+            return imageIdentifier;
+        }
         const seed = imageIdentifier || `placeholder_${Math.random().toString(36).substring(7)}`;
-        return `https://picsum.photos/seed/${seed}/${width}/${height}`;
+        const url = `https://picsum.photos/seed/${seed}/${width}/${height}`;
+
+        // Return URL directly, preloading handled by preloadImages and setting src handled by loadImageAndSetSrc
+        return url;
     }
 
-    let imagesToPreload = [];
-    wishes.forEach(w => {
-        imagesToPreload.push(getImageUrl(w.imageSeed, 600, 400));
-        imagesToPreload.push(getImageUrl(w.imageSeed, 400, 225));
-        imagesToPreload.push(getImageUrl(w.imageSeed, 600, 300));
-    });
-    imagesToPreload.push(getImageUrl(SPONSORED_AD_DETAILS.imageSeed || SPONSORED_AD_DETAILS.image));
-    imagesToPreload.push(getImageUrl('champion_placeholder_final/600/400'));
-    imagesToPreload.push(getImageUrl('error_placeholder_results/600/400'));
-    imagesToPreload = [...new Set(imagesToPreload)];
-
-    function preloadImages() {
-        if (imagesToPreload.length === 0) { if(startGameButton) startGameButton.disabled = false; return; }
-        if(startGameButton) startGameButton.disabled = false; // Butonun her zaman aktif olmasını sağla
-        let loadedCount = 0;
-        imagesToPreload.forEach(imageUrl => {
-            const img = new Image();
-            img.onload = () => { loadedCount++; if (loadedCount === imagesToPreload.length) console.log("Tüm resimler arka planda yüklendi (UtopiArena)."); };
-            img.onerror = () => { loadedCount++; console.warn("Resim yüklenemedi (UtopiArena):", imageUrl); if (loadedCount === imagesToPreload.length) console.log("Resim yükleme denemeleri tamamlandı (UtopiArena).");};
-            img.src = imageUrl;
+    function preloadImages(imageUrls) {
+        if (!imageUrls || imageUrls.length === 0) {
+            return;
+        }
+        imageUrls.forEach(imageUrl => {
+            if (!preloadedImagesCache[imageUrl]) { // Only preload if not already in cache
+                const img = new Image();
+                img.src = imageUrl;
+                img.onload = () => {
+                    preloadedImagesCache[imageUrl] = true; // Mark as loaded
+                    // console.log(`Preloaded: ${imageUrl}`);
+                };
+                img.onerror = () => {
+                    console.warn(`Preload error for: ${imageUrl}`);
+                    preloadedImagesCache[imageUrl] = false; // Mark as failed
+                };
+            }
         });
     }
+
+    // Function to manage which images to preload based on the current screen
+    function managePreloads(screenId) {
+        let imagesToLoad = [];
+
+        // Initial load / Start Screen
+        if (screenId === 'start' || screenId === 'onboardingHowToPlayModal') {
+            // Preload images for the first 8 matches (all seeding wishes if total wishes are 16)
+            // Bu, Eleme Turu'ndaki tüm 16 haberin görselini önceden yükler.
+            const initialWishesToPreload = wishes.slice(0, 16); // Varsayılan olarak ilk 16 haberi yükle
+            initialWishesToPreload.forEach(w => {
+                imagesToLoad.push(getImageUrl(w.imageSeed, 600, 400));
+            });
+            // Also preload sponsored ad images if relevant
+            imagesToLoad.push(getImageUrl(SPONSORED_AD_DETAILS.imageSeed || SPONSORED_AD_DETAILS.image, 600, 300));
+        }
+        // In-game screen: preload next few matches
+        else if (screenId === 'game') {
+            // Preload next 4 matches (8 images) for smooth transitions
+            const nextMatchesStartIndex = currentMatchInStage * 2 + 2;
+            // Eleme turu için sonraki 4 maçı, diğer turlar için sonraki 2 maçı ön yükle
+            const preloadCount = (currentStage === STAGES.SEEDING) ? 8 : 4; // 4 maç (8 haber) veya 2 maç (4 haber)
+            const nextWishes = wishesForCurrentStage.slice(nextMatchesStartIndex, nextMatchesStartIndex + preloadCount);
+
+            nextWishes.forEach(w => {
+                imagesToLoad.push(getImageUrl(w.imageSeed, 600, 400));
+            });
+
+            // If nearing final stages, preload champion images
+            if (currentStage === STAGES.SEMIFINALS || currentStage === STAGES.FINAL) {
+                imagesToLoad.push(getImageUrl('champion_placeholder_final', 600, 400));
+            }
+        }
+        // Results or Finish screen: preload specific results/finish images
+        else if (screenId === 'results' || screenId === 'finish') {
+            if (champion) {
+                imagesToLoad.push(getImageUrl(champion.imageSeed, 600, 400)); // Champion image for results
+            }
+            // Other result cards
+            const fixedOtherWishIds = [8, 13, 4, 14];
+            fixedOtherWishIds.forEach(id => {
+                const wish = wishes.find(w => w.id === id);
+                if (wish && (!champion || wish.id !== champion.id)) {
+                    imagesToLoad.push(getImageUrl(wish.imageSeed, 600, 300));
+                }
+            });
+            // "More Dreams" images
+            const otherDreams = [...wishes].filter(w => w.id !== (champion ? champion.id : null));
+            shuffleArray(otherDreams);
+            for (let i = 0; i < Math.min(3, otherDreams.length); i++) {
+                imagesToLoad.push(getImageUrl(otherDreams[i].imageSeed, 400, 225));
+            }
+        }
+
+        // Clean up duplicates and start preloading
+        imagesToLoad = [...new Set(imagesToLoad)];
+        preloadImages(imagesToLoad);
+    }
+
+    // Function to load image and set src, handles blank until loaded and error states
+    function loadImageAndSetSrc(imgElement, imageUrl, altText, errorPlaceholderUrl = null) {
+        if (!imgElement) return;
+
+        // Görsel yüklenirken bir yükleniyor sınıfı ekleyin
+        imgElement.classList.add('image-loading');
+        imgElement.src = ''; // Clear existing src to prevent old image from showing
+        imgElement.alt = altText || '';
+
+        // Check if image is already in cache
+        if (preloadedImagesCache[imageUrl] === true) {
+            imgElement.src = imageUrl;
+            imgElement.alt = altText;
+            imgElement.classList.remove('image-loading'); // Remove spinner once loaded
+        } else if (preloadedImagesCache[imageUrl] === false) { // Previously failed to load
+            imgElement.src = errorPlaceholderUrl || 'https://via.placeholder.com/600x400?text=Görsel+Yüklenemedi'; // Use a generic error placeholder
+            imgElement.alt = "Görsel yüklenemedi.";
+            imgElement.classList.remove('image-loading'); // Remove spinner
+        } else {
+            const img = new Image();
+            img.src = imageUrl;
+            preloadedImagesCache[imageUrl] = 'loading'; // Mark as loading
+
+            img.onload = () => {
+                imgElement.src = imageUrl;
+                imgElement.alt = altText;
+                imgElement.classList.remove('image-loading'); // Remove spinner on successful load
+                preloadedImagesCache[imageUrl] = true;
+            };
+            img.onerror = () => {
+                console.warn(`Failed to load image: ${imageUrl}`);
+                imgElement.src = errorPlaceholderUrl || 'https://via.placeholder.com/600x400?text=Görsel+Yüklenemedi'; // Use a generic error placeholder
+                imgElement.alt = "Görsel yüklenemedi.";
+                imgElement.classList.remove('image-loading'); // Remove spinner on error
+                preloadedImagesCache[imageUrl] = false;
+            };
+        }
+    }
+
 
     function shuffleArray(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } }
 
@@ -540,18 +836,22 @@
         if(navHomeButton) navHomeButton.classList.remove('active', 'text-blue-600');
         if(navPlayButton) navPlayButton.classList.remove('active', 'text-blue-600');
         if(navResultsButton) navResultsButton.classList.remove('active', 'text-blue-600');
-        
+
         const isOverlayActive = (onboardingModal && !onboardingModal.classList.contains('hidden-screen')) ||
-                                (screens.winnerPopup && !screens.winnerPopup.classList.contains('hidden-screen')) ||
-                                (screens.sponsoredPopup && !screens.sponsoredPopup.classList.contains('hidden-screen')) ||
-                                (stageTransitionModal && !stageTransitionModal.classList.contains('hidden-screen'));
-        
-        const navHeightWithSpace = '70px'; 
-        const basePaddingBottom = '1rem'; 
-        
+                                 (screens.winnerPopup && !screens.winnerPopup.classList.contains('hidden-screen')) ||
+                                 (screens.sponsoredPopup && !screens.sponsoredPopup.classList.contains('hidden-screen')) ||
+                                 (stageTransitionModal && !stageTransitionModal.classList.contains('hidden-screen'));
+
+        const navHeightWithSpace = '70px'; // Approx height of bottom nav + some buffer
+        const screensThatNeedNavPadding = ['game', 'results', 'finish', 'howToPlay'];
+
+        // Reset padding for all screens' main content areas
         Object.values(screens).forEach(screen => {
-            if (screen && screen.style && screen.id !== 'sponsoredPopupScreen') { // Sponsor popup'ına padding ekleme
-                screen.style.paddingBottom = (screen.id === 'startScreen') ? '' : basePaddingBottom;
+            if (screen) {
+                const mainContentArea = screen.querySelector('main, .overflow-y-auto, .flex-1.min-h-0');
+                if (mainContentArea) {
+                    mainContentArea.style.paddingBottom = ''; // Reset
+                }
             }
         });
 
@@ -561,18 +861,22 @@
             if (globalHowToPlayButton) globalHowToPlayButton.classList.add('hidden-screen');
         } else {
             if (bottomNav) bottomNav.classList.remove('hidden-screen');
-            
+
             if (globalHowToPlayButton) {
-                 globalHowToPlayButton.classList[currentScreenId !== 'howToPlay' ? 'remove' : 'add']('hidden-screen');
+                globalHowToPlayButton.classList[currentScreenId !== 'howToPlay' ? 'remove' : 'add']('hidden-screen');
             }
 
-            const screensThatNeedNavPadding = ['game', 'results', 'finish', 'howToPlay'];
-            if (screensThatNeedNavPadding.includes(currentScreenId) && screens[currentScreenId]?.style) {
-                const mainContentArea = screens[currentScreenId].querySelector('main, .overflow-y-auto, .flex-1.min-h-0');
-                if (mainContentArea?.style) mainContentArea.style.paddingBottom = navHeightWithSpace;
-                else if (screens[currentScreenId].style) screens[currentScreenId].style.paddingBottom = navHeightWithSpace; // fallback
+            // Apply padding to the *scrollable content area* of the active screen
+            if (screensThatNeedNavPadding.includes(currentScreenId)) {
+                const activeScreen = screens[currentScreenId];
+                if (activeScreen) {
+                    const mainContentArea = activeScreen.querySelector('main, .overflow-y-auto, .flex-1.min-h-0');
+                    if (mainContentArea) {
+                        mainContentArea.style.paddingBottom = navHeightWithSpace;
+                    }
+                }
             }
-            
+
             if (currentScreenId === 'game' && navPlayButton) navPlayButton.classList.add('active', 'text-blue-600');
             else if ((currentScreenId === 'results' || currentScreenId === 'finish') && navResultsButton) navResultsButton.classList.add('active', 'text-blue-600');
             else if (navHomeButton && !isOverlayActive && !screensThatNeedNavPadding.includes(currentScreenId) && currentScreenId !== 'howToPlay') navHomeButton.classList.add('active', 'text-blue-600');
@@ -581,12 +885,16 @@
 
     function showModal(modalElement, modalContentElement, backdropElement = null) {
         if (!modalElement || !modalContentElement) return;
-        let tempPreviousScreenId = currentScreenId; 
+
+        document.body.style.overflow = 'hidden'; // Disable body scroll when modal is active
+
+        let tempPreviousScreenId = currentScreenId;
         modalElement.classList.remove('hidden-screen', 'opacity-0');
         modalElement.classList.add('flex', 'active', 'opacity-100');
         if (backdropElement) { backdropElement.classList.remove('opacity-0'); backdropElement.classList.add('opacity-100'); }
-        currentScreenId = modalElement.id; 
+        currentScreenId = modalElement.id;
         updateBottomNav();
+        // Only store previous screen if it's not another modal
         if (!['onboardingHowToPlayModal', 'stageTransitionModal', 'winnerPopupScreen', 'sponsoredPopupScreen'].includes(tempPreviousScreenId)) {
             previousScreenId = tempPreviousScreenId;
         }
@@ -594,19 +902,22 @@
 
     function hideModal(modalElement, modalContentElement, backdropElement = null, callback) {
         if (!modalElement || !modalContentElement) { if (callback) callback(); return; }
+
         modalElement.classList.remove('active', 'opacity-100');
         modalElement.classList.add('opacity-0');
         if (backdropElement) { backdropElement.classList.remove('opacity-100'); backdropElement.classList.add('opacity-0'); }
         setTimeout(() => {
             modalElement.classList.add('hidden-screen');
             modalElement.classList.remove('flex');
-            if (currentScreenId === modalElement.id) currentScreenId = previousScreenId || 'start';
+            if (currentScreenId === modalElement.id) currentScreenId = previousScreenId || 'start'; // Revert to previous non-modal screen
+            document.body.style.overflow = 'hidden'; // Keep body overflow hidden as per game design for screens
             updateBottomNav();
             if (callback) callback();
         }, 300);
     }
 
-    function showScreen(screenIdToShow) { // screenIdToShow is a key like 'start', 'game', 'howToPlay'
+    // showScreen fonksiyonu preloadları başlatacak şekilde güncelleniyor
+    function showScreen(screenIdToShow) {
         let activeModal = null;
         if (onboardingModal && !onboardingModal.classList.contains('hidden-screen')) activeModal = { el: onboardingModal, content: onboardingModalContent, backdrop: onboardingModalBackdrop };
         else if (screens.winnerPopup && !screens.winnerPopup.classList.contains('hidden-screen')) activeModal = { el: screens.winnerPopup, content: winnerPopupContentContainer, backdrop: null };
@@ -614,70 +925,70 @@
         else if (stageTransitionModal && !stageTransitionModal.classList.contains('hidden-screen')) activeModal = { el: stageTransitionModal, content: stageTransitionModalContent, backdrop: stageTransitionModalBackdrop };
 
         const displayActualScreen = () => {
-            if (screenIdToShow === 'onboardingModal') { showModal(onboardingModal, onboardingModalContent, onboardingModalBackdrop); return; }
-            if (screenIdToShow === 'winnerPopup') { displayWinnerPopupContent(); showModal(screens.winnerPopup, winnerPopupContentContainer); return; }
+            if (screenIdToShow === 'onboardingModal') { showModal(onboardingModal, onboardingModalContent, onboardingModalBackdrop); managePreloads(screenIdToShow); return; }
+            if (screenIdToShow === 'winnerPopup') { displayWinnerPopupContent(); showModal(screens.winnerPopup, winnerPopupContentContainer); managePreloads(screenIdToShow); return; }
             if (screenIdToShow === 'sponsoredPopup') {
                 if(sponsoredPopupTitleText) sponsoredPopupTitleText.textContent = SPONSORED_AD_DETAILS.title;
-                if(document.getElementById('sponsoredPopupImage')) document.getElementById('sponsoredPopupImage').src = getImageUrl(SPONSORED_AD_DETAILS.imageSeed || SPONSORED_AD_DETAILS.image); // Corrected ID usage
+                if(document.getElementById('sponsoredPopupImage')) loadImageAndSetSrc(document.getElementById('sponsoredPopupImage'), getImageUrl(SPONSORED_AD_DETAILS.imageSeed || SPONSORED_AD_DETAILS.image), "Sponsorlu Reklam");
                 if(sponsoredPopupDescriptionText) sponsoredPopupDescriptionText.textContent = SPONSORED_AD_DETAILS.description;
                 if(sponsoredPopupLink) sponsoredPopupLink.href = SPONSORED_AD_DETAILS.link;
-                showModal(screens.sponsoredPopup, sponsoredPopupContent); return;
+                showModal(screens.sponsoredPopup, sponsoredPopupContent); managePreloads(screenIdToShow); return;
             }
             if (!screens[screenIdToShow]) { console.error("Ekran bulunamadı:", screenIdToShow); return; }
-            
-            // Store previous screen ID correctly
+
             if (currentScreenId !== screenIdToShow && screens[currentScreenId] && !['onboardingHowToPlayModal', 'stageTransitionModal', 'winnerPopupScreen', 'sponsoredPopupScreen'].includes(screens[currentScreenId].id)) {
                 previousScreenId = currentScreenId;
             }
 
             Object.values(screens).forEach(screen => { if(screen && screen.id !== screens[screenIdToShow].id) screen.classList.add('hidden-screen'); });
             screens[screenIdToShow].classList.remove('hidden-screen');
-            currentScreenId = screenIdToShow; // currentScreenId is now the key, e.g., 'howToPlay'
-            
+            currentScreenId = screenIdToShow;
+
             const bodyClassList = document.body.classList;
-            if (screens.game) screens.game.classList.remove('final-match-theme', 'sponsored-round-theme'); 
-            bodyClassList.remove('background-animate', 'bg-[#FAF8F6]', 'bg-slate-50', 'bg-slate-100', 'bg-[#F0F4F8]'); // Added bg-[#F0F4F8]
+            if (screens.game) screens.game.classList.remove('final-match-theme', 'sponsored-round-theme');
+            bodyClassList.remove('background-animate', 'bg-[#FAF8F6]', 'bg-slate-50', 'bg-slate-100', 'bg-[#F0F4F8]', 'bg-slate-800');
+
             if (screenIdToShow === 'start') bodyClassList.add('background-animate', 'bg-[#FAF8F6]');
             else if (screens[screenIdToShow]) {
                 if (screenIdToShow === 'game') {
                     if (currentStage === STAGES.FINAL) {
                         screens.game.classList.add('final-match-theme');
-                    } else if (isSponsoredInterstitialActive) { 
+                        bodyClassList.add('bg-slate-800');
+                    } else if (isSponsoredInterstitialActive) {
                         screens.game.classList.add('sponsored-round-theme');
+                        bodyClassList.add('bg-[#F0F4F8]');
+                    } else {
+                        bodyClassList.add('bg-slate-50');
                     }
+                } else {
+                    let screenBg = 'bg-slate-50';
+                    if (screens[screenIdToShow].classList.contains('bg-[#FAF8F6]')) screenBg = 'bg-[#FAF8F6]';
+                    else if (screens[screenIdToShow].classList.contains('bg-slate-50')) screenBg = 'bg-slate-50';
+                    bodyClassList.add(screenBg);
                 }
-                // Determine correct body background based on current screen and state
-                let screenBg = 'bg-slate-50'; // Default
-                if (screens[screenIdToShow].classList.contains('bg-[#FAF8F6]')) screenBg = 'bg-[#FAF8F6]';
-                else if (screens[screenIdToShow].classList.contains('bg-slate-50')) screenBg = 'bg-slate-50';
-                
-                if (screenIdToShow === 'game' && isSponsoredInterstitialActive && screens.game.classList.contains('sponsored-round-theme')) {
-                    screenBg = 'bg-[#F0F4F8]';
-                } else if (screenIdToShow === 'game' && currentStage === STAGES.FINAL && screens.game.classList.contains('final-match-theme')) {
-                     // Final match theme already sets its own background on the #gameScreen div, so body can be neutral
-                    screenBg = 'bg-slate-800'; // Or a dark neutral for body if needed
-                }
-                bodyClassList.add(screenBg);
             }
             updateBottomNav();
             window.scrollTo(0,0);
+            managePreloads(screenIdToShow); // Ekran değiştiğinde preloadları yönet
         };
-        if (activeModal && activeModal.el.id !== (screens[screenIdToShow] ? screens[screenIdToShow].id : screenIdToShow) ) { // Compare with actual ID if it's a screen
-             hideModal(activeModal.el, activeModal.content, activeModal.backdrop, displayActualScreen);
-        } else displayActualScreen();
+        if (activeModal && activeModal.el.id !== (screens[screenIdToShow] ? screens[screenIdToShow].id : screenIdToShow) ) {
+            hideModal(activeModal.el, activeModal.content, activeModal.backdrop, displayActualScreen);
+        } else {
+            displayActualScreen();
+        }
     }
 
     function resetGameAndPlay(showOnboarding = false) {
         currentStage = STAGES.SEEDING; currentMatchInStage = 0; nextStageWishes = []; voteCounts = {}; champion = null; isSponsoredInterstitialActive = false;
-        localStorage.removeItem('sponsoredRoundShownThisSession');
+        localStorage.removeItem('sponsoredRoundShownThisSession'); // Reset sponsor ad state for new game
         let wishesForSeeding = [...wishes]; shuffleArray(wishesForSeeding); wishesForCurrentStage = wishesForSeeding.slice(0, 16);
         if (screens.game) screens.game.classList.remove('sponsored-round-theme', 'final-match-theme');
         if (showOnboarding) {
             showScreen('onboardingModal'); // This will set currentScreenId to 'onboardingHowToPlayModal'
         } else {
             updateProgressBar(); // Ensure progress bar is reset/updated
-            loadNextMatchUI();   // Load initial match UI
-            showScreen('game');  // Then show the game screen
+            loadNextMatchUI();    // Load initial match UI
+            showScreen('game');   // Then show the game screen
         }
     }
 
@@ -688,30 +999,38 @@
 
     function showSponsoredInterstitial() {
         isSponsoredInterstitialActive = true; localStorage.setItem('sponsoredRoundShownThisSession', 'true');
-        if (screens.game) { 
-            screens.game.classList.remove('final-match-theme'); 
-            screens.game.classList.add('sponsored-round-theme'); 
-            document.body.classList.remove('bg-slate-50', 'bg-[#FAF8F6]'); 
-            document.body.classList.add('bg-[#F0F4F8]'); 
+        if (screens.game) {
+            screens.game.classList.remove('final-match-theme');
+            screens.game.classList.add('sponsored-round-theme');
+            document.body.classList.remove('bg-slate-50', 'bg-[#FAF8F6]');
+            document.body.classList.add('bg-[#F0F4F8]');
         }
         if (progressTextElement) progressTextElement.textContent = "Sponsorlu Etap";
-        if (progressBarFill) progressBarFill.style.width = `${(4 / 8) * 100}%`; 
-        const sponsoredCardContent1 = { id: 'sp_card_1', title: "Ne Pişireceğinize Artık Buzdolabımız Karar Verebilecek!", description: "AI destekli buzdolabı, içerikteki malzemelere göre her gün yeni tarif öneriyor.", imageSeed: "https://i.ibb.co/ZzT2LKCb/image-21.png" };
-        const sponsoredCardContent2 = { id: 'sp_card_2', title: "İçindekileri Tanıyan ve Alışveriş Listesi Hazırlayan Buzdolabı duyuruldu! ", description: "Yapay zekâlı buzdolabı, eksikleri algılayıp ihtiyacın olan ürünleri liste halinde bildiriyor.", imageSeed: "https://i.ibb.co/n8cjQ8pV/Chat-GPT-Image-May-29-2025-02-20-27-PM.png" };
-        const card1TitleEl = gameScreenCards[0].querySelector('.card-title'), card1DescEl = gameScreenCards[0].querySelector('.card-description'), card1ImgEl = gameScreenCards[0].querySelector('img[data-role="card-image-img"]');
-        if (card1TitleEl) card1TitleEl.textContent = sponsoredCardContent1.title; if (card1DescEl) card1DescEl.textContent = sponsoredCardContent1.description;
-        if (card1ImgEl) { card1ImgEl.src = getImageUrl(sponsoredCardContent1.imageSeed); card1ImgEl.alt = sponsoredCardContent1.title; }
+        if (progressBarFill) progressBarFill.style.width = `${(4 / 8) * 100}%`;
+        const sponsoredCardContent1 = { id: 'sp_card_1', title: "Ne Pişireceğinize Artık Buzdolabımız Karar Verebilecek!", description: "AI destekli buzdolabı, içerikteki malzemelere göre her gün yeni tarif öneriyor.", imageSeed: "https://i.ibb.co/zhQtLZp2/10.png" };
+        const sponsoredCardContent2 = { id: 'sp_card_2', title: "İçindekileri Tanıyan ve Alışveriş Listesi Hazırlayan Buzdolabı duyuruldu! ", description: "Yapay zekâlı buzdolabı, eksikleri algılayıp ihtiyacın olan ürünleri liste halinde bildiriyor.", imageSeed: "https://i.ibb.co/sphC2bqB/8.png" };
+        
+        const card1TitleEl = gameScreenCards[0].querySelector('.card-title');
+        const card1DescEl = gameScreenCards[0].querySelector('.card-description');
+        const card1ImgEl = gameScreenCards[0].querySelector('img[data-role="card-image-img"]');
+        if (card1TitleEl) card1TitleEl.textContent = sponsoredCardContent1.title;
+        if (card1DescEl) card1DescEl.textContent = sponsoredCardContent1.description;
+        loadImageAndSetSrc(card1ImgEl, getImageUrl(sponsoredCardContent1.imageSeed), sponsoredCardContent1.title);
         gameScreenCards[0].dataset.wishId = sponsoredCardContent1.id;
-        const card2TitleEl = gameScreenCards[1].querySelector('.card-title'), card2DescEl = gameScreenCards[1].querySelector('.card-description'), card2ImgEl = gameScreenCards[1].querySelector('img[data-role="card-image-img"]');
-        if (card2TitleEl) card2TitleEl.textContent = sponsoredCardContent2.title; if (card2DescEl) card2DescEl.textContent = sponsoredCardContent2.description;
-        if (card2ImgEl) { card2ImgEl.src = getImageUrl(sponsoredCardContent2.imageSeed); card2ImgEl.alt = sponsoredCardContent2.title; }
+
+        const card2TitleEl = gameScreenCards[1].querySelector('.card-title');
+        const card2DescEl = gameScreenCards[1].querySelector('.card-description');
+        const card2ImgEl = gameScreenCards[1].querySelector('img[data-role="card-image-img"]');
+        if (card2TitleEl) card2TitleEl.textContent = sponsoredCardContent2.title;
+        if (card2DescEl) card2DescEl.textContent = sponsoredCardContent2.description;
+        loadImageAndSetSrc(card2ImgEl, getImageUrl(sponsoredCardContent2.imageSeed), sponsoredCardContent2.title);
         gameScreenCards[1].dataset.wishId = sponsoredCardContent2.id;
+        
         if (vsButtonSpan) { vsButtonSpan.classList.remove('vs-animate'); void vsButtonSpan.offsetWidth; vsButtonSpan.classList.add('vs-animate'); }
         gameScreenCards.forEach(c => { c.classList.remove('selected', 'not-selected'); c.style.pointerEvents = 'auto'; c.querySelector('.confetti-burst')?.classList.add('hidden'); c.style.visibility = 'visible';});
-        showScreen('game'); 
+        showScreen('game');
     }
 
-    // MODIFIED: advanceToNextStage
     function advanceToNextStage() {
         currentMatchInStage = 0; wishesForCurrentStage = [...nextStageWishes]; shuffleArray(wishesForCurrentStage); nextStageWishes = [];
         let nextLogicalStage = null;
@@ -722,81 +1041,97 @@
             default: if (champion) displayResultsScreen(); else resetGameAndPlay(); return;
         }
         currentStage = nextLogicalStage;
-        isSponsoredInterstitialActive = false; 
+        isSponsoredInterstitialActive = false;
         if (screens.game) screens.game.classList.remove('sponsored-round-theme');
 
         const showNextMatchSetup = () => {
             updateProgressBar();
             if (wishesForCurrentStage.length >= 2 || (currentStage === STAGES.FINAL && wishesForCurrentStage.length === 2) ) {
-                loadNextMatchUI(); // Bu fonksiyon kartları görünür yapacak
-                showScreen('game'); 
+                loadNextMatchUI(); // This function will populate cards and make them visible
+                showScreen('game');
             }
-            else if (wishesForCurrentStage.length === 1 && currentStage !== STAGES.FINAL) { champion = wishesForCurrentStage[0]; currentStage = STAGES.FINAL; currentMatchInStage = 1; updateProgressBar(); showScreen('winnerPopup'); }
-            else { console.error("Not enough wishes for current stage:", currentStage, wishesForCurrentStage); resetGameAndPlay(); }
+            else if (wishesForCurrentStage.length === 1 && currentStage !== STAGES.FINAL) { // Only one winner, so they are the champion
+                champion = wishesForCurrentStage[0];
+                currentStage = STAGES.FINAL; // Even if it's not a match, set stage to final to show winner popup
+                currentMatchInStage = 1; // Mark as finished for progress bar
+                updateProgressBar();
+                showScreen('winnerPopup');
+            }
+            else { console.error("Not enough wishes for current stage:", currentStage, wishesForCurrentStage); resetGameAndPlay(); return; }
         };
         let iconName = '', title = '', message = '', showTransition = false;
         if (currentStage === STAGES.QUARTERFINALS) { iconName = 'sports_score'; title = 'Çeyrek Finaller!'; message = 'En iyi hayaller bir üst tura yükseldi. Mücadele devam ediyor!'; showTransition = true; }
         else if (currentStage === STAGES.SEMIFINALS) { iconName = 'stars'; title = 'Yarı Finaller!'; message = 'Şampiyonluğa çok az kaldı! Son hayaller yarışıyor.'; showTransition = true; }
         else if (currentStage === STAGES.FINAL) { iconName = 'emoji_events'; title = 'BÜYÜK FİNAL!'; message = 'İşte şampiyonu belirleyecek o efsanevi karşılaşma!'; showTransition = true; }
-        
+
         if (showTransition && stageTransitionModal) {
-            // Geçiş modalı gösterilmeden önce kartları geçici olarak görünmez yap
+            // Temporarily hide cards before showing transition modal
             gameScreenCards.forEach(card => {
                 card.style.visibility = 'hidden';
             });
 
-            if(stageTransitionIcon) stageTransitionIcon.textContent = iconName; 
-            if(stageTransitionTitle) stageTransitionTitle.textContent = title; 
+            if(stageTransitionIcon) stageTransitionIcon.textContent = iconName;
+            if(stageTransitionTitle) stageTransitionTitle.textContent = title;
             if(stageTransitionMessage) stageTransitionMessage.textContent = message;
             showModal(stageTransitionModal, stageTransitionModalContent, stageTransitionModalBackdrop);
             setTimeout(() => {
                 hideModal(stageTransitionModal, stageTransitionModalContent, stageTransitionModalBackdrop, showNextMatchSetup);
-            }, 1250); // Geçiş mesajı için zaman aşımı
+            }, 1250); // Timeout for transition message
         } else {
             showNextMatchSetup();
         }
     }
-    
-    // MODIFIED: loadNextMatchUI
+
     function loadNextMatchUI() {
         if (currentStage === STAGES.SEEDING && currentMatchInStage === 4 && !localStorage.getItem('sponsoredRoundShownThisSession')) { showSponsoredInterstitial(); return; }
-        
+
         if (isSponsoredInterstitialActive && screens.game && !screens.game.classList.contains('sponsored-round-theme')) {
-             screens.game.classList.remove('final-match-theme');
-             screens.game.classList.add('sponsored-round-theme');
-             document.body.classList.remove('bg-slate-50','bg-[#FAF8F6]');
-             document.body.classList.add('bg-[#F0F4F8]');
+            screens.game.classList.remove('final-match-theme');
+            screens.game.classList.add('sponsored-round-theme');
+            document.body.classList.remove('bg-slate-50', 'bg-[#FAF8F6]');
+            document.body.classList.add('bg-[#F0F4F8]');
         } else if (!isSponsoredInterstitialActive && currentStage !== STAGES.FINAL && screens.game) {
-             screens.game.classList.remove('sponsored-round-theme', 'final-match-theme');
-             document.body.classList.remove('bg-[#F0F4F8]', 'bg-slate-800'); // final match body bg
-             document.body.classList.add('bg-slate-50'); 
+            screens.game.classList.remove('sponsored-round-theme', 'final-match-theme');
+            document.body.classList.remove('bg-[#F0F4F8]', 'bg-slate-800'); // final match body bg
+            document.body.classList.add('bg-slate-50');
         } else if (currentStage === STAGES.FINAL && screens.game) {
             screens.game.classList.remove('sponsored-round-theme');
             screens.game.classList.add('final-match-theme');
             document.body.classList.remove('bg-slate-50','bg-[#FAF8F6]', 'bg-[#F0F4F8]');
-            // Body bg for final match theme can be dark if needed, e.g., bg-slate-800, or rely on #gameScreen's bg
+            document.body.classList.add('bg-slate-800'); // Set dark background for final match
         }
-
 
         const [wish1, wish2] = getMatchPair();
-        if (!wish1 || !wish2) { 
-            advanceToNextStage(); 
-            return; 
+        if (!wish1 || !wish2) {
+            advanceToNextStage();
+            return;
         }
         if (vsButtonSpan) { vsButtonSpan.classList.remove('vs-animate'); void vsButtonSpan.offsetWidth; vsButtonSpan.classList.add('vs-animate'); }
-        const card1TitleEl = gameScreenCards[0].querySelector('.card-title'), card1DescEl = gameScreenCards[0].querySelector('.card-description'), card1ImgEl = gameScreenCards[0].querySelector('img[data-role="card-image-img"]');
-        if (card1TitleEl) card1TitleEl.textContent = wish1.title; if (card1DescEl) card1DescEl.textContent = wish1.description;
-        if (card1ImgEl) { card1ImgEl.src = getImageUrl(wish1.imageSeed); card1ImgEl.alt = wish1.title; } gameScreenCards[0].dataset.wishId = wish1.id;
-        const card2TitleEl = gameScreenCards[1].querySelector('.card-title'), card2DescEl = gameScreenCards[1].querySelector('.card-description'), card2ImgEl = gameScreenCards[1].querySelector('img[data-role="card-image-img"]');
-        if (card2TitleEl) card2TitleEl.textContent = wish2.title; if (card2DescEl) card2DescEl.textContent = wish2.description;
-        if (card2ImgEl) { card2ImgEl.src = getImageUrl(wish2.imageSeed); card2ImgEl.alt = wish2.title; } gameScreenCards[1].dataset.wishId = wish2.id;
-        
+
+        const card1TitleEl = gameScreenCards[0].querySelector('.card-title');
+        const card1DescEl = gameScreenCards[0].querySelector('.card-description');
+        const card1ImgEl = gameScreenCards[0].querySelector('img[data-role="card-image-img"]');
+        if (card1TitleEl) card1TitleEl.textContent = wish1.title;
+        if (card1DescEl) card1DescEl.textContent = wish1.description;
+        gameScreenCards[0].dataset.wishId = wish1.id;
+        loadImageAndSetSrc(card1ImgEl, getImageUrl(wish1.imageSeed), wish1.title);
+
+
+        const card2TitleEl = gameScreenCards[1].querySelector('.card-title');
+        const card2DescEl = gameScreenCards[1].querySelector('.card-description');
+        const card2ImgEl = gameScreenCards[1].querySelector('img[data-role="card-image-img"]');
+        if (card2TitleEl) card2TitleEl.textContent = wish2.title;
+        if (card2DescEl) card2DescEl.textContent = wish2.description;
+        gameScreenCards[1].dataset.wishId = wish2.id;
+        loadImageAndSetSrc(card2ImgEl, getImageUrl(wish2.imageSeed), wish2.title);
+
         gameScreenCards.forEach(c => {
-            c.classList.remove('selected', 'not-selected'); 
-            c.style.pointerEvents = 'auto'; 
+            c.classList.remove('selected', 'not-selected');
+            c.style.pointerEvents = 'auto';
             c.querySelector('.confetti-burst')?.classList.add('hidden');
-            c.style.visibility = 'visible'; // Kartlar yeni içerikle doldurulduktan sonra görünür yap
+            c.style.visibility = 'visible'; // Make cards visible after new content is loaded
         });
+        managePreloads('game'); // Preload next images while playing current match
     }
 
 
@@ -831,100 +1166,177 @@
     function handleCardSelection(selectedCardNode) {
         if (isSponsoredInterstitialActive) {
             if(sponsoredPopupTitleText) sponsoredPopupTitleText.textContent = SPONSORED_AD_DETAILS.title;
-            if(document.getElementById('sponsoredPopupImage')) document.getElementById('sponsoredPopupImage').src = getImageUrl(SPONSORED_AD_DETAILS.imageSeed || SPONSORED_AD_DETAILS.image);
+            if(document.getElementById('sponsoredPopupImage')) loadImageAndSetSrc(document.getElementById('sponsoredPopupImage'), getImageUrl(SPONSORED_AD_DETAILS.imageSeed || SPONSORED_AD_DETAILS.image), "Sponsorlu Reklam");
             if(sponsoredPopupDescriptionText) sponsoredPopupDescriptionText.textContent = SPONSORED_AD_DETAILS.description;
             if(sponsoredPopupLink) sponsoredPopupLink.href = SPONSORED_AD_DETAILS.link;
             showModal(screens.sponsoredPopup, sponsoredPopupContent); return;
         }
-        gameScreenCards.forEach(c => c.style.pointerEvents = 'none'); selectedCardNode.classList.add('selected');
-        const chosenId = selectedCardNode.dataset.wishId; const winner = wishes.find(w => w.id == chosenId);
-        if (currentStage === STAGES.FINAL) { champion = winner; currentMatchInStage++; updateProgressBar(); setTimeout(()=> { showScreen('winnerPopup'); }, 1000); return; }
+        gameScreenCards.forEach(c => c.style.pointerEvents = 'none'); // Disable clicks on cards temporarily
+        selectedCardNode.classList.add('selected'); // Highlight selected card
+
+        const chosenId = selectedCardNode.dataset.wishId;
+        const winner = wishes.find(w => w.id == chosenId);
+
+        if (currentStage === STAGES.FINAL) {
+            champion = winner;
+            currentMatchInStage++;
+            updateProgressBar();
+            setTimeout(()=> {
+                showScreen('winnerPopup');
+            }, 1000); // Show winner popup after a short delay
+            return;
+        }
+
         if (winner) nextStageWishes.push(winner);
-        if (currentStage === STAGES.SEEDING) voteCounts[chosenId] = (voteCounts[chosenId] || 0) + 1;
+        if (currentStage === STAGES.SEEDING) voteCounts[chosenId] = (voteCounts[chosenId] || 0) + 1; // Track votes only in seeding round
+
+        // Show confetti on selected card
         const confetti = selectedCardNode.querySelector('.confetti-burst');
-        if (confetti) { confetti.classList.remove('hidden'); setTimeout(() => confetti.classList.add('hidden'), 700); }
-        gameScreenCards.forEach(oc => { if (oc !== selectedCardNode) oc.classList.add('not-selected'); });
+        if (confetti) {
+            confetti.classList.remove('hidden');
+            setTimeout(() => confetti.classList.add('hidden'), 700); // Hide confetti after animation
+        }
+
+        // Fade out non-selected card
+        gameScreenCards.forEach(oc => {
+            if (oc !== selectedCardNode) oc.classList.add('not-selected');
+        });
+
         setTimeout(() => {
-            currentMatchInStage++; updateProgressBar(); let totalMatchesInThisStage = 0;
+            currentMatchInStage++;
+            updateProgressBar();
+
+            let totalMatchesInThisStage = 0;
             if (currentStage === STAGES.SEEDING) totalMatchesInThisStage = wishesForCurrentStage.length / 2;
             else if (currentStage === STAGES.QUARTERFINALS) totalMatchesInThisStage = wishesForCurrentStage.length / 2;
             else if (currentStage === STAGES.SEMIFINALS) totalMatchesInThisStage = wishesForCurrentStage.length / 2;
-            if (currentMatchInStage >= totalMatchesInThisStage && currentStage !== STAGES.FINAL) advanceToNextStage();
-            else if (currentStage !== STAGES.FINAL) loadNextMatchUI();
-        }, 1000);
+
+            if (currentMatchInStage >= totalMatchesInThisStage && currentStage !== STAGES.FINAL) {
+                advanceToNextStage(); // Move to the next stage
+            } else if (currentStage !== STAGES.FINAL) {
+                loadNextMatchUI(); // Load the next match in the current stage
+            }
+        }, 1000); // Delay before moving to the next match or stage
     }
 
     function displayWinnerPopupContent() {
         if (!champion) {
             console.warn("Şampiyon popup için şampiyon belirlenmedi. Fallback.");
-            if (wishesForCurrentStage.length > 0) champion = wishesForCurrentStage[0]; else if (wishes.length > 0) champion = wishes[0];
-            else { if(winnerPopupTitle) winnerPopupTitle.textContent = "Hata"; if(winnerPopupDescription) winnerPopupDescription.textContent = "Şampiyon bulunamadı."; if(winnerPopupImage) winnerPopupImage.src = getImageUrl('error_placeholder_results/600/400'); return; }
+            // Try to find a champion if not explicitly set (e.g., direct navigation to results)
+            const sortedByVotes = Object.keys(voteCounts).sort((a,b) => voteCounts[b] - voteCounts[a]);
+            if (sortedByVotes.length > 0) champion = wishes.find(w => w.id == sortedByVotes[0]);
+            else if (wishes.length > 0) champion = wishes[0]; // Fallback to first available wish
+            else {
+                if(winnerPopupTitle) winnerPopupTitle.textContent = "Hata!";
+                if(winnerPopupDescription) winnerPopupDescription.textContent = "Şampiyon bulunamadı.";
+                loadImageAndSetSrc(winnerPopupImage, getImageUrl('error_placeholder_results', 600, 400), "Error");
+                return;
+            }
         }
         if(winnerPopupSubtitle) winnerPopupSubtitle.textContent = `UtopiArena'da senin ve diğerlerinin oylarıyla geleceğin hayali bu oldu:`;
-        if(winnerPopupImage) { winnerPopupImage.src = getImageUrl(champion.imageSeed); winnerPopupImage.alt = champion.title; }
-        if(winnerPopupTitle) winnerPopupTitle.textContent = champion.title; if(winnerPopupDescription) winnerPopupDescription.textContent = champion.description;
+        if(winnerPopupTitle) winnerPopupTitle.textContent = champion.title;
+        if(winnerPopupDescription) winnerPopupDescription.textContent = champion.description;
+        loadImageAndSetSrc(winnerPopupImage, getImageUrl(champion.imageSeed), champion.title);
     }
 
     function displayResultsScreen() {
         const totalSeedingVotes = Object.values(voteCounts).reduce((sum, count) => sum + count, 0);
         if (!champion) {
+            // Attempt to determine champion from vote counts if not set
             const sortedByVotes = Object.keys(voteCounts).sort((a,b) => voteCounts[b] - voteCounts[a]);
             if (sortedByVotes.length > 0) champion = wishes.find(w => w.id == sortedByVotes[0]);
-            if (!champion && wishes.length > 0) champion = wishes[0]; // Fallback to first wish if no votes or champion
+            if (!champion && wishes.length > 0) champion = wishes[0]; // Fallback if no votes or champion
             else if (!champion) { console.error("Sonuç ekranı için şampiyon belirlenemedi."); showScreen('results'); return; } // Still no champion, show empty results
         }
         const championVoteCount = voteCounts[champion.id] || 0;
         const championPercentage = totalSeedingVotes > 0 ? ((championVoteCount / totalSeedingVotes) * 100).toFixed(1) : "0.0";
+
         if(championTitleResults) championTitleResults.textContent = champion.title;
-        if(championImageResults) { championImageResults.src = getImageUrl(champion.imageSeed); championImageResults.alt = champion.title; }
         if(championInfoResults) championInfoResults.textContent = `Başlangıç oylarının %${championPercentage}'i ile şampiyon oldu!`;
+        loadImageAndSetSrc(championImageResults, getImageUrl(champion.imageSeed, 600, 400), champion.title);
+
         if(resultsCardContainer && championCardDisplay) {
-            resultsCardContainer.innerHTML = ''; resultsCardContainer.appendChild(championCardDisplay); // Add champion card first
-            const fixedOtherWishIds = [8, 13, 4, 14]; // Example IDs, adjust as needed
+            resultsCardContainer.innerHTML = ''; // Clear previous results
+            resultsCardContainer.appendChild(championCardDisplay); // Add champion card first
+
+            const fixedOtherWishIds = [8, 13, 4, 14];
             const otherWishesToDisplay = fixedOtherWishIds.map(id => {
-                if (champion && id === champion.id) return null; // Don't show champion again
-                const wish = wishes.find(w => w.id === id); if (!wish) return null;
+                if (champion && id === champion.id) return null; // Don't show champion again if it's in fixed list
+                const wish = wishes.find(w => w.id === id);
+                if (!wish) return null;
                 return { ...wish, voteCount: voteCounts[id] || 0 };
             }).filter(w => w); // Remove nulls
 
             otherWishesToDisplay.slice(0, 3).forEach(w => { // Show up to 3 other wishes
                 if (!w || typeof w.voteCount === 'undefined') return;
                 const wishPercentage = totalSeedingVotes > 0 ? ((w.voteCount / totalSeedingVotes) * 100).toFixed(1) : "0.0";
-                resultsCardContainer.insertAdjacentHTML('beforeend',
-                    `<div class="bg-white shadow-lg rounded-2xl overflow-hidden mt-4"><div class="relative">
-                    <img alt="${w.title}" class="w-full object-cover" style="height: 10.5rem;" src="${getImageUrl(w.imageSeed, 600, 300)}"/>
-                    <div class="absolute inset-0 bg-hero-gradient"></div><div class="absolute bottom-0 left-0 p-4">
-                    <p class="text-white text-xl font-bold leading-tight">${w.title}</p><div class="flex items-center mt-1.5">
-                    <span class="material-icons text-red-400 mr-1" style="font-size: 18px;">favorite_border</span>
-                    <p class="text-white text-sm font-medium">Başlangıç oylarının %${wishPercentage}'ini aldı</p>
-                    </div></div></div></div>`);
+                const otherImageUrl = getImageUrl(w.imageSeed, 600, 300);
+
+                const div = document.createElement('div');
+                div.className = "bg-white shadow-lg rounded-2xl overflow-hidden mt-4";
+                div.innerHTML = `
+                    <div class="relative">
+                        <img alt="${w.title}" class="w-full object-cover" style="height: 10.5rem;" src=""/>
+                        <div class="absolute inset-0 bg-hero-gradient"></div>
+                        <div class="absolute bottom-0 left-0 p-4">
+                            <p class="text-white text-xl font-bold leading-tight">${w.title}</p>
+                            <div class="flex items-center mt-1.5">
+                                <span class="material-icons text-red-400 mr-1" style="font-size: 18px;">favorite_border</span>
+                                <p class="text-white text-sm font-medium">Başlangıç oylarının %${wishPercentage}'ini aldı</p>
+                            </div>
+                        </div>
+                    </div>`;
+                const imgEl = div.querySelector('img');
+                loadImageAndSetSrc(imgEl, otherImageUrl, w.title); // Use loadImageAndSetSrc for this too
+                resultsCardContainer.appendChild(div);
             });
-        } else console.error("Sonuç kart konteyneri bulunamadı.");
+        } else {
+            console.error("Sonuç kart konteyneri bulunamadı.");
+        }
         showScreen('results');
     }
 
     function displayFinishScreen() {
         if (!champion) {
-            console.warn("Bitiş ekranı için şampiyon yok. Fallback."); if (wishes.length > 0) champion = wishes[0];
-            else { if(winningWishTextFinishElement) winningWishTextFinishElement.textContent = "Turnuva tamamlandı! #UtopiArena"; if(moreDreamsContainer) moreDreamsContainer.innerHTML = ''; showScreen('finish'); return; }
+            console.warn("Bitiş ekranı için şampiyon yok. Fallback.");
+            if (wishes.length > 0) champion = wishes[0]; // Fallback to first wish if no champion
+            else {
+                if(winningWishTextFinishElement) winningWishTextFinishElement.textContent = "Turnuva tamamlandı! #UtopiArena";
+                if(moreDreamsContainer) moreDreamsContainer.innerHTML = '';
+                showScreen('finish');
+                return;
+            }
         }
         if(winningWishTextFinishElement) winningWishTextFinishElement.textContent = `Şampiyon dilek: ${champion.title}! Bunu arkadaşlarınla paylaş, belki birlikte gerçeğe dönüştürürüz!✨ #UtopiArena`;
         if(moreDreamsContainer) {
-            moreDreamsContainer.innerHTML = ''; const otherWishes = [...wishes].filter(w => w.id !== champion.id); shuffleArray(otherWishes);
-            for(let i=0; i<Math.min(3, otherWishes.length); i++){ const d=otherWishes[i]; if(!d||!d.title)continue;
-                moreDreamsContainer.insertAdjacentHTML('beforeend',
-                `<div class="flex flex-col gap-3 rounded-xl min-w-[280px] max-w-[280px] bg-white shadow-lg p-4">
+            moreDreamsContainer.innerHTML = '';
+            const otherWishes = [...wishes].filter(w => w.id !== champion.id);
+            shuffleArray(otherWishes);
+
+            for(let i=0; i<Math.min(3, otherWishes.length); i++){
+                const d=otherWishes[i];
+                if(!d || !d.title) continue;
+                const moreDreamImageUrl = getImageUrl(d.imageSeed, 400, 225);
+
+                const div = document.createElement('div');
+                div.className = "flex flex-col gap-3 rounded-xl min-w-[280px] max-w-[280px] bg-white shadow-lg p-4";
+                div.innerHTML = `
                     <div class="w-full overflow-hidden rounded-lg" style="height: 165.375px;">
-                        <img src="${getImageUrl(d.imageSeed, 400, 225)}" alt="${d.title}" class="w-full h-full object-cover">
+                        <img src="" alt="${d.title}" class="w-full h-full object-cover">
                     </div>
                     <p class="text-[#0d131b] text-base font-medium leading-normal flex-grow card-description-clamp" style="-webkit-line-clamp: 3; min-height: calc(1.4em * 3); max-height: calc(1.4em * 3 + 2px);">${d.title}</p>
                     <button data-wish-id="${d.id}" class="more-dreams-wish-button mt-auto flex items-center justify-center w-full h-10 rounded-lg bg-rose-100 text-rose-600 hover:bg-rose-200 transition-colors duration-200 text-sm font-semibold">
                         <span class="material-icons text-sm mr-1">favorite_border</span> Bunu dile!
-                    </button></div>`);
+                    </button>`;
+                const imgEl = div.querySelector('img');
+                loadImageAndSetSrc(imgEl, moreDreamImageUrl, d.title); // Use loadImageAndSetSrc for this too
+                moreDreamsContainer.appendChild(div);
             }
+            // Add event listeners for "Dile!" buttons
             document.querySelectorAll('.more-dreams-wish-button').forEach(button => {
                 button.addEventListener('click', (event) => {
-                    const wishId = event.currentTarget.dataset.wishId; const wishedItem = wishes.find(w => w.id == wishId);
+                    const wishId = event.currentTarget.dataset.wishId;
+                    const wishedItem = wishes.find(w => w.id == wishId);
                     if (wishedItem) alert(`"${wishedItem.title}" dileğini tuttun! Belki bir sonraki UtopiArena'da o şampiyon olur!`);
                 });
             });
@@ -932,17 +1344,15 @@
         showScreen('finish');
     }
 
+    // Event Listeners
     if(startGameButton) startGameButton.addEventListener('click', () => resetGameAndPlay(true));
-    
-    // MODIFIED: proceedFromOnboardingButton event listener
+
     if (proceedFromOnboardingButton) {
         proceedFromOnboardingButton.addEventListener('click', () => {
             hideModal(onboardingModal, onboardingModalContent, onboardingModalBackdrop, () => {
-                // Önce oyun içeriğini hazırla
                 updateProgressBar();
-                loadNextMatchUI(); // Bu fonksiyon kartları dolduracak ve görünür yapacak
-                // Sonra hazırlanmış oyun ekranını göster
-                showScreen('game'); 
+                loadNextMatchUI();
+                showScreen('game');
             });
         });
     }
@@ -951,45 +1361,57 @@
     if(closeWinnerPopupButton) closeWinnerPopupButton.addEventListener('click', () => hideModal(screens.winnerPopup, winnerPopupContentContainer, null, displayResultsScreen));
     if(winnerToResultsButton) winnerToResultsButton.addEventListener('click', () => hideModal(screens.winnerPopup, winnerPopupContentContainer, null, displayResultsScreen));
     if(closeSponsoredPopupButton) closeSponsoredPopupButton.addEventListener('click', () => {
-        hideModal(screens.sponsoredPopup, sponsoredPopupContent, null, () => { 
-            isSponsoredInterstitialActive = false; 
+        hideModal(screens.sponsoredPopup, sponsoredPopupContent, null, () => {
+            isSponsoredInterstitialActive = false;
             if (screens.game) {
                 screens.game.classList.remove('sponsored-round-theme');
-                document.body.classList.remove('bg-[#F0F4F8]'); 
-                document.body.classList.add('bg-slate-50'); 
+                document.body.classList.remove('bg-[#F0F4F8]');
+                document.body.classList.add('bg-slate-50');
             }
-            updateProgressBar(); 
-            loadNextMatchUI(); 
+            updateProgressBar();
+            loadNextMatchUI();
         });
     });
+
+    // Generic share function
     const genericShareFunction = () => {
         if(navigator.share && champion) {
-            navigator.share({ title: '🏆 UtopiArena Şampiyonu!', text: `Benim UtopiArena hayalim ve şampiyonu: "${champion.title}"! Sen de oyna ve kendi ütopyanı seç! #UtopiArena`, url: window.location.href })
+            navigator.share({
+                title: '🏆 UtopiArena Şampiyonu!',
+                text: `Benim UtopiArena hayalim ve şampiyonu: "${champion.title}"! Sen de oyna ve kendi ütopyanı seç! #UtopiArena`,
+                url: window.location.href
+            })
             .catch(error => console.log('Paylaşım hatası:', error));
-        } else if (champion) alert(`Şampiyon hayal: ${champion.title}!\n\n"${champion.title}" dileğini arkadaşlarınla paylaşarak bu harika geleceği yayabilirsin! #UtopiArena`);
-        else alert("Paylaşılacak bir şampiyon bulunamadı.");
+        } else if (champion) {
+            // Fallback for browsers that don't support Web Share API
+            alert(`Şampiyon hayal: ${champion.title}!\n\n"${champion.title}" dileğini arkadaşlarınla paylaşarak bu harika geleceği yayabilirsin! #UtopiArena`);
+        } else {
+            alert("Paylaşılacak bir şampiyon bulunamadı.");
+        }
     };
     if(winnerShareButtonPopup) winnerShareButtonPopup.addEventListener('click', genericShareFunction);
     if(shareChampionButtonFinish) shareChampionButtonFinish.addEventListener('click', genericShareFunction);
-    
+
+    // Navigation buttons
     if(globalHowToPlayButton) globalHowToPlayButton.addEventListener('click', () => showScreen('howToPlay'));
     if(closeHowToPlayButton) closeHowToPlayButton.addEventListener('click', () => showScreen(previousScreenId || 'game')); // Go back to previous screen or game
-    
+
     if(navHomeButton) navHomeButton.addEventListener('click', (e) => { e.preventDefault(); showScreen('start'); });
 
     if(navPlayButton) navPlayButton.addEventListener('click', (e) => {
         e.preventDefault();
-        const isGameRelatedScreen = currentScreenId === 'game' || 
-                                   (screens[previousScreenId]?.id === 'gameScreen' && 
-                                    (currentScreenId === 'howToPlay' ||
-                                     currentScreenId === 'stageTransitionModal' ||
-                                     currentScreenId === 'winnerPopupScreen' || 
-                                     currentScreenId === 'sponsoredPopupScreen'));
+        // Determine if we should resume current game or start new one
+        const isGameRelatedScreen = currentScreenId === 'game' ||
+                                     (screens[previousScreenId]?.id === 'gameScreen' &&
+                                      (currentScreenId === 'howToPlay' ||
+                                       currentScreenId === 'stageTransitionModal' ||
+                                       currentScreenId === 'winnerPopupScreen' ||
+                                       currentScreenId === 'sponsoredPopupScreen'));
 
         if (isGameRelatedScreen && !champion) { // If game is active or was paused, and not finished
-            showScreen('game'); 
-        } else {
-            resetGameAndPlay(); 
+            showScreen('game');
+        } else { // Game is finished or navigated away, start new
+            resetGameAndPlay();
         }
     });
 
@@ -997,25 +1419,15 @@
     const finishPlayAgainButton = document.getElementById('finishPlayAgainButton');
     if(finishPlayAgainButton) finishPlayAgainButton.addEventListener('click', () => { resetGameAndPlay(); });
 
+    // Initial setup on page load
     document.addEventListener('DOMContentLoaded', () => {
-        const appContainer = document.getElementById('appContainer');
-        const desktopWarningScreen = document.getElementById('desktopWarningScreen');
-        const DESKTOP_BREAKPOINT = 768; 
-
-        if (window.innerWidth >= DESKTOP_BREAKPOINT) {
-            if (appContainer) appContainer.style.display = 'none';
-            if (desktopWarningScreen) {
-                desktopWarningScreen.classList.remove('hidden-screen');
-                desktopWarningScreen.classList.add('flex'); 
-            }
-            document.body.style.overflow = 'hidden'; 
-        } else {
-            if (desktopWarningScreen) desktopWarningScreen.style.display = 'none'; 
-            if (appContainer) appContainer.style.display = 'block'; 
-            preloadImages();
-            showScreen('start');
-        }
+        // Uygulama başladığında, ilk görünecek ekranın ve ilk maçın görsellerini ön yükle
+        managePreloads('start'); // Başlangıç ekranında gerekli preloadları başlat
+        updateBottomNav(); // Initial navigation visibility and padding update
     });
+
+    // Update navigation visibility and padding on window resize
+    window.addEventListener('resize', updateBottomNav);
 </script>
 </body>
 </html>
