@@ -104,16 +104,27 @@
         .final-match-theme .card .card-description { color: #9ca3af; }
         .final-match-theme #vsButtonSpan { background: linear-gradient(45deg, #FFD700, #fbd38d) !important; color: #1A202C !important; box-shadow: 0 0 10px #FFD700; }
 
-        .sponsored-round-theme { background-color: #E0F2FE !important; }
-        .sponsored-round-theme .game-header-bar { background-color: #B9E0F8 !important; }
-        .sponsored-round-theme #progressTextElement { color: #0B578A !important; font-weight: bold !important; }
+        /* === YENİ SPONSORLU TEMA BAŞLANGICI === */
+        .sponsored-round-theme { background-color: #F0F4F8 !important; } /* Daha temiz, hafif soğuk gri */
+        .sponsored-round-theme .game-header-bar { background-color: #E1E8F0 !important; } /* Ana BG'den biraz koyu */
+        .sponsored-round-theme #progressTextElement { color: #1E40AF !important; font-weight: bold !important; } /* Güçlü mavi (Tailwind blue-800) */
+        .sponsored-round-theme #progressBarFill { background-color: #3B82F6 !important; } /* Canlı mavi (Tailwind blue-500) */
         .sponsored-round-theme .card {
-            border: 2px solid #0B578A;
-            background-color: #F0F9FF;
+            border: 1px solid #CBD5E0; /* İnce gri kenarlık (Tailwind gray-300) */
+            background-color: #FFFFFF !important; /* Temiz beyaz */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04), 0 0 15px rgba(59, 130, 246, 0.25) !important; /* Standart gölge + mavi parlama */
         }
-        .sponsored-round-theme .card .card-title { color: #0B578A; }
-        .sponsored-round-theme .card .card-description { color: #3B82F6; }
-        .sponsored-round-theme #vsButtonSpan { background: #0B578A !important; color: white !important; }
+        .sponsored-round-theme .card .card-title { color: #1E3A8A !important; } /* Koyu mavi (Tailwind blue-800) */
+        .sponsored-round-theme .card .card-description { color: #374151 !important; } /* Koyu gri (Tailwind gray-700) */
+        .sponsored-round-theme #vsButtonSpan {
+            background: linear-gradient(135deg, #3B82F6, #2563EB) !important; /* Mavi gradyan (blue-500 to blue-600) */
+            color: white !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1), 0 0 10px rgba(59, 130, 246, 0.3) !important; /* Hafif gölge + mavi parlama */
+            border-radius: 9999px; /* Yuvarlaklığı garanti et */
+            padding: 0.25rem 0.75rem !important; /* Padding ayarı */
+            font-size: 0.8rem !important; /* Font boyutu */
+        }
+        /* === YENİ SPONSORLU TEMA BİTİŞİ === */
 
         .tournament-card-glow { box-shadow: 0 0 15px 5px rgba(66, 138, 239, 0.5), 0 0 30px 10px rgba(66, 138, 239, 0.3); animation: pulse-glow-qf 2s infinite; }
         .tournament-final-card-glow { background: linear-gradient(135deg, #fff1c0 0%, #ffe082 100%); box-shadow: 0 0 20px 8px rgba(255, 215, 0, 0.6), 0 0 40px 15px rgba(255, 215, 0, 0.4); }
@@ -178,7 +189,7 @@
                     <div id="progressBarFill" class="h-full rounded-full bg-[#428aef]" style="width: 0%;"></div>
                 </div>
             </div>
-            <div class="flex-1 min-h-0 px-3 flex flex-col items-center justify-center">
+<div class="flex-1 min-h-0 px-3 flex flex-col items-center justify-center pt-6 sm:pt-10">
                 <div class="flex flex-col items-center @md:flex-row @md:justify-center @md:items-center w-full">
                     <div class="card w-full max-w-md @md:max-w-sm bg-white rounded-xl shadow-xl overflow-hidden relative">
                         <div class="confetti-burst hidden"></div>
@@ -390,9 +401,6 @@
         <h2 class="text-3xl font-bold mb-4 text-sky-300">UtopiArena Mobil Deneyimi!</h2>
         <p class="text-lg mb-3">Bu macera en güzel mobil cihazlarda yaşanır.</p>
         <p class="text-md text-slate-300 mb-6">En iyi deneyim için lütfen UtopiArena'yı telefonunuzdan ziyaret edin.</p>
-        <p class="text-sm text-slate-400">Tarayıcınızın "Cihaza Gönder" özelliğini kullanabilir veya<br>QR kodu telefonunuzla okutarak kolayca geçiş yapabilirsiniz.</p>
-        <div id="qrCodePlaceholder" class="mt-5 p-4 bg-white rounded-lg inline-block">
-            <span class="text-slate-700 text-sm">(Web sitesi için QR kod buraya eklenebilir)</span>
         </div>
     </div>
 
@@ -614,13 +622,23 @@
             screens[screenIdToShow].classList.remove('hidden-screen');
             currentScreenId = screenIdToShow;
             const bodyClassList = document.body.classList;
-            if (screens.game) screens.game.classList.remove('final-match-theme', 'sponsored-round-theme');
+            if (screens.game) screens.game.classList.remove('final-match-theme', 'sponsored-round-theme'); // Temaları temizle
             bodyClassList.remove('background-animate', 'bg-[#FAF8F6]', 'bg-slate-50', 'bg-slate-100');
             if (screenIdToShow === 'start') bodyClassList.add('background-animate', 'bg-[#FAF8F6]');
             else if (screens[screenIdToShow]) {
-                const screenBg = screens[screenIdToShow].classList.contains('bg-slate-50') ? 'bg-slate-50' : (screens[screenIdToShow].classList.contains('bg-[#FAF8F6]') ? 'bg-[#FAF8F6]' : 'bg-slate-50');
+                // Oyun ekranıysa ve özel tema gerekiyorsa onu uygula
+                if (screenIdToShow === 'game') {
+                    if (currentStage === STAGES.FINAL) {
+                        screens.game.classList.add('final-match-theme');
+                    } else if (isSponsoredInterstitialActive) { // Bu kontrol showSponsoredInterstitial'da da var ama burada da olması iyi
+                        screens.game.classList.add('sponsored-round-theme');
+                    }
+                }
+                 // Diğer ekranlar için varsayılan arkaplan
+                const screenBg = screens[screenIdToShow].classList.contains('bg-slate-50') ? 'bg-slate-50' : 
+                                 (screens[screenIdToShow].classList.contains('bg-[#FAF8F6]') ? 'bg-[#FAF8F6]' : 
+                                 (screens[screenIdToShow].classList.contains('bg-[#F0F4F8]') && isSponsoredInterstitialActive ? 'bg-[#F0F4F8]' :'bg-slate-50'));
                 bodyClassList.add(screenBg);
-                if (screenIdToShow === 'game' && currentStage === STAGES.FINAL && screens.game) screens.game.classList.add('final-match-theme');
             }
             updateBottomNav();
             window.scrollTo(0,0);
@@ -645,9 +663,14 @@
 
     function showSponsoredInterstitial() {
         isSponsoredInterstitialActive = true; localStorage.setItem('sponsoredRoundShownThisSession', 'true');
-        if (screens.game) { screens.game.classList.remove('final-match-theme'); screens.game.classList.add('sponsored-round-theme'); }
+        if (screens.game) { 
+            screens.game.classList.remove('final-match-theme'); // Diğer temaları kaldır
+            screens.game.classList.add('sponsored-round-theme'); 
+            document.body.classList.remove('bg-slate-50', 'bg-[#FAF8F6]'); // Body classlarını temizle
+            document.body.classList.add('bg-[#F0F4F8]'); // Sponsorlu tema body arkaplanı
+        }
         if (progressTextElement) progressTextElement.textContent = "Sponsorlu Etap";
-        if (progressBarFill) progressBarFill.style.width = `${(4 / 8) * 100}%`;
+        if (progressBarFill) progressBarFill.style.width = `${(4 / 8) * 100}%`; // Örnek ilerleme
         const sponsoredCardContent1 = { id: 'sp_card_1', title: "Ne Pişireceğinize Artık Buzdolabımız Karar Verebilecek!", description: "AI destekli buzdolabı, içerikteki malzemelere göre her gün yeni tarif öneriyor.", imageSeed: "https://i.ibb.co/ZzT2LKCb/image-21.png" };
         const sponsoredCardContent2 = { id: 'sp_card_2', title: "İçindekileri Tanıyan ve Alışveriş Listesi Hazırlayan Buzdolabı duyuruldu! ", description: "Yapay zekâlı buzdolabı, eksikleri algılayıp ihtiyacın olan ürünleri liste halinde bildiriyor.", imageSeed: "https://i.ibb.co/n8cjQ8pV/Chat-GPT-Image-May-29-2025-02-20-27-PM.png" };
         const card1TitleEl = gameScreenCards[0].querySelector('.card-title'), card1DescEl = gameScreenCards[0].querySelector('.card-description'), card1ImgEl = gameScreenCards[0].querySelector('img[data-role="card-image-img"]');
@@ -660,11 +683,24 @@
         gameScreenCards[1].dataset.wishId = sponsoredCardContent2.id;
         if (vsButtonSpan) { vsButtonSpan.classList.remove('vs-animate'); void vsButtonSpan.offsetWidth; vsButtonSpan.classList.add('vs-animate'); }
         gameScreenCards.forEach(c => { c.classList.remove('selected', 'not-selected'); c.style.pointerEvents = 'auto'; c.querySelector('.confetti-burst')?.classList.add('hidden'); });
-        showScreen('game');
+        showScreen('game'); // Bu satır sponsorlu tema class'ını set ettikten sonra gameScreen'i tekrar yükler ve class'ı uygular.
     }
 
     function loadNextMatchUI() {
         if (currentStage === STAGES.SEEDING && currentMatchInStage === 4 && !localStorage.getItem('sponsoredRoundShownThisSession')) { showSponsoredInterstitial(); return; }
+        // Eğer sponsorlu tur aktifse ve loadNextMatchUI tekrar çağrılırsa (mesela handleCardSelection sonrası), temayı koru
+        if (isSponsoredInterstitialActive && screens.game && !screens.game.classList.contains('sponsored-round-theme')) {
+             screens.game.classList.remove('final-match-theme');
+             screens.game.classList.add('sponsored-round-theme');
+             document.body.classList.remove('bg-slate-50','bg-[#FAF8F6]');
+             document.body.classList.add('bg-[#F0F4F8]');
+        } else if (!isSponsoredInterstitialActive && currentStage !== STAGES.FINAL && screens.game) {
+             screens.game.classList.remove('sponsored-round-theme', 'final-match-theme');
+             document.body.classList.remove('bg-[#F0F4F8]');
+             document.body.classList.add('bg-slate-50'); // Varsayılan oyun arkaplanı
+        }
+
+
         const [wish1, wish2] = getMatchPair();
         if (!wish1 || !wish2) { advanceToNextStage(); return; }
         if (vsButtonSpan) { vsButtonSpan.classList.remove('vs-animate'); void vsButtonSpan.offsetWidth; vsButtonSpan.classList.add('vs-animate'); }
@@ -741,6 +777,11 @@
             default: if (champion) displayResultsScreen(); else resetGameAndPlay(); return;
         }
         currentStage = nextLogicalStage;
+        // Tema sıfırlama
+        isSponsoredInterstitialActive = false; // Bir sonraki aşama sponsorlu değilse bu sıfırlanmalı
+        if (screens.game) screens.game.classList.remove('sponsored-round-theme');
+
+
         const showNextMatchSetup = () => {
             updateProgressBar();
             if (wishesForCurrentStage.length >= 2 || (currentStage === STAGES.FINAL && wishesForCurrentStage.length === 2) ) { loadNextMatchUI(); showScreen('game'); }
@@ -751,6 +792,7 @@
         if (currentStage === STAGES.QUARTERFINALS) { iconName = 'sports_score'; title = 'Çeyrek Finaller!'; message = 'En iyi hayaller bir üst tura yükseldi. Mücadele devam ediyor!'; showTransition = true; }
         else if (currentStage === STAGES.SEMIFINALS) { iconName = 'stars'; title = 'Yarı Finaller!'; message = 'Şampiyonluğa çok az kaldı! Son hayaller yarışıyor.'; showTransition = true; }
         else if (currentStage === STAGES.FINAL) { iconName = 'emoji_events'; title = 'BÜYÜK FİNAL!'; message = 'İşte şampiyonu belirleyecek o efsanevi karşılaşma!'; showTransition = true; }
+        
         if (showTransition && stageTransitionModal) {
             if(stageTransitionIcon) stageTransitionIcon.textContent = iconName; if(stageTransitionTitle) stageTransitionTitle.textContent = title; if(stageTransitionMessage) stageTransitionMessage.textContent = message;
             showModal(stageTransitionModal, stageTransitionModalContent, stageTransitionModalBackdrop);
@@ -842,7 +884,16 @@
     if(closeWinnerPopupButton) closeWinnerPopupButton.addEventListener('click', () => hideModal(screens.winnerPopup, winnerPopupContentContainer, null, displayResultsScreen));
     if(winnerToResultsButton) winnerToResultsButton.addEventListener('click', () => hideModal(screens.winnerPopup, winnerPopupContentContainer, null, displayResultsScreen));
     if(closeSponsoredPopupButton) closeSponsoredPopupButton.addEventListener('click', () => {
-        hideModal(screens.sponsoredPopup, sponsoredPopupContent, null, () => { isSponsoredInterstitialActive = false; if (screens.game) screens.game.classList.remove('sponsored-round-theme'); updateProgressBar(); loadNextMatchUI(); });
+        hideModal(screens.sponsoredPopup, sponsoredPopupContent, null, () => { 
+            isSponsoredInterstitialActive = false; 
+            if (screens.game) {
+                screens.game.classList.remove('sponsored-round-theme');
+                document.body.classList.remove('bg-[#F0F4F8]'); // Sponsorlu body arkaplanını kaldır
+                document.body.classList.add('bg-slate-50'); // Varsayılan oyun arkaplanı
+            }
+            updateProgressBar(); 
+            loadNextMatchUI(); 
+        });
     });
     const genericShareFunction = () => {
         if(navigator.share && champion) {
@@ -857,26 +908,18 @@
     if(closeHowToPlayButton) closeHowToPlayButton.addEventListener('click', () => showScreen(previousScreenId || 'game'));
     if(navHomeButton) navHomeButton.addEventListener('click', (e) => { e.preventDefault(); showScreen('start'); });
 
-    // *** DEĞİŞİKLİK BURADA BAŞLIYOR ***
     if(navPlayButton) navPlayButton.addEventListener('click', (e) => {
         e.preventDefault();
-
-        // Kullanıcının aktif, bitmemiş bir oyuna dönebileceği durumları tanımla:
-        // 1. Zaten oyun ekranında olması ('gameScreen').
-        // 2. Oyun ekranından ('game') 'Nasıl Oynanır' ('howToPlayScreen') veya
-        //    aşama geçiş ('stageTransitionModal') ekranına geçmiş olması.
-        // Ve oyunun henüz bir şampiyon belirlememiş olması (yani bitmemiş olması).
         const isGamePausedForInfo = previousScreenId === 'game' &&
                                    ['howToPlayScreen', 'stageTransitionModal'].includes(currentScreenId);
         const canReturnToActiveGame = (currentScreenId === 'game' || isGamePausedForInfo) && !champion;
 
         if (canReturnToActiveGame) {
-            showScreen('game'); // Devam eden oyun oturumuna geri dön
+            showScreen('game'); 
         } else {
-            resetGameAndPlay(); // Yeni bir oyun başlat
+            resetGameAndPlay(); 
         }
     });
-    // *** DEĞİŞİKLİK BURADA BİTİYOR ***
 
     if(navResultsButton) navResultsButton.addEventListener('click', (e) => { e.preventDefault(); displayResultsScreen(); });
     const finishPlayAgainButton = document.getElementById('finishPlayAgainButton');
@@ -885,18 +928,18 @@
     document.addEventListener('DOMContentLoaded', () => {
         const appContainer = document.getElementById('appContainer');
         const desktopWarningScreen = document.getElementById('desktopWarningScreen');
-        const DESKTOP_BREAKPOINT = 768; // Tablet ve üzeri genişlikler
+        const DESKTOP_BREAKPOINT = 768; 
 
         if (window.innerWidth >= DESKTOP_BREAKPOINT) {
             if (appContainer) appContainer.style.display = 'none';
             if (desktopWarningScreen) {
                 desktopWarningScreen.classList.remove('hidden-screen');
-                desktopWarningScreen.classList.add('flex'); // Uyarı ekranını görünür yap ve flex ile ortala
+                desktopWarningScreen.classList.add('flex'); 
             }
-            document.body.style.overflow = 'hidden'; // Sadece uyarı ekranı kalsın, kaydırma olmasın
+            document.body.style.overflow = 'hidden'; 
         } else {
-            if (desktopWarningScreen) desktopWarningScreen.style.display = 'none'; // Mobil ise uyarıyı gizle
-            if (appContainer) appContainer.style.display = 'block'; // Mobil ise uygulamayı göster
+            if (desktopWarningScreen) desktopWarningScreen.style.display = 'none'; 
+            if (appContainer) appContainer.style.display = 'block'; 
             preloadImages();
             showScreen('start');
         }
