@@ -1487,29 +1487,32 @@
     const finishPlayAgainButton = document.getElementById('finishPlayAgainButton');
     if(finishPlayAgainButton) finishPlayAgainButton.addEventListener('click', () => { resetGameAndPlay(); });
 
-    // Initial setup on page load
+   // Initial setup on page load
     document.addEventListener('DOMContentLoaded', () => {
         // Show loading screen immediately
         loadingScreen.classList.remove('hidden-screen', 'opacity-0');
         loadingScreen.classList.add('active', 'opacity-100');
         document.body.classList.add('loading-screen-active'); // Add a class to body to prevent scroll if needed
 
-        // Animate loading bar to 100% over a fixed duration
-        const fixedLoadingBarDuration = 3500; // 3.5 seconds
-        if (loadingProgressBarFill) {
-            loadingProgressBarFill.style.transition = `width ${fixedLoadingBarDuration / 1000}s ease-out`;
-            loadingProgressBarFill.style.width = '100%';
-        }
-
         // Get images to preload for the initial sequence
         managePreloads('loadingScreen');
 
-        // Start preloading images in the background. We don't wait for this Promise directly
-        // because we want the loading bar to animate independently.
+        // Define the minimum time the loading screen should be displayed
+        const fixedLoadingBarDuration = 3500; // 3.5 seconds
+        const minDisplayTimePromise = new Promise(resolve => setTimeout(resolve, fixedLoadingBarDuration));
+
+        // Start preloading images in the background.
         const backgroundPreloadPromise = preloadImages(imagesToPreloadQueue);
 
-        // Define the minimum time the loading screen should be displayed
-        const minDisplayTimePromise = new Promise(resolve => setTimeout(resolve, fixedLoadingBarDuration));
+        // Animate loading bar to 100% over a fixed duration
+        if (loadingProgressBarFill) {
+            // Ensure initial state is 0% before applying transition and final width
+            loadingProgressBarFill.style.width = '0%';
+            setTimeout(() => { // Apply transition and final width after a slight delay
+                loadingProgressBarFill.style.transition = `width ${fixedLoadingBarDuration / 1000}s ease-out`;
+                loadingProgressBarFill.style.width = '100%';
+            }, 50); // A small delay (e.g., 50ms) is enough for the browser to render the initial state
+        }
 
         // Wait for both the minimum display time AND the background preloading to finish
         Promise.all([backgroundPreloadPromise, minDisplayTimePromise])
