@@ -435,7 +435,7 @@
     const sponsoredPopupContent = document.getElementById('sponsoredPopupContent');
     const closeSponsoredPopupButton = document.getElementById('closeSponsoredPopupButton');
     const sponsoredPopupTitleText = document.getElementById('sponsoredPopupTitleText');
-    const sponsoredPopupImage = document.getElementById('sponsoredPopupImage');
+    const sponsoredPopupImage = document.getElementById('sponsoredPopupImage'); // Bu ID'li img elementi sponsor popup içinde
     const sponsoredPopupDescriptionText = document.getElementById('sponsoredPopupDescriptionText');
     const sponsoredPopupLink = document.getElementById('sponsoredPopupLink');
 
@@ -524,7 +524,7 @@
 
     function preloadImages() {
         if (imagesToPreload.length === 0) { if(startGameButton) startGameButton.disabled = false; return; }
-        if(startGameButton) startGameButton.disabled = false;
+        if(startGameButton) startGameButton.disabled = false; // Butonun her zaman aktif olmasını sağla
         let loadedCount = 0;
         imagesToPreload.forEach(imageUrl => {
             const img = new Image();
@@ -546,11 +546,11 @@
                                 (screens.sponsoredPopup && !screens.sponsoredPopup.classList.contains('hidden-screen')) ||
                                 (stageTransitionModal && !stageTransitionModal.classList.contains('hidden-screen'));
         
-        const navHeightWithSpace = '70px';
-        const basePaddingBottom = '1rem';
+        const navHeightWithSpace = '70px'; 
+        const basePaddingBottom = '1rem'; 
         
         Object.values(screens).forEach(screen => {
-            if (screen && screen.style && screen.id !== 'sponsoredPopupScreen') {
+            if (screen && screen.style && screen.id !== 'sponsoredPopupScreen') { // Sponsor popup'ına padding ekleme
                 screen.style.paddingBottom = (screen.id === 'startScreen') ? '' : basePaddingBottom;
             }
         });
@@ -562,18 +562,15 @@
         } else {
             if (bottomNav) bottomNav.classList.remove('hidden-screen');
             
-            // --- CORRECTED LINE ---
-            // Compare currentScreenId (e.g., 'howToPlay') with the key 'howToPlay'
             if (globalHowToPlayButton) {
                  globalHowToPlayButton.classList[currentScreenId !== 'howToPlay' ? 'remove' : 'add']('hidden-screen');
             }
-            // --- END OF CORRECTION ---
 
             const screensThatNeedNavPadding = ['game', 'results', 'finish', 'howToPlay'];
             if (screensThatNeedNavPadding.includes(currentScreenId) && screens[currentScreenId]?.style) {
                 const mainContentArea = screens[currentScreenId].querySelector('main, .overflow-y-auto, .flex-1.min-h-0');
                 if (mainContentArea?.style) mainContentArea.style.paddingBottom = navHeightWithSpace;
-                else if (screens[currentScreenId].style) screens[currentScreenId].style.paddingBottom = navHeightWithSpace;
+                else if (screens[currentScreenId].style) screens[currentScreenId].style.paddingBottom = navHeightWithSpace; // fallback
             }
             
             if (currentScreenId === 'game' && navPlayButton) navPlayButton.classList.add('active', 'text-blue-600');
@@ -621,7 +618,7 @@
             if (screenIdToShow === 'winnerPopup') { displayWinnerPopupContent(); showModal(screens.winnerPopup, winnerPopupContentContainer); return; }
             if (screenIdToShow === 'sponsoredPopup') {
                 if(sponsoredPopupTitleText) sponsoredPopupTitleText.textContent = SPONSORED_AD_DETAILS.title;
-                if(sponsoredPopupImage) sponsoredPopupImage.src = getImageUrl(SPONSORED_AD_DETAILS.imageSeed || SPONSORED_AD_DETAILS.image);
+                if(document.getElementById('sponsoredPopupImage')) document.getElementById('sponsoredPopupImage').src = getImageUrl(SPONSORED_AD_DETAILS.imageSeed || SPONSORED_AD_DETAILS.image); // Corrected ID usage
                 if(sponsoredPopupDescriptionText) sponsoredPopupDescriptionText.textContent = SPONSORED_AD_DETAILS.description;
                 if(sponsoredPopupLink) sponsoredPopupLink.href = SPONSORED_AD_DETAILS.link;
                 showModal(screens.sponsoredPopup, sponsoredPopupContent); return;
@@ -630,7 +627,7 @@
             
             // Store previous screen ID correctly
             if (currentScreenId !== screenIdToShow && screens[currentScreenId] && !['onboardingHowToPlayModal', 'stageTransitionModal', 'winnerPopupScreen', 'sponsoredPopupScreen'].includes(screens[currentScreenId].id)) {
-                 previousScreenId = currentScreenId;
+                previousScreenId = currentScreenId;
             }
 
             Object.values(screens).forEach(screen => { if(screen && screen.id !== screens[screenIdToShow].id) screen.classList.add('hidden-screen'); });
@@ -639,7 +636,7 @@
             
             const bodyClassList = document.body.classList;
             if (screens.game) screens.game.classList.remove('final-match-theme', 'sponsored-round-theme'); 
-            bodyClassList.remove('background-animate', 'bg-[#FAF8F6]', 'bg-slate-50', 'bg-slate-100');
+            bodyClassList.remove('background-animate', 'bg-[#FAF8F6]', 'bg-slate-50', 'bg-slate-100', 'bg-[#F0F4F8]'); // Added bg-[#F0F4F8]
             if (screenIdToShow === 'start') bodyClassList.add('background-animate', 'bg-[#FAF8F6]');
             else if (screens[screenIdToShow]) {
                 if (screenIdToShow === 'game') {
@@ -649,9 +646,17 @@
                         screens.game.classList.add('sponsored-round-theme');
                     }
                 }
-                const screenBg = screens[screenIdToShow].classList.contains('bg-slate-50') ? 'bg-slate-50' : 
-                                 (screens[screenIdToShow].classList.contains('bg-[#FAF8F6]') ? 'bg-[#FAF8F6]' : 
-                                 (screens[screenIdToShow].classList.contains('bg-[#F0F4F8]') && isSponsoredInterstitialActive ? 'bg-[#F0F4F8]' :'bg-slate-50'));
+                // Determine correct body background based on current screen and state
+                let screenBg = 'bg-slate-50'; // Default
+                if (screens[screenIdToShow].classList.contains('bg-[#FAF8F6]')) screenBg = 'bg-[#FAF8F6]';
+                else if (screens[screenIdToShow].classList.contains('bg-slate-50')) screenBg = 'bg-slate-50';
+                
+                if (screenIdToShow === 'game' && isSponsoredInterstitialActive && screens.game.classList.contains('sponsored-round-theme')) {
+                    screenBg = 'bg-[#F0F4F8]';
+                } else if (screenIdToShow === 'game' && currentStage === STAGES.FINAL && screens.game.classList.contains('final-match-theme')) {
+                     // Final match theme already sets its own background on the #gameScreen div, so body can be neutral
+                    screenBg = 'bg-slate-800'; // Or a dark neutral for body if needed
+                }
                 bodyClassList.add(screenBg);
             }
             updateBottomNav();
@@ -667,8 +672,13 @@
         localStorage.removeItem('sponsoredRoundShownThisSession');
         let wishesForSeeding = [...wishes]; shuffleArray(wishesForSeeding); wishesForCurrentStage = wishesForSeeding.slice(0, 16);
         if (screens.game) screens.game.classList.remove('sponsored-round-theme', 'final-match-theme');
-        if (showOnboarding) showScreen('onboardingModal'); // This will set currentScreenId to 'onboardingHowToPlayModal'
-        else { showScreen('game'); updateProgressBar(); loadNextMatchUI(); }
+        if (showOnboarding) {
+            showScreen('onboardingModal'); // This will set currentScreenId to 'onboardingHowToPlayModal'
+        } else {
+            updateProgressBar(); // Ensure progress bar is reset/updated
+            loadNextMatchUI();   // Load initial match UI
+            showScreen('game');  // Then show the game screen
+        }
     }
 
     function getMatchPair() {
@@ -697,12 +707,60 @@
         if (card2ImgEl) { card2ImgEl.src = getImageUrl(sponsoredCardContent2.imageSeed); card2ImgEl.alt = sponsoredCardContent2.title; }
         gameScreenCards[1].dataset.wishId = sponsoredCardContent2.id;
         if (vsButtonSpan) { vsButtonSpan.classList.remove('vs-animate'); void vsButtonSpan.offsetWidth; vsButtonSpan.classList.add('vs-animate'); }
-        gameScreenCards.forEach(c => { c.classList.remove('selected', 'not-selected'); c.style.pointerEvents = 'auto'; c.querySelector('.confetti-burst')?.classList.add('hidden'); });
+        gameScreenCards.forEach(c => { c.classList.remove('selected', 'not-selected'); c.style.pointerEvents = 'auto'; c.querySelector('.confetti-burst')?.classList.add('hidden'); c.style.visibility = 'visible';});
         showScreen('game'); 
     }
 
+    // MODIFIED: advanceToNextStage
+    function advanceToNextStage() {
+        currentMatchInStage = 0; wishesForCurrentStage = [...nextStageWishes]; shuffleArray(wishesForCurrentStage); nextStageWishes = [];
+        let nextLogicalStage = null;
+        switch (currentStage) {
+            case STAGES.SEEDING: nextLogicalStage = STAGES.QUARTERFINALS; break;
+            case STAGES.QUARTERFINALS: nextLogicalStage = STAGES.SEMIFINALS; break;
+            case STAGES.SEMIFINALS: nextLogicalStage = STAGES.FINAL; break;
+            default: if (champion) displayResultsScreen(); else resetGameAndPlay(); return;
+        }
+        currentStage = nextLogicalStage;
+        isSponsoredInterstitialActive = false; 
+        if (screens.game) screens.game.classList.remove('sponsored-round-theme');
+
+        const showNextMatchSetup = () => {
+            updateProgressBar();
+            if (wishesForCurrentStage.length >= 2 || (currentStage === STAGES.FINAL && wishesForCurrentStage.length === 2) ) {
+                loadNextMatchUI(); // Bu fonksiyon kartları görünür yapacak
+                showScreen('game'); 
+            }
+            else if (wishesForCurrentStage.length === 1 && currentStage !== STAGES.FINAL) { champion = wishesForCurrentStage[0]; currentStage = STAGES.FINAL; currentMatchInStage = 1; updateProgressBar(); showScreen('winnerPopup'); }
+            else { console.error("Not enough wishes for current stage:", currentStage, wishesForCurrentStage); resetGameAndPlay(); }
+        };
+        let iconName = '', title = '', message = '', showTransition = false;
+        if (currentStage === STAGES.QUARTERFINALS) { iconName = 'sports_score'; title = 'Çeyrek Finaller!'; message = 'En iyi hayaller bir üst tura yükseldi. Mücadele devam ediyor!'; showTransition = true; }
+        else if (currentStage === STAGES.SEMIFINALS) { iconName = 'stars'; title = 'Yarı Finaller!'; message = 'Şampiyonluğa çok az kaldı! Son hayaller yarışıyor.'; showTransition = true; }
+        else if (currentStage === STAGES.FINAL) { iconName = 'emoji_events'; title = 'BÜYÜK FİNAL!'; message = 'İşte şampiyonu belirleyecek o efsanevi karşılaşma!'; showTransition = true; }
+        
+        if (showTransition && stageTransitionModal) {
+            // Geçiş modalı gösterilmeden önce kartları geçici olarak görünmez yap
+            gameScreenCards.forEach(card => {
+                card.style.visibility = 'hidden';
+            });
+
+            if(stageTransitionIcon) stageTransitionIcon.textContent = iconName; 
+            if(stageTransitionTitle) stageTransitionTitle.textContent = title; 
+            if(stageTransitionMessage) stageTransitionMessage.textContent = message;
+            showModal(stageTransitionModal, stageTransitionModalContent, stageTransitionModalBackdrop);
+            setTimeout(() => {
+                hideModal(stageTransitionModal, stageTransitionModalContent, stageTransitionModalBackdrop, showNextMatchSetup);
+            }, 1250); // Geçiş mesajı için zaman aşımı
+        } else {
+            showNextMatchSetup();
+        }
+    }
+    
+    // MODIFIED: loadNextMatchUI
     function loadNextMatchUI() {
         if (currentStage === STAGES.SEEDING && currentMatchInStage === 4 && !localStorage.getItem('sponsoredRoundShownThisSession')) { showSponsoredInterstitial(); return; }
+        
         if (isSponsoredInterstitialActive && screens.game && !screens.game.classList.contains('sponsored-round-theme')) {
              screens.game.classList.remove('final-match-theme');
              screens.game.classList.add('sponsored-round-theme');
@@ -710,12 +768,21 @@
              document.body.classList.add('bg-[#F0F4F8]');
         } else if (!isSponsoredInterstitialActive && currentStage !== STAGES.FINAL && screens.game) {
              screens.game.classList.remove('sponsored-round-theme', 'final-match-theme');
-             document.body.classList.remove('bg-[#F0F4F8]');
+             document.body.classList.remove('bg-[#F0F4F8]', 'bg-slate-800'); // final match body bg
              document.body.classList.add('bg-slate-50'); 
+        } else if (currentStage === STAGES.FINAL && screens.game) {
+            screens.game.classList.remove('sponsored-round-theme');
+            screens.game.classList.add('final-match-theme');
+            document.body.classList.remove('bg-slate-50','bg-[#FAF8F6]', 'bg-[#F0F4F8]');
+            // Body bg for final match theme can be dark if needed, e.g., bg-slate-800, or rely on #gameScreen's bg
         }
 
+
         const [wish1, wish2] = getMatchPair();
-        if (!wish1 || !wish2) { advanceToNextStage(); return; }
+        if (!wish1 || !wish2) { 
+            advanceToNextStage(); 
+            return; 
+        }
         if (vsButtonSpan) { vsButtonSpan.classList.remove('vs-animate'); void vsButtonSpan.offsetWidth; vsButtonSpan.classList.add('vs-animate'); }
         const card1TitleEl = gameScreenCards[0].querySelector('.card-title'), card1DescEl = gameScreenCards[0].querySelector('.card-description'), card1ImgEl = gameScreenCards[0].querySelector('img[data-role="card-image-img"]');
         if (card1TitleEl) card1TitleEl.textContent = wish1.title; if (card1DescEl) card1DescEl.textContent = wish1.description;
@@ -723,8 +790,15 @@
         const card2TitleEl = gameScreenCards[1].querySelector('.card-title'), card2DescEl = gameScreenCards[1].querySelector('.card-description'), card2ImgEl = gameScreenCards[1].querySelector('img[data-role="card-image-img"]');
         if (card2TitleEl) card2TitleEl.textContent = wish2.title; if (card2DescEl) card2DescEl.textContent = wish2.description;
         if (card2ImgEl) { card2ImgEl.src = getImageUrl(wish2.imageSeed); card2ImgEl.alt = wish2.title; } gameScreenCards[1].dataset.wishId = wish2.id;
-        gameScreenCards.forEach(c => {c.classList.remove('selected', 'not-selected'); c.style.pointerEvents = 'auto'; c.querySelector('.confetti-burst')?.classList.add('hidden');});
+        
+        gameScreenCards.forEach(c => {
+            c.classList.remove('selected', 'not-selected'); 
+            c.style.pointerEvents = 'auto'; 
+            c.querySelector('.confetti-burst')?.classList.add('hidden');
+            c.style.visibility = 'visible'; // Kartlar yeni içerikle doldurulduktan sonra görünür yap
+        });
     }
+
 
     function updateProgressBar() {
         if (isSponsoredInterstitialActive) {
@@ -748,7 +822,7 @@
             const oldSpark = progressBarFill.querySelector('.progress-bar-spark'); if (oldSpark) oldSpark.remove();
             const spark = document.createElement('div'); spark.className = 'progress-bar-spark';
             let sparkPos = (matchNum / totalMatches * 100);
-            if (currentMatchInStage >= totalMatches) sparkPos = 100; else if (progress >= 100 && currentMatchInStage < totalMatches) sparkPos = 99;
+            if (currentMatchInStage >= totalMatches) sparkPos = 100; else if (progress >= 100 && currentMatchInStage < totalMatches) sparkPos = 99; // Ensure spark doesn't go way past if logic is slightly off
             spark.style.left = `calc(${Math.min(sparkPos,100)}% - 5px)`; progressBarFill.appendChild(spark);
             setTimeout(() => { if(spark.parentElement) spark.remove(); }, 500);
         }
@@ -757,7 +831,7 @@
     function handleCardSelection(selectedCardNode) {
         if (isSponsoredInterstitialActive) {
             if(sponsoredPopupTitleText) sponsoredPopupTitleText.textContent = SPONSORED_AD_DETAILS.title;
-            if(sponsoredPopupImage) sponsoredPopupImage.src = getImageUrl(SPONSORED_AD_DETAILS.imageSeed || SPONSORED_AD_DETAILS.image);
+            if(document.getElementById('sponsoredPopupImage')) document.getElementById('sponsoredPopupImage').src = getImageUrl(SPONSORED_AD_DETAILS.imageSeed || SPONSORED_AD_DETAILS.image);
             if(sponsoredPopupDescriptionText) sponsoredPopupDescriptionText.textContent = SPONSORED_AD_DETAILS.description;
             if(sponsoredPopupLink) sponsoredPopupLink.href = SPONSORED_AD_DETAILS.link;
             showModal(screens.sponsoredPopup, sponsoredPopupContent); return;
@@ -780,37 +854,6 @@
         }, 1000);
     }
 
-    function advanceToNextStage() {
-        currentMatchInStage = 0; wishesForCurrentStage = [...nextStageWishes]; shuffleArray(wishesForCurrentStage); nextStageWishes = [];
-        let nextLogicalStage = null;
-        switch (currentStage) {
-            case STAGES.SEEDING: nextLogicalStage = STAGES.QUARTERFINALS; break;
-            case STAGES.QUARTERFINALS: nextLogicalStage = STAGES.SEMIFINALS; break;
-            case STAGES.SEMIFINALS: nextLogicalStage = STAGES.FINAL; break;
-            default: if (champion) displayResultsScreen(); else resetGameAndPlay(); return;
-        }
-        currentStage = nextLogicalStage;
-        isSponsoredInterstitialActive = false; 
-        if (screens.game) screens.game.classList.remove('sponsored-round-theme');
-
-        const showNextMatchSetup = () => {
-            updateProgressBar();
-            if (wishesForCurrentStage.length >= 2 || (currentStage === STAGES.FINAL && wishesForCurrentStage.length === 2) ) { loadNextMatchUI(); showScreen('game'); }
-            else if (wishesForCurrentStage.length === 1 && currentStage !== STAGES.FINAL) { champion = wishesForCurrentStage[0]; currentStage = STAGES.FINAL; currentMatchInStage = 1; updateProgressBar(); showScreen('winnerPopup'); }
-            else { console.error("Not enough wishes for current stage:", currentStage, wishesForCurrentStage); resetGameAndPlay(); }
-        };
-        let iconName = '', title = '', message = '', showTransition = false;
-        if (currentStage === STAGES.QUARTERFINALS) { iconName = 'sports_score'; title = 'Çeyrek Finaller!'; message = 'En iyi hayaller bir üst tura yükseldi. Mücadele devam ediyor!'; showTransition = true; }
-        else if (currentStage === STAGES.SEMIFINALS) { iconName = 'stars'; title = 'Yarı Finaller!'; message = 'Şampiyonluğa çok az kaldı! Son hayaller yarışıyor.'; showTransition = true; }
-        else if (currentStage === STAGES.FINAL) { iconName = 'emoji_events'; title = 'BÜYÜK FİNAL!'; message = 'İşte şampiyonu belirleyecek o efsanevi karşılaşma!'; showTransition = true; }
-        
-        if (showTransition && stageTransitionModal) {
-            if(stageTransitionIcon) stageTransitionIcon.textContent = iconName; if(stageTransitionTitle) stageTransitionTitle.textContent = title; if(stageTransitionMessage) stageTransitionMessage.textContent = message;
-            showModal(stageTransitionModal, stageTransitionModalContent, stageTransitionModalBackdrop);
-            setTimeout(() => { hideModal(stageTransitionModal, stageTransitionModalContent, stageTransitionModalBackdrop, showNextMatchSetup); }, 2000);
-        } else showNextMatchSetup();
-    }
-
     function displayWinnerPopupContent() {
         if (!champion) {
             console.warn("Şampiyon popup için şampiyon belirlenmedi. Fallback.");
@@ -827,8 +870,8 @@
         if (!champion) {
             const sortedByVotes = Object.keys(voteCounts).sort((a,b) => voteCounts[b] - voteCounts[a]);
             if (sortedByVotes.length > 0) champion = wishes.find(w => w.id == sortedByVotes[0]);
-            if (!champion && wishes.length > 0) champion = wishes[0];
-            else if (!champion) { console.error("Sonuç ekranı için şampiyon belirlenemedi."); showScreen('results'); return; }
+            if (!champion && wishes.length > 0) champion = wishes[0]; // Fallback to first wish if no votes or champion
+            else if (!champion) { console.error("Sonuç ekranı için şampiyon belirlenemedi."); showScreen('results'); return; } // Still no champion, show empty results
         }
         const championVoteCount = voteCounts[champion.id] || 0;
         const championPercentage = totalSeedingVotes > 0 ? ((championVoteCount / totalSeedingVotes) * 100).toFixed(1) : "0.0";
@@ -836,13 +879,15 @@
         if(championImageResults) { championImageResults.src = getImageUrl(champion.imageSeed); championImageResults.alt = champion.title; }
         if(championInfoResults) championInfoResults.textContent = `Başlangıç oylarının %${championPercentage}'i ile şampiyon oldu!`;
         if(resultsCardContainer && championCardDisplay) {
-            resultsCardContainer.innerHTML = ''; resultsCardContainer.appendChild(championCardDisplay);
-            const fixedOtherWishIds = [8, 13, 4, 14]; 
+            resultsCardContainer.innerHTML = ''; resultsCardContainer.appendChild(championCardDisplay); // Add champion card first
+            const fixedOtherWishIds = [8, 13, 4, 14]; // Example IDs, adjust as needed
             const otherWishesToDisplay = fixedOtherWishIds.map(id => {
-                if (champion && id === champion.id) return null; const wish = wishes.find(w => w.id === id); if (!wish) return null;
+                if (champion && id === champion.id) return null; // Don't show champion again
+                const wish = wishes.find(w => w.id === id); if (!wish) return null;
                 return { ...wish, voteCount: voteCounts[id] || 0 };
-            }).filter(w => w);
-            otherWishesToDisplay.slice(0, 3).forEach(w => {
+            }).filter(w => w); // Remove nulls
+
+            otherWishesToDisplay.slice(0, 3).forEach(w => { // Show up to 3 other wishes
                 if (!w || typeof w.voteCount === 'undefined') return;
                 const wishPercentage = totalSeedingVotes > 0 ? ((w.voteCount / totalSeedingVotes) * 100).toFixed(1) : "0.0";
                 resultsCardContainer.insertAdjacentHTML('beforeend',
@@ -888,9 +933,20 @@
     }
 
     if(startGameButton) startGameButton.addEventListener('click', () => resetGameAndPlay(true));
-    if (proceedFromOnboardingButton) proceedFromOnboardingButton.addEventListener('click', () => {
-        hideModal(onboardingModal, onboardingModalContent, onboardingModalBackdrop, () => { showScreen('game'); updateProgressBar(); loadNextMatchUI(); });
-    });
+    
+    // MODIFIED: proceedFromOnboardingButton event listener
+    if (proceedFromOnboardingButton) {
+        proceedFromOnboardingButton.addEventListener('click', () => {
+            hideModal(onboardingModal, onboardingModalContent, onboardingModalBackdrop, () => {
+                // Önce oyun içeriğini hazırla
+                updateProgressBar();
+                loadNextMatchUI(); // Bu fonksiyon kartları dolduracak ve görünür yapacak
+                // Sonra hazırlanmış oyun ekranını göster
+                showScreen('game'); 
+            });
+        });
+    }
+
     gameScreenCards.forEach(card => card.addEventListener('click', () => handleCardSelection(card)));
     if(closeWinnerPopupButton) closeWinnerPopupButton.addEventListener('click', () => hideModal(screens.winnerPopup, winnerPopupContentContainer, null, displayResultsScreen));
     if(winnerToResultsButton) winnerToResultsButton.addEventListener('click', () => hideModal(screens.winnerPopup, winnerPopupContentContainer, null, displayResultsScreen));
@@ -917,16 +973,15 @@
     if(shareChampionButtonFinish) shareChampionButtonFinish.addEventListener('click', genericShareFunction);
     
     if(globalHowToPlayButton) globalHowToPlayButton.addEventListener('click', () => showScreen('howToPlay'));
-    if(closeHowToPlayButton) closeHowToPlayButton.addEventListener('click', () => showScreen(previousScreenId || 'game'));
+    if(closeHowToPlayButton) closeHowToPlayButton.addEventListener('click', () => showScreen(previousScreenId || 'game')); // Go back to previous screen or game
     
     if(navHomeButton) navHomeButton.addEventListener('click', (e) => { e.preventDefault(); showScreen('start'); });
 
     if(navPlayButton) navPlayButton.addEventListener('click', (e) => {
         e.preventDefault();
-        // Check if the current screen is a modal overlaying the game or the game itself
         const isGameRelatedScreen = currentScreenId === 'game' || 
                                    (screens[previousScreenId]?.id === 'gameScreen' && 
-                                    (currentScreenId === 'howToPlay' || // Check against key 'howToPlay'
+                                    (currentScreenId === 'howToPlay' ||
                                      currentScreenId === 'stageTransitionModal' ||
                                      currentScreenId === 'winnerPopupScreen' || 
                                      currentScreenId === 'sponsoredPopupScreen'));
