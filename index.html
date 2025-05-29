@@ -990,7 +990,7 @@
             } else if (wishesForCurrentStage.length === 1 && currentStage !== STAGES.FINAL) {
                 champion = wishesForCurrentStage[0];
                 currentStage = STAGES.FINAL;
-                currentMatchInStage = 1;
+                currentMatchInStage = 1; // Mark final as "complete" for progress
                 updateProgressBar();
                 showScreen('winnerPopup');
             } else {
@@ -1050,8 +1050,8 @@
                 champion = wishes.find(w => w.id == sortedByVotes[0]);
             }
             if (!champion && wishes.length > 0) {
-                champion = wishes[0];
-            } else if (!champion) {
+                champion = wishes[0]; // Fallback to first wish if no votes or champion
+            } else if (!champion) { // Absolute fallback if wishes array is empty
                 console.error("Champion could not be determined.");
                 if(championTitleResults) championTitleResults.textContent = "Şampiyon belirlenemedi";
                 if(championImageResults) {
@@ -1076,13 +1076,27 @@
         if(championInfoResults) championInfoResults.textContent = `Başlangıç oylarının %${championPercentage}'i ile şampiyon oldu!`;
 
         if(resultsCardContainer && championCardDisplay) {
-            resultsCardContainer.innerHTML = '';
-            resultsCardContainer.appendChild(championCardDisplay);
-            const fixedOtherWishIds = [8, 13, 4, 14];
+            resultsCardContainer.innerHTML = ''; // Clear previous results
+            resultsCardContainer.appendChild(championCardDisplay.cloneNode(true)); // Append a clone of the updated champion card
+            
+            // Re-populate the cloned champion card elements as they are not live
+            const clonedChampionTitle = resultsCardContainer.querySelector('#championTitleResults');
+            const clonedChampionImage = resultsCardContainer.querySelector('#championImageResults');
+            const clonedChampionInfo = resultsCardContainer.querySelector('#championInfoResults');
+
+            if(clonedChampionTitle) clonedChampionTitle.textContent = champion.title;
+            if(clonedChampionImage) {
+                clonedChampionImage.src = getImageUrl(champion.imageSeed);
+                clonedChampionImage.alt = champion.title;
+            }
+            if(clonedChampionInfo) clonedChampionInfo.textContent = `Başlangıç oylarının %${championPercentage}'i ile şampiyon oldu!`;
+
+
+            const fixedOtherWishIds = [8, 13, 4, 14]; // Example IDs
             const otherWishesToDisplay = fixedOtherWishIds.map(id => {
                 const wish = wishes.find(w => w.id === id);
                 if (!wish) return null;
-                if (champion && wish.id === champion.id) return null;
+                if (champion && wish.id === champion.id) return null; // Don't show champion again
                 return { ...wish, voteCount: voteCounts[id] || 0 };
             }).filter(w => w);
 
@@ -1113,8 +1127,8 @@
     function displayFinishScreen() {
         if (!champion) {
             console.warn("Bitiş ekranı şampiyon olmadan gösteriliyor. Fallback kullanılıyor.");
-            if (wishes.length > 0) champion = wishes[0];
-            else {
+            if (wishes.length > 0) champion = wishes[0]; // Fallback to first wish
+            else { // Absolute fallback
                 if(winningWishTextFinishElement) winningWishTextFinishElement.textContent = "Turnuva tamamlandı! #UtopiArena";
                 if(moreDreamsContainer) moreDreamsContainer.innerHTML = '';
                 showScreen('finish');
@@ -1205,7 +1219,20 @@
     if(closeHowToPlayButton) closeHowToPlayButton.addEventListener('click', () => showScreen(previousScreenId || 'game'));
 
     if(navHomeButton) navHomeButton.addEventListener('click', (e) => { e.preventDefault(); showScreen('start'); });
-    if(navPlayButton) navPlayButton.addEventListener('click', (e) => { e.preventDefault(); resetGameAndPlay(); });
+    
+    // MODIFIED navPlayButton Listener:
+    if(navPlayButton) {
+        navPlayButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (currentScreenId !== 'game') { // Only reset and play if not already on the game screen
+                resetGameAndPlay(); 
+            } else {
+                // Optional: If already on the game screen, do nothing.
+                console.log("Already on game screen. Play button click ignored for reset.");
+            }
+        });
+    }
+
     if(navResultsButton) navResultsButton.addEventListener('click', (e) => { e.preventDefault(); displayResultsScreen(); });
 
     const finishPlayAgainButton = document.getElementById('finishPlayAgainButton');
