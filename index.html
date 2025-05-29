@@ -385,9 +385,7 @@
                 </a>
             </div>
         </nav>
-    </div> {/* End of appContainer */}
-
-    <div id="desktopWarningScreen" class="hidden-screen fixed inset-0 z-[200] flex flex-col items-center justify-center bg-slate-900 text-white p-8 text-center leading-relaxed">
+    </div> <div id="desktopWarningScreen" class="hidden-screen fixed inset-0 z-[200] flex flex-col items-center justify-center bg-slate-900 text-white p-8 text-center leading-relaxed">
         <span class="material-icons-outlined text-7xl text-sky-400 mb-6">phone_iphone</span>
         <h2 class="text-3xl font-bold mb-4 text-sky-300">UtopiArena Mobil Deneyimi!</h2>
         <p class="text-lg mb-3">Bu macera en güzel mobil cihazlarda yaşanır.</p>
@@ -786,7 +784,7 @@
         if(championInfoResults) championInfoResults.textContent = `Başlangıç oylarının %${championPercentage}'i ile şampiyon oldu!`;
         if(resultsCardContainer && championCardDisplay) {
             resultsCardContainer.innerHTML = ''; resultsCardContainer.appendChild(championCardDisplay);
-            const fixedOtherWishIds = [8, 13, 4, 14];
+            const fixedOtherWishIds = [8, 13, 4, 14]; 
             const otherWishesToDisplay = fixedOtherWishIds.map(id => {
                 if (champion && id === champion.id) return null; const wish = wishes.find(w => w.id === id); if (!wish) return null;
                 return { ...wish, voteCount: voteCounts[id] || 0 };
@@ -858,7 +856,28 @@
     if(globalHowToPlayButton) globalHowToPlayButton.addEventListener('click', () => showScreen('howToPlay'));
     if(closeHowToPlayButton) closeHowToPlayButton.addEventListener('click', () => showScreen(previousScreenId || 'game'));
     if(navHomeButton) navHomeButton.addEventListener('click', (e) => { e.preventDefault(); showScreen('start'); });
-    if(navPlayButton) navPlayButton.addEventListener('click', (e) => { e.preventDefault(); resetGameAndPlay(); });
+
+    // *** DEĞİŞİKLİK BURADA BAŞLIYOR ***
+    if(navPlayButton) navPlayButton.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        // Kullanıcının aktif, bitmemiş bir oyuna dönebileceği durumları tanımla:
+        // 1. Zaten oyun ekranında olması ('gameScreen').
+        // 2. Oyun ekranından ('game') 'Nasıl Oynanır' ('howToPlayScreen') veya
+        //    aşama geçiş ('stageTransitionModal') ekranına geçmiş olması.
+        // Ve oyunun henüz bir şampiyon belirlememiş olması (yani bitmemiş olması).
+        const isGamePausedForInfo = previousScreenId === 'game' &&
+                                   ['howToPlayScreen', 'stageTransitionModal'].includes(currentScreenId);
+        const canReturnToActiveGame = (currentScreenId === 'game' || isGamePausedForInfo) && !champion;
+
+        if (canReturnToActiveGame) {
+            showScreen('game'); // Devam eden oyun oturumuna geri dön
+        } else {
+            resetGameAndPlay(); // Yeni bir oyun başlat
+        }
+    });
+    // *** DEĞİŞİKLİK BURADA BİTİYOR ***
+
     if(navResultsButton) navResultsButton.addEventListener('click', (e) => { e.preventDefault(); displayResultsScreen(); });
     const finishPlayAgainButton = document.getElementById('finishPlayAgainButton');
     if(finishPlayAgainButton) finishPlayAgainButton.addEventListener('click', () => { resetGameAndPlay(); });
