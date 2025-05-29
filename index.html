@@ -37,6 +37,13 @@
         .start-button { background: linear-gradient(90deg, #76A9FA, #FF6F61); transition: transform 0.2s ease-out, box-shadow 0.2s ease-out; }
         .start-button:hover, .start-button:focus { transform: scale(1.05); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15); }
 
+#startGameButton {
+  position: fixed;
+  bottom: 32px; /* daha yukarı alır */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
+}
         .game-header-bar { 
             padding-top: 0.5rem; 
             padding-bottom: 0.5rem;
@@ -75,15 +82,6 @@
             max-height: calc(1.25em * 2 + 2px); 
             min-height: calc(1.25em * 2);       
         }
-
-#startGameButton {
-    position: fixed;
-    bottom: 60px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 20;
-}
-
         .confetti-burst { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 200px; height: 200px; background-image: radial-gradient(circle, rgba(255, 215, 0, 0.5) 0%, rgba(255, 215, 0, 0) 70%); border-radius: 50%; opacity: 0; animation: burst 0.7s ease-out forwards; z-index: 5; }
         @keyframes burst { 0% { opacity: 0.5; transform: translate(-50%, -50%) scale(0.5); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(1.5); } }
         .progress-bar-spark { position: absolute; right: -5px; top: -3px; width: 10px; height: 10px; background-color: #FFD700; border-radius: 50%; box-shadow: 0 0 8px 2px #FFD700; opacity: 0; animation: pulse-spark 0.5s ease-in-out; }
@@ -163,7 +161,7 @@
             <p class="text-[#333333] text-base sm:text-lg font-normal leading-relaxed pb-3 sm:pb-4 max-w-md">Gönlündeki Türkiye'yi UtopiArena'da yaşat! Seçiminle geleceğe yön ver.</p>
         </div>
         <div class="w-full flex justify-center z-10 pb-0">
-            <button id="startGameButton" class="start-button flex min-w-[120px] max-w-[480px] w-full sm:w-auto cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 sm:h-14 px-6 sm:px-8 text-md sm:text-lg font-bold shadow-lg">
+<button id="startGameButton" class="start-button flex w-auto min-w-[180px] max-w-[320px] px-6 sm:px-8 h-12 sm:h-14 text-md sm:text-lg font-bold rounded-full shadow-lg items-center justify-center">
                 <span class="truncate">Turnuvaya Başla!</span>
             </button>
         </div>
