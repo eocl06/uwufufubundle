@@ -400,12 +400,12 @@
 
         <div id="startScreen" class="screen-content relative flex h-screen flex-col justify-center items-center group/design-root px-4 pt-6 pb-2 sm:pt-10 sm:pb-4 background-animate hidden-screen">
             <div class="flex flex-col items-center justify-center min-h-0 z-10 text-center mb-10 sm:mb-12">
-                <h1 class="text-[#1a1a1a] tracking-tight text-[36px] sm:text-[52px] font-bold leading-tight pt-0 pb-1 sm:pb-2">UtopiArena</h1>
-                <p class="text-[#333333] text-base sm:text-lg font-normal leading-relaxed pb-3 sm:pb-4 max-w-md">Gerçek olmasını en çok istediğin haberi seç. Keşke değil, "Belki bir gün!" diyerek en çok neyi istediğimizi birlikte görelim.</p>
+                <h1 class="text-[#1a1a1a] tracking-tight text-[36px] sm:text-[52px] font-bold leading-tight pt-0 pb-1 sm:pb-2">Bir haberi gerçek kılabilsen, bu hangisi olsun isterdin?</h1>
+                <p class="text-[#333333] text-base sm:text-lg font-normal leading-relaxed pb-3 sm:pb-4 max-w-md">Tüm Bundle kullanıcılarının seçimleriyle, Türkiye’nin en çok beklediği haberi birlikte belirliyoruz.</p>
             </div>
             <div class="w-full flex justify-center z-10 pb-0">
                 <button id="startGameButton" class="start-button flex w-auto min-w-[180px] max-w-[320px] px-6 sm:px-8 h-12 sm:h-14 text-md sm:text-lg font-bold rounded-full shadow-lg items-center justify-center">
-                    <span class="truncate">Turnuvaya Başla!</span>
+                    <span class="truncate">Oyuna Başla</span>
                 </button>
             </div>
         </div>
@@ -453,8 +453,8 @@
                 </button>
                 <div class="p-6 space-y-4">
                     <div class="mb-1"><span class="material-icons text-yellow-400 text-5xl sm:text-6xl">emoji_events</span></div>
-                    <h2 class="text-2xl sm:text-3xl font-bold text-yellow-400">Senin Dileğin:</h2>
-                    <p id="winnerPopupSubtitle" class="text-sm sm:text-base text-gray-300 px-2">UtopiArena'da senin gelecek için en çok dilediğin haber bu oldu:</p>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-yellow-400">Senin Gelecek Dileğin!</h2>
+                    <p id="winnerPopupSubtitle" class="text-sm sm:text-base text-gray-300 px-2">Turnuvanın sonunda senin seçtiğin dilek buydu. Belki bir gün gerçekten olur... ✨</p>
                     <div class="bg-gray-700 rounded-lg p-3 sm:p-4 border border-gray-600 shadow-md">
                         <img id="winnerPopupImage" src="" alt="Şampiyon Dilek" class="w-full image-h-winner-popup object-cover rounded-md mb-3 shadow-sm">
                         <h3 id="winnerPopupTitle" class="text-lg sm:text-xl font-semibold text-white mb-1"></h3>
@@ -465,7 +465,7 @@
                             <span class="material-icons-outlined text-base">share</span> Şampiyonu Paylaş
                         </button>
                         <button id="winnerToResultsButton" class="w-full bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-semibold py-2.5 px-4 rounded-lg transition-colors text-sm sm:text-base shadow hover:shadow-md">
-                            Sonuçları Keşfet
+                            Sonuçları Keşfet →
                         </button>
                     </div>
                 </div>
@@ -498,7 +498,7 @@
                     </div>
                 </header>
                 <main class="pb-4 overflow-y-auto flex-1 min-h-0">
-                    <h2 class="text-slate-800 text-2xl font-semibold leading-tight px-6 text-center pb-6 pt-5">Ve şampiyon dilek...</h2>
+                    <h2 class="text-slate-800 text-2xl font-semibold leading-tight px-6 text-center pb-6 pt-5">Türkiye’nin Gelecek Hayali!</h2>
                     <div id="resultsCardContainer" class="px-4 space-y-4">
                         <div id="championCardDisplay" class="bg-white shadow-xl rounded-2xl overflow-hidden border-2 border-yellow-400 transform scale-105">
                             <div class="relative">
@@ -525,15 +525,15 @@
                 <div class="overflow-y-auto flex-1 min-h-0">
                     <div class="px-6 pt-6 pb-4 text-center">
                         <svg class="w-16 h-16 mx-auto text-yellow-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
-                        <h1 class="text-[#0d131b] text-3xl font-bold leading-tight pb-2">Senin Dileğin Belli Oldu!</h1>
+                        <h1 class="text-[#0d131b] text-3xl font-bold leading-tight pb-2">Türkiye’nin En Çok Beklenen Haberi Belli Oldu!</h1>
                         <p id="winningWishTextFinish" class="text-slate-600 text-lg font-normal leading-relaxed"></p>
                     </div>
                     <div class="flex flex-col gap-3 px-6 py-4">
                         <button id="shareChampionButton" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-14 px-6 flex-1 bg-[#428aef] text-slate-50 text-lg font-bold shadow-md hover:shadow-lg">
-                            <span class="material-icons mr-2">share</span> <span class="truncate">Şampiyonu Paylaş</span>
+                            <span class="material-icons mr-2">share</span> <span class="truncate">Bu Haberi Paylaş</span>
                         </button>
                         <button id="finishPlayAgainButton" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-14 px-6 flex-1 bg-slate-200 text-[#0d131b] text-lg font-bold hover:bg-slate-300">
-                            <span class="material-icons mr-2">replay</span> <span class="truncate">Yeni Turnuva Başlat</span>
+                            <span class="material-icons mr-2">replay</span> <span class="truncate">Yeni Bir Turnuva Başlat</span>
                         </button>
                     </div>
                     <div class="px-6 pt-8 pb-4"><h2 class="text-[#0d131b] text-2xl font-bold leading-tight">Diğer Popüler Hayaller...</h2></div>
@@ -557,14 +557,12 @@
                 <main class="p-4 space-y-4 text-slate-700 overflow-y-auto flex-1 min-h-0">
                     <p class="text-lg">UtopiArena'ya hoş geldiniz!</p>
                     <ol class="list-decimal list-inside space-y-2">
-                        <li>Sana sunulan iki hayali haberden birini seç. Gerçek olmasını en çok istediğini oyla.</li>
-                        <li>Seçimlerinizle dileğiniz olan haberler turnuvada ilerleyecek:</li>
-                        <li>Oyun sonunda sizin gelecek için dileğinizi ve ülkenin en çok beklediği haberleri görebilirsiniz.</li>
-                        <li>Sağ üstteki <span class="material-icons-outlined text-sm">help_outline</span> ikonundan bu ekrana tekrar ulaşabilirsiniz (oyun sırasında).</li>
-                        <li>İyi eğlenceler!</li>
+                        <li>Karşına çıkacak iki haberden, gerçekleşmesini en çok istediğini seç ve bir üst tura taşı.</li>
+                        <li>Finale kadar ilerle ve Türkiye’nin en çok beklenen haberini birlikte belirleyelim.</li>
+                        <li>Oyunu oynarken sağ üstteki <span class="material-icons-outlined text-sm">help_outline</span> butonuna tıklayarak bu ekrana her zaman dönebilirsin.</li>
                     </ol>
                     <p class="text-sm text-slate-500 mt-8 border-t border-slate-300 pt-4">
-                        <strong>Lütfen Dikkat:</strong> Bu oyunda yer alan tüm "dilekler", "gelecek senaryoları", "haber başlıkları" ve açıklamalar tamamen hayal ürünü olup kurgusaldır. Gerçek kişi, kurum veya olaylarla hiçbir ilgisi bulunmamaktadır. UtopiArena yalnızca eğlence amacıyla tasarlanmıştır.
+                        💡 Bu oyunda yer alan tüm haberler kurgusaldır. Gerçek kişi, kurum veya olaylarla hiçbir ilgisi yoktur.
                     </p>
                 </main>
             </div>
@@ -577,10 +575,9 @@
                 <main id="onboardingHowToPlayContent" class="p-5 sm:p-6 space-y-3 text-slate-700 max-h-[60vh] sm:max-h-[65vh] overflow-y-auto">
                     <p class="text-base sm:text-lg font-semibold text-center text-blue-600">Gerçek olmasını istediğin habere oy ver!</p>
                     <ol class="list-none space-y-2 text-sm sm:text-base">
-                        <li class="flex items-start"><span class="material-icons-outlined text-blue-500 mr-2 mt-0.5">looks_one</span><span>Sana sunulan iki "gelecek senaryosu" arasından <strong class="text-slate-700">favorini seç</strong>.</span></li>
-                        <li class="flex items-start"><span class="material-icons-outlined text-blue-500 mr-2 mt-0.5">emoji_events</span><span>Seçimlerinle senaryolar turnuvada ilerlesin ve bir <strong class="text-yellow-500">şampiyon</strong> belirlensin!</span></li>
-                        <li class="flex items-start"><span class="material-icons-outlined text-blue-500 mr-2 mt-0.5">settings_ethernet</span><span>Eleme, Çeyrek Final, Yarı Final ve Final aşamalarından geç.</span></li>
-                        <li class="flex items-start"><span class="material-icons-outlined text-green-500 mr-2 mt-0.5">flag</span><span>En iyi geleceği seçerek <strong class="text-slate-700">ülkemizin hayalini</strong> şekillendir!</span></li>
+                        <li class="flex items-start"><span class="material-icons-outlined text-blue-500 mr-2 mt-0.5">looks_one</span><span>Sana sunulacak haber çiftleri arasından <strong class="text-slate-700">gerçekleşmesini en çok istediğini seç</strong>.</span></li>
+                        <li class="flex items-start"><span class="material-icons-outlined text-blue-500 mr-2 mt-0.5">emoji_events</span><span>Seçimlerinle senaryolar finale kadar ilerlesin ve bir <strong class="text-yellow-500">şampiyon</strong> belirlensin!</span></li>
+                        <li class="flex items-start"><span class="material-icons-outlined text-green-500 mr-2 mt-0.5">flag</span><span>Dilediğin geleceği seç ve <strong class="text-slate-700">ülkemizin en beklediği haberleri</strong> birlikte görelim!</span></li>
                     </ol>
                     <p class="text-xs text-slate-500 mt-4 border-t border-slate-300 pt-3">
                         <strong>Not:</strong> Oyundaki tüm senaryolar tamamen hayal ürünüdür. Daha detaylı "Nasıl Oynanır" bilgisine oyun içindeki <span class="material-icons-outlined text-xs align-bottom">help_outline</span> ikonundan her zaman ulaşabilirsin.
@@ -1301,7 +1298,7 @@
                 return;
             }
         }
-        if(winnerPopupSubtitle) winnerPopupSubtitle.textContent = `UtopiArena'da senin ve diğerlerinin oylarıyla geleceğin hayali bu oldu:`;
+        if(winnerPopupSubtitle) winnerPopupSubtitle.textContent = `Turnuvanın sonunda senin seçtiğin dilek buydu. Belki bir gün gerçekten olur... ✨`;
         if(winnerPopupTitle) winnerPopupTitle.textContent = champion.title;
         if(winnerPopupDescription) winnerPopupDescription.textContent = champion.description;
         loadImageAndSetSrc(winnerPopupImage, getImageUrl(champion.imageSeed), champion.title);
@@ -1320,7 +1317,7 @@
         const championPercentage = totalSeedingVotes > 0 ? ((championVoteCount / totalSeedingVotes) * 100).toFixed(1) : "0.0";
 
         if(championTitleResults) championTitleResults.textContent = champion.title;
-        if(championInfoResults) championInfoResults.textContent = `Başlangıç oylarının %${championPercentage}'i ile şampiyon oldu!`;
+        if(championInfoResults) championInfoResults.textContent = `Tercih edilme oranı: %${championPercentage}`;
         loadImageAndSetSrc(championImageResults, getImageUrl(champion.imageSeed, 600, 400), champion.title);
 
         if(resultsCardContainer && championCardDisplay) {
@@ -1350,7 +1347,7 @@
                             <p class="text-white text-xl font-bold leading-tight">${w.title}</p>
                             <div class="flex items-center mt-1.5">
                                 <span class="material-icons text-red-400 mr-1" style="font-size: 18px;">favorite_border</span>
-                                <p class="text-white text-sm font-medium">Başlangıç oylarının %${wishPercentage}'ini aldı</p>
+                                <p class="text-white text-sm font-medium"> Tercih edilme oranı: %${championPercentage} </p>
                             </div>
                         </div>
                     </div>`;
@@ -1375,7 +1372,7 @@
                 return;
             }
         }
-        if(winningWishTextFinishElement) winningWishTextFinishElement.textContent = `Şampiyon dilek: ${champion.title}! Bunu arkadaşlarınla paylaş, belki birlikte gerçeğe dönüştürürüz!✨ #UtopiArena`;
+        if(winningWishTextFinishElement) winningWishTextFinishElement.textContent = `En çok oy alan haber: ${champion.title}\nBu hayal artık sadece senin değil, hepimizin dileği.\nPaylaş, belki bir gün hep birlikte gerçeğe dönüştürürüz. ✨`;
         if(moreDreamsContainer) {
             moreDreamsContainer.innerHTML = '';
             const otherWishes = [...wishes].filter(w => w.id !== champion.id);
