@@ -104,7 +104,7 @@
         .final-match-theme .card .card-description { color: #9ca3af; }
         .final-match-theme #vsButtonSpan { background: linear-gradient(45deg, #FFD700, #fbd38d) !important; color: #1A202C !important; box-shadow: 0 0 10px #FFD700; }
 
-        /* Sponsored Round Theme */
+        /* Sponsored Round Theme (Game Screen) */
         .sponsored-round-theme { background-color: #E0F2FE !important; /* Light Blueish */ }
         .sponsored-round-theme .game-header-bar { background-color: #B9E0F8 !important; }
         .sponsored-round-theme #progressTextElement { color: #0B578A !important; font-weight: bold !important; }
@@ -157,6 +157,16 @@
             animation: pulseTitle 4s ease-in-out infinite;
         }
 
+        /* Custom class for winner popup image height */
+        .image-h-winner-popup {
+            height: 10.5rem; /* 168px, 5% > 10rem */
+        }
+        @media (min-width: 640px) { /* sm breakpoint */
+            .image-h-winner-popup {
+                height: 12.6rem; /* 201.6px, 5% > 12rem */
+            }
+        }
+
     </style>
 </head>
 <body class="bg-[#FAF8F6]">
@@ -189,7 +199,7 @@
             <div class="flex flex-col items-center @md:flex-row @md:justify-center @md:items-center w-full">
                 <div class="card w-full max-w-md @md:max-w-sm bg-white rounded-xl shadow-xl overflow-hidden relative">
                     <div class="confetti-burst hidden"></div>
-                    <div class="w-full h-40 overflow-hidden">
+                    <div class="w-full overflow-hidden" style="height: 10.5rem;"> 
                         <img data-role="card-image-img" src="" alt="" class="w-full h-full object-cover">
                     </div>
                     <div class="p-4">
@@ -202,7 +212,7 @@
                 </div>
                 <div class="card w-full max-w-md @md:max-w-sm bg-white rounded-xl shadow-xl overflow-hidden relative">
                     <div class="confetti-burst hidden"></div>
-                    <div class="w-full h-40 overflow-hidden">
+                    <div class="w-full overflow-hidden" style="height: 10.5rem;"> {/* MODIFIED: h-40 to inline style */}
                         <img data-role="card-image-img" src="" alt="" class="w-full h-full object-cover">
                     </div>
                     <div class="p-4">
@@ -227,7 +237,8 @@
                 <p id="winnerPopupSubtitle" class="text-sm sm:text-base text-gray-300 px-2">UtopiArena'da senin ve diğerlerinin oylarıyla haberlerin şampiyonu bu oldu:</p>
 
                 <div class="bg-gray-700 rounded-lg p-3 sm:p-4 border border-gray-600 shadow-md">
-                    <img id="winnerPopupImage" src="" alt="Şampiyon Dilek" class="w-full h-40 sm:h-48 object-cover rounded-md mb-3 shadow-sm">
+                    {/* MODIFIED: Removed h-40 sm:h-48, added .image-h-winner-popup class */}
+                    <img id="winnerPopupImage" src="" alt="Şampiyon Dilek" class="w-full image-h-winner-popup object-cover rounded-md mb-3 shadow-sm">
                     <h3 id="winnerPopupTitle" class="text-lg sm:text-xl font-semibold text-white mb-1"></h3>
                     <p id="winnerPopupDescription" class="text-xs sm:text-sm text-gray-300 card-description-clamp leading-relaxed"></p>
                 </div>
@@ -246,12 +257,13 @@
     </div>
 
     <div id="sponsoredPopupScreen" class="hidden-screen fixed inset-0 z-[60] flex items-center justify-center p-4 modal-overlay opacity-0">
-        <div id="sponsoredPopupContent" class="modal-content-box bg-white rounded-xl shadow-2xl w-full max-w-md text-center relative">
+        <div id="sponsoredPopupContent" class="modal-content-box bg-sky-50 rounded-xl shadow-2xl w-full max-w-md text-center relative">
             <button id="closeSponsoredPopupButton" class="absolute top-3 right-3 text-slate-600 hover:text-slate-900 z-10 p-1 rounded-full hover:bg-slate-200 transition-colors">
                 <span class="material-icons">close</span>
             </button>
             <div class="p-6 space-y-4">
                 <h2 id="sponsoredPopupTitleText" class="text-xl sm:text-2xl font-bold text-slate-800">Sponsorlu İçerik</h2>
+                 {/* Note: Sponsored popup image height (h-48) is not changed as per this request, only news images. If this also needs to be 5% taller, it would be style="height: 12.6rem;" */}
                 <img id="sponsoredPopupImage" src="" alt="Sponsorlu Reklam" class="w-full h-48 object-contain rounded-md mb-3 border border-slate-200">
                 <p id="sponsoredPopupDescriptionText" class="text-sm sm:text-base text-slate-600 px-2"></p>
                 <a id="sponsoredPopupLink" href="#" target="_blank" rel="noopener noreferrer" class="inline-block w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-4 rounded-lg transition-colors text-base shadow-md hover:shadow-lg">
@@ -276,7 +288,8 @@
                 <div id="resultsCardContainer" class="px-4 space-y-4">
                     <div id="championCardDisplay" class="bg-white shadow-xl rounded-2xl overflow-hidden border-2 border-yellow-400 transform scale-105">
                         <div class="relative">
-                            <img alt="Şampiyon dilek" id="championImageResults" class="w-full h-48 object-cover"/>
+                             {/* MODIFIED: Removed h-48, added inline style */}
+                            <img alt="Şampiyon dilek" id="championImageResults" class="w-full object-cover" style="height: 12.6rem;"/>
                             <div class="absolute inset-0 bg-hero-gradient"></div>
                             <div class="absolute top-2 right-2 gold-crown">
                                 <span class="material-icons" style="font-size: 36px;">emoji_events</span>
@@ -431,7 +444,7 @@
         results: document.getElementById('resultsScreen'),
         finish: document.getElementById('finishScreen'),
         howToPlay: document.getElementById('howToPlayScreen'),
-        sponsoredPopup: document.getElementById('sponsoredPopupScreen') // New screen
+        sponsoredPopup: document.getElementById('sponsoredPopupScreen')
     };
     const globalHowToPlayButton = document.getElementById('globalHowToPlayButton');
     const startGameButton = document.getElementById('startGameButton');
@@ -449,12 +462,11 @@
     const winnerShareButtonPopup = document.getElementById('winnerShareButton');
     const closeWinnerPopupButton = document.getElementById('closeWinnerPopupButton');
 
-    // Sponsored Popup Elements
     const sponsoredPopupScreen = document.getElementById('sponsoredPopupScreen');
     const sponsoredPopupContent = document.getElementById('sponsoredPopupContent');
     const closeSponsoredPopupButton = document.getElementById('closeSponsoredPopupButton');
     const sponsoredPopupTitleText = document.getElementById('sponsoredPopupTitleText');
-    const sponsoredPopupImage = document.getElementById('sponsoredPopupImage');
+    const sponsoredPopupImage = document.getElementById('sponsoredPopupImage'); // This is the ad image, not a "news" image
     const sponsoredPopupDescriptionText = document.getElementById('sponsoredPopupDescriptionText');
     const sponsoredPopupLink = document.getElementById('sponsoredPopupLink');
 
@@ -504,37 +516,32 @@
     let champion = null;
     let isSponsoredInterstitialActive = false;
 
-    // --- SPONSOR DETAILS ---
     const SPONSORED_AD_DETAILS = {
         title: "Artık ikisi de ütopya değil!",
         description: "Samsung Bespoke AI Buzdolabı ile geleceğin teknolojileri evinize geldi.",
-        image: "https://i.ibb.co/mfKnFMM/image.png", 
+        image: "https://i.ibb.co/Kj70CdwF/image.png",
         imageSeed: null,
         link: "https://www.samsung.com/tr/home-appliances/bespoke-home/?gad_source=1&gad_campaignid=21450180449&gbraid=0AAAAAD2gkfW5E2S3kMwBuWPlYFKrdtHfP&gclid=CjwKCAjwi-DBBhA5EiwAXOHsGUZ_AI9UaOv6drI3rnMCy15Ak3KhYxPdW7ZRU-lbD0FWs15154af7BoCwcQQAvD_BwE&gclsrc=aw.ds"
     };
-    // --- END SPONSOR DETAILS ---
-
 
     const wishes = [
-  { id:1, title: "İzmir Belediyesi: Gece 00:00–05:00 Arası Ücretsiz Taksi Hizmeti Başladı", description: "Gece çalışan, okuyan ya da çıkan herkese bir tuşla güvenli ulaşım imkanı sunuluyor. Bu önemli destek, kadınların gece saatlerinde daha güvende hissetmelerini ve sosyal hayata katılımlarını artırmayı amaçlıyor.", imageSeed: "https://i.ibb.co/vvjLGRgT/Ads-z-tasar-m.png" },
-  { id:2, title: "Türkiye’de Öğrencilere Aylık 2000 TL Kültür-Sanat Bütçesi Verilecek", description: "Sinema, tiyatro, konser ve kitap harcamalarında kullanılmak üzere öğrenci kartlarına aylık 2000 TL destek sağlanıyor. Gençlerin kültürel hayata daha aktif katılımı ve entelektüel gelişimi amaçlanıyor.", imageSeed: "https://i.ibb.co/932xx9Wm/Chat-GPT-Image-May-29-2025-02-43-51-PM.png" },
-  { id:3, title: "Haluk Bilginer, Oscar Kazandı: “Yılın En İyi Yardımcı Erkek Oyuncusu”", description: "Sahnede yaptığı dokunaklı konuşmada Türkiye’ye selam gönderdi. Oyunculuk kariyerinde bir zirve daha: Dünya basını bu anı ayakta alkışladı.", imageSeed: "https://i.ibb.co/q33VvYd3/Chat-GPT-Image-May-29-2025-03-10-29-AM.png" },
-  { id:4, title: "Avrupa Birliği Türkiye’ye Vizeyi Kaldırdı", description: "2026’dan itibaren kimlik kartıyla serbest geçiş dönemi başlıyor. Vize randevu kuyruğu tarih oldu, böylece vatandaşların seyahat özgürlüğü önemli ölçüde arttı.", imageSeed: "https://i.ibb.co/JWWGksJx/Chat-GPT-Image-May-29-2025-02-48-58-PM.png" },
-  { id:5, title: "WhatsApp’a “Yazdı Geri Sildi Ne Yazdı?” Özelliği Geldi", description: "Artık sildiği mesajı 5 saniyeliğine görebiliyorsun. “Az önce ne diyordun?” devri başladı, o büyük merak sonunda ortadan kalktı.", imageSeed: "https://i.ibb.co/sp7GCqFv/Chat-GPT-Image-May-29-2025-02-53-37-PM.png" },
-  { id:6, title: "Instagram “Yanlışlıkla Beğendiğin Fotoğrafı 10 Saniye İçinde Geri Al” Özelliğini Açtı", description: "2017 yılındaki bir fotoğrafa yanlışlıkla kalp bırakma kabusu bitti. Geri al, unutulsun gitsin; sosyal medya kullanımındaki bu tür küçük kazalar artık sorun değil.", imageSeed: "https://i.ibb.co/HfVHy1kb/Chat-GPT-Image-May-29-2025-03-09-39-PM.png" },
-  { id:7, title: "İlk Türk Formula 1 Pilotu: 19 Yaşındaki Emir Aslan, Monza’da start aldı!", description: "Genç pilot ilk yarışında sekizinci sırada bitirerek puan almayı başardı. Garajda gururla dalgalanan Türk bayrağı vardı, motor sporlarında yepyeni bir sayfa açıldı.", imageSeed: "https://i.ibb.co/Kj0KX6Xq/Chat-GPT-Image-May-29-2025-12-59-58-PM.png" },
-  { id:8, title: "Türkiye, Kadın-Erkek Eşitliği Endeksinde İlk 20’ye Girdi", description: "Eğitimde, iş hayatında ve evde kadın-erkek eşitliği uluslararası raporlarla tescillendi. “Artık yarı yarıya değil, tam tamına eşitiz” denilebilen bir dönem başladı.", imageSeed: "https://i.ibb.co/8D5yXv0K/Chat-GPT-Image-May-29-2025-02-46-14-PM.png" },
-  { id:9, title: "Beren Yıldız, Nobel Fizik Ödülünü Kazandı: “Evrenin Nabzını Dinledik”", description: "ODTÜ’lü başarılı bilim kadını, kuantum kütleçekim alanındaki temel denklemi çözdü. İsveç’te düzenlenen törende tarih yazdı, bilim dünyasında büyük yankı uyandırdı.", imageSeed: "https://i.ibb.co/N21NBh6S/Chat-GPT-Image-May-29-2025-02-51-54-PM.png" },
-  { id:10, title: "Türkiye, 2029’da Eurovision’a Geri Döndü: Mabel Matiz Avrupa’yı Salladı", description: "Yarışmada seslendirdiği “Surface” adlı şarkısı, sahnede kullanılan ebru animasyonu ve etkileyici bağlama solosuyla tüm Avrupa’yı büyüledi, kültürel bir köprü kuruldu.", imageSeed: "https://i.ibb.co/ycYF3DTj/Chat-GPT-Image-May-29-2025-12-56-35-AM.png" },
-  { id:11, title: "Haftada 4 Gün Çalışma Yasası Resmi Gazete’de Yayınlandı", description: "Artık cuma günü de resmi tatil ilan edildi. Aynı maaşla, daha az stresle yepyeni bir hayat başlıyor, genel iş-yaşam dengesi önemli ölçüde iyileşiyor.", imageSeed: "https://i.ibb.co/tMNVV4qG/Chat-GPT-Image-May-29-2025-12-52-25-AM.png" },
-  { id:12, title: "Boğaziçi Üniversitesi, Dünya Üniversite Sıralamasında İlk 100’e Girdi!", description: "Times Higher Education'ın saygın listesine göre Türkiye’den ilk kez bir üniversite 98. sırada yer aldı. Bu, eğitimde uluslararası bir başarı olarak tescillendi.", imageSeed: "https://i.ibb.co/VYXvWZyb/Chat-GPT-Image-May-29-2025-03-13-00-PM.png" },
-  { id:13, title: "Merkez Bankası, Enflasyon Tahminini %4’ten %3,5’e Düşürdü!", description: "Temel gıda ürünlerinde ve kiralarda belirgin bir düşüş başladı.", imageSeed: "https://i.ibb.co/HfSjcb19/Chat-GPT-Image-May-29-2025-03-44-18-PM.png" },
-  { id:14, title: "Türkiye’de Şehir Parkları ve Yeşil Alanlar 5 Yılda %42 Arttı", description: "Şehirlerde betonun yerini artık ağaç gölgeleri, otobüsün yerini ise bisiklet yolları aldı. “Nefes Al Türkiye” projesi başarıyla tamamlandı, yaşam kalitesi gözle görülür şekilde yükseldi.", imageSeed: "https://i.ibb.co/r263M7rN/Chat-GPT-Image-May-29-2025-03-13-04-PM.png" },
-  { id:15, title: "Türkiye, 2028 Avrupa Futbol Şampiyonu Oldu!", description: "Unutulmaz finalde Almanya’yı 3-2 yendik. Maçın 89. dakikasında Arda Güler'in attığı frikik golüyle millilerimiz tarih yazdı, tüm ülke büyük bir sevince boğuldu.", imageSeed: "https://i.ibb.co/zV9g4Pdf/Chat-GPT-Image-May-29-2025-12-24-44-AM.png" },
-  { id:16, title: "Filenin Sultanları, Paris 2028’de Altın Madalya Kazandı!", description: "Nefes kesen finalde Brezilya’ya karşı alınan 3-1'lik skorla şampiyonluk geldi. Bayraklar, gözyaşları ve omuz omuza kazanılan bu büyük zaferle Türk voleybolu adını zirveye yazdırdı.", imageSeed: "https://i.ibb.co/R4jrvBMx/Ads-z-tasar-m-1.png" }
+    { id:1, title: "İzmir Belediyesi: Gece 00:00–05:00 Arası Ücretsiz Taksi Hizmeti Başladı", description: "Gece çalışan, okuyan ya da çıkan herkese bir tuşla güvenli ulaşım imkanı sunuluyor. Bu önemli destek, kadınların gece saatlerinde daha güvende hissetmelerini ve sosyal hayata katılımlarını artırmayı amaçlıyor.", imageSeed: "https://i.ibb.co/vvjLGRgT/Ads-z-tasar-m.png" },
+    { id:2, title: "Türkiye’de Öğrencilere Aylık 2000 TL Kültür-Sanat Bütçesi Verilecek", description: "Sinema, tiyatro, konser ve kitap harcamalarında kullanılmak üzere öğrenci kartlarına aylık 2000 TL destek sağlanıyor. Gençlerin kültürel hayata daha aktif katılımı ve entelektüel gelişimi amaçlanıyor.", imageSeed: "https://i.ibb.co/932xx9Wm/Chat-GPT-Image-May-29-2025-02-43-51-PM.png" },
+    { id:3, title: "Haluk Bilginer, Oscar Kazandı: “Yılın En İyi Yardımcı Erkek Oyuncusu”", description: "Sahnede yaptığı dokunaklı konuşmada Türkiye’ye selam gönderdi. Oyunculuk kariyerinde bir zirve daha: Dünya basını bu anı ayakta alkışladı.", imageSeed: "https://i.ibb.co/q33VvYd3/Chat-GPT-Image-May-29-2025-03-10-29-AM.png" },
+    { id:4, title: "Avrupa Birliği Türkiye’ye Vizeyi Kaldırdı", description: "2026’dan itibaren kimlik kartıyla serbest geçiş dönemi başlıyor. Vize randevu kuyruğu tarih oldu, böylece vatandaşların seyahat özgürlüğü önemli ölçüde arttı.", imageSeed: "https://i.ibb.co/JWWGksJx/Chat-GPT-Image-May-29-2025-02-48-58-PM.png" },
+    { id:5, title: "WhatsApp’a “Yazdı Geri Sildi Ne Yazdı?” Özelliği Geldi", description: "Artık sildiği mesajı 5 saniyeliğine görebiliyorsun. “Az önce ne diyordun?” devri başladı, o büyük merak sonunda ortadan kalktı.", imageSeed: "https://i.ibb.co/sp7GCqFv/Chat-GPT-Image-May-29-2025-02-53-37-PM.png" },
+    { id:6, title: "Instagram “Yanlışlıkla Beğendiğin Fotoğrafı 10 Saniye İçinde Geri Al” Özelliğini Açtı", description: "2017 yılındaki bir fotoğrafa yanlışlıkla kalp bırakma kabusu bitti. Geri al, unutulsun gitsin; sosyal medya kullanımındaki bu tür küçük kazalar artık sorun değil.", imageSeed: "https://i.ibb.co/HfVHy1kb/Chat-GPT-Image-May-29-2025-03-09-39-PM.png" },
+    { id:7, title: "İlk Türk Formula 1 Pilotu: 19 Yaşındaki Emir Aslan, Monza’da start aldı!", description: "Genç pilot ilk yarışında sekizinci sırada bitirerek puan almayı başardı. Garajda gururla dalgalanan Türk bayrağı vardı, motor sporlarında yepyeni bir sayfa açıldı.", imageSeed: "https://i.ibb.co/Kj0KX6Xq/Chat-GPT-Image-May-29-2025-12-59-58-PM.png" },
+    { id:8, title: "Türkiye, Kadın-Erkek Eşitliği Endeksinde İlk 20’ye Girdi", description: "Eğitimde, iş hayatında ve evde kadın-erkek eşitliği uluslararası raporlarla tescillendi. “Artık yarı yarıya değil, tam tamına eşitiz” denilebilen bir dönem başladı.", imageSeed: "https://i.ibb.co/8D5yXv0K/Chat-GPT-Image-May-29-2025-02-46-14-PM.png" },
+    { id:9, title: "Beren Yıldız, Nobel Fizik Ödülünü Kazandı: “Evrenin Nabzını Dinledik”", description: "ODTÜ’lü başarılı bilim kadını, kuantum kütleçekim alanındaki temel denklemi çözdü. İsveç’te düzenlenen törende tarih yazdı, bilim dünyasında büyük yankı uyandırdı.", imageSeed: "https://i.ibb.co/N21NBh6S/Chat-GPT-Image-May-29-2025-02-51-54-PM.png" },
+    { id:10, title: "Türkiye, 2029’da Eurovision’a Geri Döndü: Mabel Matiz Avrupa’yı Salladı", description: "Yarışmada seslendirdiği “Surface” adlı şarkısı, sahnede kullanılan ebru animasyonu ve etkileyici bağlama solosuyla tüm Avrupa’yı büyüledi, kültürel bir köprü kuruldu.", imageSeed: "https://i.ibb.co/ycYF3DTj/Chat-GPT-Image-May-29-2025-12-56-35-AM.png" },
+    { id:11, title: "Haftada 4 Gün Çalışma Yasası Resmi Gazete’de Yayınlandı", description: "Artık cuma günü de resmi tatil ilan edildi. Aynı maaşla, daha az stresle yepyeni bir hayat başlıyor, genel iş-yaşam dengesi önemli ölçüde iyileşiyor.", imageSeed: "https://i.ibb.co/tMNVV4qG/Chat-GPT-Image-May-29-2025-12-52-25-AM.png" },
+    { id:12, title: "Boğaziçi Üniversitesi, Dünya Üniversite Sıralamasında İlk 100’e Girdi!", description: "Times Higher Education'ın saygın listesine göre Türkiye’den ilk kez bir üniversite 98. sırada yer aldı. Bu, eğitimde uluslararası bir başarı olarak tescillendi.", imageSeed: "https://i.ibb.co/VYXvWZyb/Chat-GPT-Image-May-29-2025-03-13-00-PM.png" },
+    { id:13, title: "Merkez Bankası, Enflasyon Tahminini %4’ten %3,5’e Düşürdü!", description: "Temel gıda ürünlerinde ve kiralarda belirgin bir düşüş başladı.", imageSeed: "https://i.ibb.co/HfSjcb19/Chat-GPT-Image-May-29-2025-03-44-18-PM.png" },
+    { id:14, title: "Türkiye’de Şehir Parkları ve Yeşil Alanlar 5 Yılda %42 Arttı", description: "Şehirlerde betonun yerini artık ağaç gölgeleri, otobüsün yerini ise bisiklet yolları aldı. “Nefes Al Türkiye” projesi başarıyla tamamlandı, yaşam kalitesi gözle görülür şekilde yükseldi.", imageSeed: "https://i.ibb.co/r263M7rN/Chat-GPT-Image-May-29-2025-03-13-04-PM.png" },
+    { id:15, title: "Türkiye, 2028 Avrupa Futbol Şampiyonu Oldu!", description: "Unutulmaz finalde Almanya’yı 3-2 yendik. Maçın 89. dakikasında Arda Güler'in attığı frikik golüyle millilerimiz tarih yazdı, tüm ülke büyük bir sevince boğuldu.", imageSeed: "https://i.ibb.co/zV9g4Pdf/Chat-GPT-Image-May-29-2025-12-24-44-AM.png" },
+    { id:16, title: "Filenin Sultanları, Paris 2028’de Altın Madalya Kazandı!", description: "Nefes kesen finalde Brezilya’ya karşı alınan 3-1'lik skorla şampiyonluk geldi. Bayraklar, gözyaşları ve omuz omuza kazanılan bu büyük zaferle Türk voleybolu adını zirveye yazdırdı.", imageSeed: "https://i.ibb.co/R4jrvBMx/Ads-z-tasar-m-1.png" }
 ]
-
-
 
     function getImageUrl(imageIdentifier, width = 600, height = 400) {
         if (typeof imageIdentifier === 'string' && imageIdentifier.startsWith('http')) {
@@ -548,16 +555,16 @@
     wishes.forEach(w => {
         imagesToPreload.push(getImageUrl(w.imageSeed, 600, 400));
         imagesToPreload.push(getImageUrl(w.imageSeed, 400, 225));
-        imagesToPreload.push(getImageUrl(w.imageSeed, 600, 300)); // For results cards
+        imagesToPreload.push(getImageUrl(w.imageSeed, 600, 300));
     });
-    imagesToPreload.push(getImageUrl(SPONSORED_AD_DETAILS.imageSeed || SPONSORED_AD_DETAILS.image)); // Preload sponsor ad image
+    imagesToPreload.push(getImageUrl(SPONSORED_AD_DETAILS.imageSeed || SPONSORED_AD_DETAILS.image));
     imagesToPreload.push(getImageUrl('champion_placeholder_final/600/400'));
     imagesToPreload.push(getImageUrl('error_placeholder_results/600/400'));
     imagesToPreload = [...new Set(imagesToPreload)];
 
     function preloadImages() {
         if (imagesToPreload.length === 0) { if(startGameButton) startGameButton.disabled = false; return; }
-        if(startGameButton) startGameButton.disabled = false; // Enable button regardless for now
+        if(startGameButton) startGameButton.disabled = false;
         let loadedCount = 0;
         imagesToPreload.forEach(imageUrl => {
             const img = new Image();
@@ -576,14 +583,14 @@
 
         const isOverlayActive = (onboardingModal && !onboardingModal.classList.contains('hidden-screen')) ||
                                 (screens.winnerPopup && !screens.winnerPopup.classList.contains('hidden-screen')) ||
-                                (screens.sponsoredPopup && !screens.sponsoredPopup.classList.contains('hidden-screen')) || 
+                                (screens.sponsoredPopup && !screens.sponsoredPopup.classList.contains('hidden-screen')) ||
                                 (stageTransitionModal && !stageTransitionModal.classList.contains('hidden-screen'));
 
         const navHeightWithSpace = '70px';
         const basePaddingBottom = '1rem';
 
         Object.values(screens).forEach(screen => {
-            if (screen && screen.style && screen.id !== 'sponsoredPopupScreen') { 
+            if (screen && screen.style && screen.id !== 'sponsoredPopupScreen') {
                 if (screen.id === 'startScreen') {
                     screen.style.paddingBottom = '';
                 } else {
@@ -633,7 +640,7 @@
             backdropElement.classList.remove('opacity-0');
             backdropElement.classList.add('opacity-100');
         }
-        currentScreenId = modalElement.id; 
+        currentScreenId = modalElement.id;
         updateBottomNav();
         if (tempPreviousScreenId !== 'onboardingHowToPlayModal' && tempPreviousScreenId !== 'stageTransitionModal' && tempPreviousScreenId !== 'winnerPopupScreen' && tempPreviousScreenId !== 'sponsoredPopupScreen') {
             previousScreenId = tempPreviousScreenId;
@@ -653,8 +660,8 @@
         setTimeout(() => {
             modalElement.classList.add('hidden-screen');
             modalElement.classList.remove('flex');
-            if (currentScreenId === modalElement.id) { 
-                currentScreenId = previousScreenId || 'start'; 
+            if (currentScreenId === modalElement.id) {
+                currentScreenId = previousScreenId || 'start';
             }
             updateBottomNav();
             if (callback) callback();
@@ -678,7 +685,7 @@
                 showModal(screens.winnerPopup, winnerPopupContentContainer);
                 return;
             }
-             if (screenIdToShow === 'sponsoredPopup') { 
+              if (screenIdToShow === 'sponsoredPopup') {
                 if(sponsoredPopupTitleText) sponsoredPopupTitleText.textContent = SPONSORED_AD_DETAILS.title;
                 if(sponsoredPopupImage) sponsoredPopupImage.src = getImageUrl(SPONSORED_AD_DETAILS.imageSeed || SPONSORED_AD_DETAILS.image);
                 if(sponsoredPopupDescriptionText) sponsoredPopupDescriptionText.textContent = SPONSORED_AD_DETAILS.description;
@@ -687,14 +694,13 @@
                 return;
             }
 
-
             if (!screens[screenIdToShow]) { console.error("Ekran bulunamadı:", screenIdToShow); return; }
 
             if (currentScreenId !== screenIdToShow &&
                 currentScreenId !== 'onboardingHowToPlayModal' &&
                 currentScreenId !== 'stageTransitionModal' &&
                 currentScreenId !== 'winnerPopupScreen' &&
-                currentScreenId !== 'sponsoredPopupScreen') { 
+                currentScreenId !== 'sponsoredPopupScreen') {
                 previousScreenId = currentScreenId;
             }
 
@@ -707,7 +713,7 @@
             currentScreenId = screenIdToShow;
 
             const bodyClassList = document.body.classList;
-            if (screens.game) screens.game.classList.remove('final-match-theme', 'sponsored-round-theme'); 
+            if (screens.game) screens.game.classList.remove('final-match-theme', 'sponsored-round-theme');
             bodyClassList.remove('background-animate', 'bg-[#FAF8F6]', 'bg-slate-50', 'bg-slate-100');
 
             if (screenIdToShow === 'start') {
@@ -719,9 +725,7 @@
                 if (screenIdToShow === 'game' && currentStage === STAGES.FINAL && screens.game) {
                     screens.game.classList.add('final-match-theme');
                 }
-                // Sponsored theme is applied by showSponsoredInterstitial or cleared by its closing logic.
             }
-
             updateBottomNav();
             window.scrollTo(0,0);
         };
@@ -739,17 +743,16 @@
         nextStageWishes = [];
         voteCounts = {};
         champion = null;
-        isSponsoredInterstitialActive = false; 
-        localStorage.removeItem('sponsoredRoundShownThisSession'); 
+        isSponsoredInterstitialActive = false;
+        localStorage.removeItem('sponsoredRoundShownThisSession');
 
         let wishesForSeeding = [...wishes];
         shuffleArray(wishesForSeeding);
-        wishesForCurrentStage = wishesForSeeding.slice(0, 16); 
+        wishesForCurrentStage = wishesForSeeding.slice(0, 16);
 
         if (screens.game) {
             screens.game.classList.remove('sponsored-round-theme', 'final-match-theme');
         }
-
 
         if (showOnboarding) {
             showScreen('onboardingModal');
@@ -772,13 +775,11 @@
         localStorage.setItem('sponsoredRoundShownThisSession', 'true');
 
         if (screens.game) {
-            screens.game.classList.remove('final-match-theme'); // Ensure no clash with final theme
-            screens.game.classList.add('sponsored-round-theme'); // Apply sponsored theme
+            screens.game.classList.remove('final-match-theme');
+            screens.game.classList.add('sponsored-round-theme');
         }
         if (progressTextElement) progressTextElement.textContent = "Sponsorlu Etap";
-        // Progress bar should reflect that 4 matches are done (4/8 for seeding round of 16 items)
         if (progressBarFill) progressBarFill.style.width = `${(4 / 8) * 100}%`;
-
 
         const sponsoredCardContent1 = { id: 'sp_card_1', title: "Ne Pişireceğinize Artık Buzdolabımız Karar Verebilecek!", description: "AI destekli buzdolabı, içerikteki malzemelere göre her gün yeni tarif öneriyor.", imageSeed: "https://i.ibb.co/ZzT2LKCb/image-21.png" };
         const sponsoredCardContent2 = { id: 'sp_card_2', title: "İçindekileri Tanıyan ve Alışveriş Listesi Hazırlayan Buzdolabı duyuruldu! ", description: "Yapay zekâlı buzdolabı, eksikleri algılayıp ihtiyacın olan ürünleri liste halinde bildiriyor.", imageSeed: "https://i.ibb.co/n8cjQ8pV/Chat-GPT-Image-May-29-2025-02-20-27-PM.png" };
@@ -792,7 +793,7 @@
             card1ImgEl.src = getImageUrl(sponsoredCardContent1.imageSeed);
             card1ImgEl.alt = sponsoredCardContent1.title;
         }
-        gameScreenCards[0].dataset.wishId = sponsoredCardContent1.id; 
+        gameScreenCards[0].dataset.wishId = sponsoredCardContent1.id;
 
         const card2TitleEl = gameScreenCards[1].querySelector('.card-title');
         const card2DescEl = gameScreenCards[1].querySelector('.card-description');
@@ -803,12 +804,11 @@
             card2ImgEl.src = getImageUrl(sponsoredCardContent2.imageSeed);
             card2ImgEl.alt = sponsoredCardContent2.title;
         }
-        gameScreenCards[1].dataset.wishId = sponsoredCardContent2.id; 
-
+        gameScreenCards[1].dataset.wishId = sponsoredCardContent2.id;
 
         if (vsButtonSpan) {
             vsButtonSpan.classList.remove('vs-animate');
-            void vsButtonSpan.offsetWidth; 
+            void vsButtonSpan.offsetWidth;
             vsButtonSpan.classList.add('vs-animate');
         }
         gameScreenCards.forEach(c => {
@@ -816,19 +816,15 @@
             c.style.pointerEvents = 'auto';
             c.querySelector('.confetti-burst')?.classList.add('hidden');
         });
-        showScreen('game'); 
+        showScreen('game');
     }
 
 
     function loadNextMatchUI() {
         if (currentStage === STAGES.SEEDING && currentMatchInStage === 4 && !localStorage.getItem('sponsoredRoundShownThisSession')) {
             showSponsoredInterstitial();
-            return; 
+            return;
         }
-
-        // If not sponsored, ensure sponsored theme is removed (belt-and-suspenders, showScreen also does this)
-        // if (screens.game && !isSponsoredInterstitialActive) screens.game.classList.remove('sponsored-round-theme');
-
 
         const [wish1, wish2] = getMatchPair();
         if (!wish1 || !wish2) {
@@ -869,17 +865,17 @@
     }
 
     function updateProgressBar() {
-        if (isSponsoredInterstitialActive) { 
+        if (isSponsoredInterstitialActive) {
             if (progressTextElement) progressTextElement.textContent = "Sponsorlu Etap";
-            if (progressBarFill) progressBarFill.style.width = `${(4/8)*100}%`; 
+            if (progressBarFill) progressBarFill.style.width = `${(4/8)*100}%`;
             const oldSpark = progressBarFill.querySelector('.progress-bar-spark'); if (oldSpark) oldSpark.remove();
             return;
         }
 
         let totalMatches = 0, stageName = currentStage, matchNum = currentMatchInStage + 1;
-        if (currentStage === STAGES.SEEDING) { totalMatches = wishesForCurrentStage.length / 2; stageName = "Eleme"; } 
-        else if (currentStage === STAGES.QUARTERFINALS) { totalMatches = wishesForCurrentStage.length / 2; stageName = "Ç.Final"; } 
-        else if (currentStage === STAGES.SEMIFINALS) { totalMatches = wishesForCurrentStage.length / 2; stageName = "Y.Final"; } 
+        if (currentStage === STAGES.SEEDING) { totalMatches = wishesForCurrentStage.length / 2; stageName = "Eleme"; }
+        else if (currentStage === STAGES.QUARTERFINALS) { totalMatches = wishesForCurrentStage.length / 2; stageName = "Ç.Final"; }
+        else if (currentStage === STAGES.SEMIFINALS) { totalMatches = wishesForCurrentStage.length / 2; stageName = "Y.Final"; }
         else if (currentStage === STAGES.FINAL) { totalMatches = 1; stageName = "FİNAL!"; }
         else return;
 
@@ -902,9 +898,9 @@
             const spark = document.createElement('div'); spark.className = 'progress-bar-spark';
             let sparkPos = (matchNum / totalMatches * 100);
             if (currentMatchInStage >= totalMatches) sparkPos = 100;
-            else if (progress >= 100 && currentMatchInStage < totalMatches) sparkPos = 99; 
+            else if (progress >= 100 && currentMatchInStage < totalMatches) sparkPos = 99;
 
-            spark.style.left = `calc(${Math.min(sparkPos,100)}% - 5px)`; 
+            spark.style.left = `calc(${Math.min(sparkPos,100)}% - 5px)`;
             progressBarFill.appendChild(spark);
             setTimeout(() => { if(spark.parentElement) spark.remove(); }, 500);
         }
@@ -916,7 +912,6 @@
             if(sponsoredPopupImage) sponsoredPopupImage.src = getImageUrl(SPONSORED_AD_DETAILS.imageSeed || SPONSORED_AD_DETAILS.image);
             if(sponsoredPopupDescriptionText) sponsoredPopupDescriptionText.textContent = SPONSORED_AD_DETAILS.description;
             if(sponsoredPopupLink) sponsoredPopupLink.href = SPONSORED_AD_DETAILS.link;
-
             showModal(screens.sponsoredPopup, sponsoredPopupContent);
             return;
         }
@@ -935,7 +930,7 @@
         }
 
         if (winner) nextStageWishes.push(winner);
-        if (currentStage === STAGES.SEEDING) { 
+        if (currentStage === STAGES.SEEDING) {
             voteCounts[chosenId] = (voteCounts[chosenId] || 0) + 1;
         }
 
@@ -950,7 +945,6 @@
         setTimeout(() => {
             currentMatchInStage++;
             updateProgressBar();
-
             let totalMatchesInThisStage = 0;
             if (currentStage === STAGES.SEEDING) totalMatchesInThisStage = wishesForCurrentStage.length / 2;
             else if (currentStage === STAGES.QUARTERFINALS) totalMatchesInThisStage = wishesForCurrentStage.length / 2;
@@ -959,7 +953,7 @@
             if (currentMatchInStage >= totalMatchesInThisStage && currentStage !== STAGES.FINAL) {
                 advanceToNextStage();
             } else if (currentStage !== STAGES.FINAL) {
-                loadNextMatchUI(); 
+                loadNextMatchUI();
             }
         }, 1000);
     }
@@ -986,15 +980,15 @@
             if (wishesForCurrentStage.length >= 2 || (currentStage === STAGES.FINAL && wishesForCurrentStage.length === 2) ) {
                 loadNextMatchUI();
                 showScreen('game');
-            } else if (wishesForCurrentStage.length === 1 && currentStage !== STAGES.FINAL) { 
+            } else if (wishesForCurrentStage.length === 1 && currentStage !== STAGES.FINAL) {
                 champion = wishesForCurrentStage[0];
-                currentStage = STAGES.FINAL; 
-                currentMatchInStage = 1; 
+                currentStage = STAGES.FINAL;
+                currentMatchInStage = 1;
                 updateProgressBar();
-                showScreen('winnerPopup'); 
+                showScreen('winnerPopup');
             } else {
                 console.error("Not enough wishes for the current stage:", currentStage, wishesForCurrentStage);
-                resetGameAndPlay(); 
+                resetGameAndPlay();
             }
         };
 
@@ -1023,12 +1017,12 @@
     function displayWinnerPopupContent() {
         if (!champion) {
             console.warn("Şampiyon popup gösterilirken şampiyon belirlenmemişti. Fallback kullanılıyor.");
-            if (wishesForCurrentStage.length > 0) champion = wishesForCurrentStage[0]; 
-            else if (wishes.length > 0) champion = wishes[0]; 
-            else { 
+            if (wishesForCurrentStage.length > 0) champion = wishesForCurrentStage[0];
+            else if (wishes.length > 0) champion = wishes[0];
+            else {
                 if(winnerPopupTitle) winnerPopupTitle.textContent = "Hata";
                 if(winnerPopupDescription) winnerPopupDescription.textContent = "Şampiyon bilgisi bulunamadı.";
-                if(winnerPopupImage) winnerPopupImage.src = getImageUrl('error_placeholder_results/600/400'); 
+                if(winnerPopupImage) winnerPopupImage.src = getImageUrl('error_placeholder_results/600/400');
                 return;
             }
         }
@@ -1043,14 +1037,14 @@
 
     function displayResultsScreen() {
         const totalSeedingVotes = Object.values(voteCounts).reduce((sum, count) => sum + count, 0);
-        if (!champion) { 
+        if (!champion) {
             const sortedByVotes = Object.keys(voteCounts).sort((a, b) => voteCounts[b] - voteCounts[a]);
             if (sortedByVotes.length > 0) {
                 champion = wishes.find(w => w.id == sortedByVotes[0]);
             }
-            if (!champion && wishes.length > 0) { 
-                champion = wishes[0]; 
-            } else if (!champion) { 
+            if (!champion && wishes.length > 0) {
+                champion = wishes[0];
+            } else if (!champion) {
                 console.error("Champion could not be determined for results screen.");
                 if(championTitleResults) championTitleResults.textContent = "Şampiyon belirlenemedi";
                 if(championImageResults) {
@@ -1075,27 +1069,26 @@
         if(championInfoResults) championInfoResults.textContent = `Başlangıç oylarının %${championPercentage}'i ile şampiyon oldu!`;
 
         if(resultsCardContainer && championCardDisplay) {
-            resultsCardContainer.innerHTML = ''; 
-            resultsCardContainer.appendChild(championCardDisplay); 
+            resultsCardContainer.innerHTML = '';
+            resultsCardContainer.appendChild(championCardDisplay);
 
-            const fixedOtherWishIds = [8, 13, 4, 14]; 
+            const fixedOtherWishIds = [8, 13, 4, 14];
             let displayedCount = 0;
 
             const otherWishesToDisplay = fixedOtherWishIds.map(id => {
-                if (champion && id === champion.id) return null; 
+                if (champion && id === champion.id) return null;
                 const wish = wishes.find(w => w.id === id);
                 if (!wish) return null;
                 return { ...wish, voteCount: voteCounts[id] || 0 };
             }).filter(w => w);
 
-
-            otherWishesToDisplay.slice(0, 3).forEach(w => { 
+            otherWishesToDisplay.slice(0, 3).forEach(w => {
                 if (!w || typeof w.voteCount === 'undefined') return;
                 const wishPercentage = totalSeedingVotes > 0 ? ((w.voteCount / totalSeedingVotes) * 100).toFixed(1) : "0.0";
                 resultsCardContainer.insertAdjacentHTML('beforeend',
                     `<div class="bg-white shadow-lg rounded-2xl overflow-hidden mt-4">
                         <div class="relative">
-                            <img alt="${w.title}" class="w-full h-40 object-cover" src="${getImageUrl(w.imageSeed, 600, 300)}"/>
+                            <img alt="${w.title}" class="w-full object-cover" style="height: 10.5rem;" src="${getImageUrl(w.imageSeed, 600, 300)}"/> {/* MODIFIED: h-40 to inline style */}
                             <div class="absolute inset-0 bg-hero-gradient"></div>
                             <div class="absolute bottom-0 left-0 p-4">
                                 <p class="text-white text-xl font-bold leading-tight">${w.title}</p>
@@ -1116,8 +1109,8 @@
     function displayFinishScreen() {
         if (!champion) {
             console.warn("Bitiş ekranı şampiyon olmadan gösteriliyor. Fallback kullanılıyor.");
-            if (wishes.length > 0) champion = wishes[0]; 
-            else { 
+            if (wishes.length > 0) champion = wishes[0];
+            else {
                 if(winningWishTextFinishElement) winningWishTextFinishElement.textContent = "Turnuva tamamlandı! #UtopiArena";
                 if(moreDreamsContainer) moreDreamsContainer.innerHTML = '';
                 showScreen('finish');
@@ -1127,15 +1120,15 @@
         if(winningWishTextFinishElement) winningWishTextFinishElement.textContent = `Şampiyon dilek: ${champion.title}! Bu harika geleceği arkadaşlarınla paylaş! #UtopiArena`;
 
         if(moreDreamsContainer) {
-            moreDreamsContainer.innerHTML = ''; 
-            const otherWishes = [...wishes].filter(w => w.id !== champion.id); 
-            shuffleArray(otherWishes); 
-            for(let i=0; i<Math.min(3, otherWishes.length); i++){ 
+            moreDreamsContainer.innerHTML = '';
+            const otherWishes = [...wishes].filter(w => w.id !== champion.id);
+            shuffleArray(otherWishes);
+            for(let i=0; i<Math.min(3, otherWishes.length); i++){
                 const d=otherWishes[i];
                 if(!d||!d.title)continue;
                 moreDreamsContainer.insertAdjacentHTML('beforeend',
                 `<div class="flex flex-col gap-3 rounded-xl min-w-[280px] max-w-[280px] bg-white shadow-lg p-4">
-                    <div class="w-full aspect-video overflow-hidden rounded-lg">
+                    <div class="w-full overflow-hidden rounded-lg" style="height: 165.375px;"> {/* MODIFIED: aspect-video to inline style */}
                         <img src="${getImageUrl(d.imageSeed, 400, 225)}" alt="${d.title}" class="w-full h-full object-cover">
                     </div>
                     <p class="text-[#0d131b] text-base font-medium leading-normal flex-grow card-description-clamp" style="-webkit-line-clamp: 3; min-height: calc(1.4em * 3); max-height: calc(1.4em * 3 + 2px);">${d.title}</p>
@@ -1188,12 +1181,11 @@
             hideModal(screens.sponsoredPopup, sponsoredPopupContent, null, () => {
                 isSponsoredInterstitialActive = false;
                 if (screens.game) screens.game.classList.remove('sponsored-round-theme');
-                updateProgressBar(); 
-                loadNextMatchUI();    
+                updateProgressBar();
+                loadNextMatchUI();
             });
         });
     }
-
 
     const genericShareFunction = () => {
         if(navigator.share && champion) {
