@@ -39,7 +39,7 @@
 
         #startGameButton {
             position: fixed;
-            bottom: clamp(80px, 18vh, 150px); /* Adjusted from 32px */
+            bottom: clamp(80px, 18vh, 150px);
             left: 50%;
             transform: translateX(-50%);
             z-index: 30;
@@ -48,7 +48,7 @@
             padding-top: 0.5rem;
             padding-bottom: 0.5rem;
             padding-left: 1.5rem;
-            padding-right: 4.5rem; /* Adjusted from 1.5rem to make space for the help button */
+            padding-right: 4.5rem;
         }
 
         .card { transition: transform 0.3s ease-out, opacity 0.3s ease-out; cursor: pointer; }
@@ -104,18 +104,16 @@
         .final-match-theme .card .card-description { color: #9ca3af; }
         .final-match-theme #vsButtonSpan { background: linear-gradient(45deg, #FFD700, #fbd38d) !important; color: #1A202C !important; box-shadow: 0 0 10px #FFD700; }
 
-        /* Sponsored Round Theme (Game Screen) */
-        .sponsored-round-theme { background-color: #E0F2FE !important; /* Light Blueish */ }
+        .sponsored-round-theme { background-color: #E0F2FE !important; }
         .sponsored-round-theme .game-header-bar { background-color: #B9E0F8 !important; }
         .sponsored-round-theme #progressTextElement { color: #0B578A !important; font-weight: bold !important; }
         .sponsored-round-theme .card {
-            border: 2px solid #0B578A; /* Darker blue border */
-            background-color: #F0F9FF; /* Very light blue card bg */
+            border: 2px solid #0B578A;
+            background-color: #F0F9FF;
         }
         .sponsored-round-theme .card .card-title { color: #0B578A; }
-        .sponsored-round-theme .card .card-description { color: #3B82F6; } /* Medium blue description */
+        .sponsored-round-theme .card .card-description { color: #3B82F6; }
         .sponsored-round-theme #vsButtonSpan { background: #0B578A !important; color: white !important; }
-
 
         .tournament-card-glow { box-shadow: 0 0 15px 5px rgba(66, 138, 239, 0.5), 0 0 30px 10px rgba(66, 138, 239, 0.3); animation: pulse-glow-qf 2s infinite; }
         .tournament-final-card-glow { background: linear-gradient(135deg, #fff1c0 0%, #ffe082 100%); box-shadow: 0 0 20px 8px rgba(255, 215, 0, 0.6), 0 0 40px 15px rgba(255, 215, 0, 0.4); }
@@ -141,298 +139,264 @@
             transition-timing-function: ease-out;
             transition-duration: 300ms;
         }
-        .modal-overlay.active {
-            opacity: 1;
-        }
-        .modal-overlay.active .modal-content-box {
-            transform: scale(1);
-            opacity: 1;
-        }
+        .modal-overlay.active { opacity: 1; }
+        .modal-overlay.active .modal-content-box { transform: scale(1); opacity: 1; }
 
         @keyframes pulseTitle {
             0%, 100% { opacity: 1; transform: scale(1); }
             50% { opacity: 0.9; transform: scale(1.02); }
         }
-        #startScreen h1 {
-            animation: pulseTitle 4s ease-in-out infinite;
-        }
+        #startScreen h1 { animation: pulseTitle 4s ease-in-out infinite; }
 
-        /* Custom class for winner popup image height */
-        .image-h-winner-popup {
-            height: 10.5rem; /* 168px, 5% > 10rem */
-        }
-        @media (min-width: 640px) { /* sm breakpoint */
-            .image-h-winner-popup {
-                height: 12.6rem; /* 201.6px, 5% > 12rem */
-            }
-        }
-
+        .image-h-winner-popup { height: 10.5rem; }
+        @media (min-width: 640px) { .image-h-winner-popup { height: 12.6rem; } }
     </style>
 </head>
 <body class="bg-[#FAF8F6]">
 
-    <button id="globalHowToPlayButton" class="hidden-screen fixed top-3 right-3 z-40 p-2 bg-slate-100 bg-opacity-70 hover:bg-opacity-100 rounded-full text-slate-700 hover:text-blue-600">
-        <span class="material-icons-outlined">help_outline</span>
-    </button>
-
-    <div id="startScreen" class="screen-content relative flex h-screen flex-col justify-center items-center group/design-root px-4 pt-6 pb-2 sm:pt-10 sm:pb-4 background-animate">
-    <div class="flex flex-col items-center justify-center min-h-0 z-10 text-center mb-10 sm:mb-12">
-        <h1 class="text-[#1a1a1a] tracking-tight text-[36px] sm:text-[52px] font-bold leading-tight pt-0 pb-1 sm:pb-2">UtopiArena</h1>
-        <p class="text-[#333333] text-base sm:text-lg font-normal leading-relaxed pb-3 sm:pb-4 max-w-md">Her zaman sana harika haberler sunamıyoruz. Ama eğer bir anlığına mümkün olsaydı, sen hangisini okumak isterdin?</p>
-    </div>
-    <div class="w-full flex justify-center z-10 pb-0">
-        <button id="startGameButton" class="start-button flex w-auto min-w-[180px] max-w-[320px] px-6 sm:px-8 h-12 sm:h-14 text-md sm:text-lg font-bold rounded-full shadow-lg items-center justify-center">
-            <span class="truncate">Turnuvaya Başla!</span>
+    <div id="appContainer"> 
+        <button id="globalHowToPlayButton" class="hidden-screen fixed top-3 right-3 z-40 p-2 bg-slate-100 bg-opacity-70 hover:bg-opacity-100 rounded-full text-slate-700 hover:text-blue-600">
+            <span class="material-icons-outlined">help_outline</span>
         </button>
-    </div>
-</div>
 
-    <div id="gameScreen" class="hidden-screen screen-content relative flex flex-col bg-slate-50">
-        <div class="sticky top-0 z-20 bg-slate-50 shadow-sm game-header-bar">
-            <p id="progressTextElement" class="text-[#0d131b] text-sm font-medium leading-normal truncate pr-8">Eleme: 1/8</p>
-            <div class="h-1.5 rounded-full bg-[#cfd9e7] relative overflow-hidden mt-1">
-                <div id="progressBarFill" class="h-full rounded-full bg-[#428aef]" style="width: 0%;"></div>
+        <div id="startScreen" class="screen-content relative flex h-screen flex-col justify-center items-center group/design-root px-4 pt-6 pb-2 sm:pt-10 sm:pb-4 background-animate">
+            <div class="flex flex-col items-center justify-center min-h-0 z-10 text-center mb-10 sm:mb-12">
+                <h1 class="text-[#1a1a1a] tracking-tight text-[36px] sm:text-[52px] font-bold leading-tight pt-0 pb-1 sm:pb-2">UtopiArena</h1>
+                <p class="text-[#333333] text-base sm:text-lg font-normal leading-relaxed pb-3 sm:pb-4 max-w-md">Her zaman sana harika haberler sunamıyoruz. Ama eğer bir anlığına mümkün olsaydı, sen hangisini okumak isterdin?</p>
+            </div>
+            <div class="w-full flex justify-center z-10 pb-0">
+                <button id="startGameButton" class="start-button flex w-auto min-w-[180px] max-w-[320px] px-6 sm:px-8 h-12 sm:h-14 text-md sm:text-lg font-bold rounded-full shadow-lg items-center justify-center">
+                    <span class="truncate">Turnuvaya Başla!</span>
+                </button>
             </div>
         </div>
 
-        <div class="flex-1 min-h-0 px-3 flex flex-col items-center justify-center">
-            <div class="flex flex-col items-center @md:flex-row @md:justify-center @md:items-center w-full">
-                <div class="card w-full max-w-md @md:max-w-sm bg-white rounded-xl shadow-xl overflow-hidden relative">
-                    <div class="confetti-burst hidden"></div>
-                    <div class="w-full overflow-hidden" style="height: 10.5rem;"> 
-                        <img data-role="card-image-img" src="" alt="" class="w-full h-full object-cover">
-                    </div>
-                    <div class="p-4">
-                        <h2 class="card-title text-[#0d131b] font-bold leading-tight mb-0.5"></h2>
-                        <p class="card-description text-[#4c6c9a] text-sm font-normal leading-relaxed card-description-clamp"></p>
-                    </div>
+        <div id="gameScreen" class="hidden-screen screen-content relative flex flex-col bg-slate-50">
+            <div class="sticky top-0 z-20 bg-slate-50 shadow-sm game-header-bar">
+                <p id="progressTextElement" class="text-[#0d131b] text-sm font-medium leading-normal truncate pr-8">Eleme: 1/8</p>
+                <div class="h-1.5 rounded-full bg-[#cfd9e7] relative overflow-hidden mt-1">
+                    <div id="progressBarFill" class="h-full rounded-full bg-[#428aef]" style="width: 0%;"></div>
                 </div>
-                <div class="flex items-center justify-center my-3 @md:my-0 @md:mx-4">
-                    <span id="vsButtonSpan" class="bg-[#428aef] text-white text-xs font-bold px-2 py-1 rounded-full shadow-md transform rotate-[-15deg] @md:rotate-0">VS</span>
-                </div>
-                <div class="card w-full max-w-md @md:max-w-sm bg-white rounded-xl shadow-xl overflow-hidden relative">
-                    <div class="confetti-burst hidden"></div>
-                    <div class="w-full overflow-hidden" style="height: 10.5rem;"> 
-                        <img data-role="card-image-img" src="" alt="" class="w-full h-full object-cover">
+            </div>
+            <div class="flex-1 min-h-0 px-3 flex flex-col items-center justify-center">
+                <div class="flex flex-col items-center @md:flex-row @md:justify-center @md:items-center w-full">
+                    <div class="card w-full max-w-md @md:max-w-sm bg-white rounded-xl shadow-xl overflow-hidden relative">
+                        <div class="confetti-burst hidden"></div>
+                        <div class="w-full overflow-hidden" style="height: 10.5rem;">
+                            <img data-role="card-image-img" src="" alt="" class="w-full h-full object-cover">
+                        </div>
+                        <div class="p-4">
+                            <h2 class="card-title text-[#0d131b] font-bold leading-tight mb-0.5"></h2>
+                            <p class="card-description text-[#4c6c9a] text-sm font-normal leading-relaxed card-description-clamp"></p>
+                        </div>
                     </div>
-                    <div class="p-4">
-                        <h2 class="card-title text-[#0d131b] font-bold leading-tight mb-0.5"></h2>
-                        <p class="card-description text-[#4c6c9a] text-sm font-normal leading-relaxed card-description-clamp"></p>
+                    <div class="flex items-center justify-center my-3 @md:my-0 @md:mx-4">
+                        <span id="vsButtonSpan" class="bg-[#428aef] text-white text-xs font-bold px-2 py-1 rounded-full shadow-md transform rotate-[-15deg] @md:rotate-0">VS</span>
+                    </div>
+                    <div class="card w-full max-w-md @md:max-w-sm bg-white rounded-xl shadow-xl overflow-hidden relative">
+                        <div class="confetti-burst hidden"></div>
+                        <div class="w-full overflow-hidden" style="height: 10.5rem;">
+                            <img data-role="card-image-img" src="" alt="" class="w-full h-full object-cover">
+                        </div>
+                        <div class="p-4">
+                            <h2 class="card-title text-[#0d131b] font-bold leading-tight mb-0.5"></h2>
+                            <p class="card-description text-[#4c6c9a] text-sm font-normal leading-relaxed card-description-clamp"></p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div id="winnerPopupScreen" class="hidden-screen fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay opacity-0">
-        <div id="winnerPopupContentContainer" class="modal-content-box bg-gray-800 rounded-xl shadow-2xl w-full max-w-md text-center text-white relative">
-            <button id="closeWinnerPopupButton" class="absolute top-3 right-3 text-gray-400 hover:text-white z-10 p-1 rounded-full hover:bg-gray-700">
-                <span class="material-icons">close</span>
-            </button>
 
-            <div class="p-6 space-y-4">
-                <div class="mb-1">
-                    <span class="material-icons text-yellow-400 text-5xl sm:text-6xl">emoji_events</span>
-                </div>
-                <h2 class="text-2xl sm:text-3xl font-bold text-yellow-400">Haberlerin Şampiyonu!</h2>
-                <p id="winnerPopupSubtitle" class="text-sm sm:text-base text-gray-300 px-2">UtopiArena'da senin ve diğerlerinin oylarıyla haberlerin şampiyonu bu oldu:</p>
-
-                <div class="bg-gray-700 rounded-lg p-3 sm:p-4 border border-gray-600 shadow-md">
-            
-                    <img id="winnerPopupImage" src="" alt="Şampiyon Dilek" class="w-full image-h-winner-popup object-cover rounded-md mb-3 shadow-sm">
-                    <h3 id="winnerPopupTitle" class="text-lg sm:text-xl font-semibold text-white mb-1"></h3>
-                    <p id="winnerPopupDescription" class="text-xs sm:text-sm text-gray-300 card-description-clamp leading-relaxed"></p>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3">
-                    <button id="winnerShareButton" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2.5 px-4 rounded-lg transition-colors text-sm sm:text-base flex items-center justify-center gap-2 shadow hover:shadow-md">
-                        <span class="material-icons-outlined text-base">share</span>
-                        Şampiyonu Paylaş
-                    </button>
-                    <button id="winnerToResultsButton" class="w-full bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-semibold py-2.5 px-4 rounded-lg transition-colors text-sm sm:text-base shadow hover:shadow-md">
-                        Sonuçları Keşfet
-                    </button>
+        <div id="winnerPopupScreen" class="hidden-screen fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay opacity-0">
+            <div id="winnerPopupContentContainer" class="modal-content-box bg-gray-800 rounded-xl shadow-2xl w-full max-w-md text-center text-white relative">
+                <button id="closeWinnerPopupButton" class="absolute top-3 right-3 text-gray-400 hover:text-white z-10 p-1 rounded-full hover:bg-gray-700">
+                    <span class="material-icons">close</span>
+                </button>
+                <div class="p-6 space-y-4">
+                    <div class="mb-1"><span class="material-icons text-yellow-400 text-5xl sm:text-6xl">emoji_events</span></div>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-yellow-400">Haberlerin Şampiyonu!</h2>
+                    <p id="winnerPopupSubtitle" class="text-sm sm:text-base text-gray-300 px-2">UtopiArena'da senin ve diğerlerinin oylarıyla haberlerin şampiyonu bu oldu:</p>
+                    <div class="bg-gray-700 rounded-lg p-3 sm:p-4 border border-gray-600 shadow-md">
+                        <img id="winnerPopupImage" src="" alt="Şampiyon Dilek" class="w-full image-h-winner-popup object-cover rounded-md mb-3 shadow-sm">
+                        <h3 id="winnerPopupTitle" class="text-lg sm:text-xl font-semibold text-white mb-1"></h3>
+                        <p id="winnerPopupDescription" class="text-xs sm:text-sm text-gray-300 card-description-clamp leading-relaxed"></p>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3">
+                        <button id="winnerShareButton" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2.5 px-4 rounded-lg transition-colors text-sm sm:text-base flex items-center justify-center gap-2 shadow hover:shadow-md">
+                            <span class="material-icons-outlined text-base">share</span> Şampiyonu Paylaş
+                        </button>
+                        <button id="winnerToResultsButton" class="w-full bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-semibold py-2.5 px-4 rounded-lg transition-colors text-sm sm:text-base shadow hover:shadow-md">
+                            Sonuçları Keşfet
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div id="sponsoredPopupScreen" class="hidden-screen fixed inset-0 z-[60] flex items-center justify-center p-4 modal-overlay opacity-0">
-        <div id="sponsoredPopupContent" class="modal-content-box bg-sky-50 rounded-xl shadow-2xl w-full max-w-md text-center relative">
-            <button id="closeSponsoredPopupButton" class="absolute top-3 right-3 text-slate-600 hover:text-slate-900 z-10 p-1 rounded-full hover:bg-slate-200 transition-colors">
-                <span class="material-icons">close</span>
-            </button>
-            <div class="p-6 space-y-4">
-                <h2 id="sponsoredPopupTitleText" class="text-xl sm:text-2xl font-bold text-slate-800">Sponsorlu İçerik</h2>
-                 {/* Note: Sponsored popup image height (h-48) is not changed as per this request, only news images. If this also needs to be 5% taller, it would be style="height: 12.6rem;" */}
-                <img id="sponsoredPopupImage" src="" alt="Sponsorlu Reklam" class="w-full h-48 object-contain rounded-md mb-3 border border-slate-200">
-                <p id="sponsoredPopupDescriptionText" class="text-sm sm:text-base text-slate-600 px-2"></p>
-                <a id="sponsoredPopupLink" href="#" target="_blank" rel="noopener noreferrer" class="inline-block w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-4 rounded-lg transition-colors text-base shadow-md hover:shadow-lg">
-                    Hemen Keşfet!
-                </a>
+        <div id="sponsoredPopupScreen" class="hidden-screen fixed inset-0 z-[60] flex items-center justify-center p-4 modal-overlay opacity-0">
+            <div id="sponsoredPopupContent" class="modal-content-box bg-sky-50 rounded-xl shadow-2xl w-full max-w-md text-center relative">
+                <button id="closeSponsoredPopupButton" class="absolute top-3 right-3 text-slate-600 hover:text-slate-900 z-10 p-1 rounded-full hover:bg-slate-200 transition-colors">
+                    <span class="material-icons">close</span>
+                </button>
+                <div class="p-6 space-y-4">
+                    <h2 id="sponsoredPopupTitleText" class="text-xl sm:text-2xl font-bold text-slate-800">Sponsorlu İçerik</h2>
+                    <img id="sponsoredPopupImage" src="" alt="Sponsorlu Reklam" class="w-full h-48 object-contain rounded-md mb-3 border border-slate-200">
+                    <p id="sponsoredPopupDescriptionText" class="text-sm sm:text-base text-slate-600 px-2"></p>
+                    <a id="sponsoredPopupLink" href="#" target="_blank" rel="noopener noreferrer" class="inline-block w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-4 rounded-lg transition-colors text-base shadow-md hover:shadow-lg">
+                        Hemen Keşfet!
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
 
-
-    <div id="resultsScreen" class="hidden-screen screen-content relative flex flex-col bg-slate-50">
-        <div class="flex flex-col flex-1 min-h-0">
-            <header class="sticky top-0 z-10 bg-slate-50/80 backdrop-blur-sm shadow-sm game-header-bar">
-                <div class="flex items-center justify-between relative">
-                    <div class="w-10"></div>
-                    <h1 class="text-slate-900 text-xl font-bold leading-tight text-center flex-grow">UtopiArena Sonuçları</h1>
-                    <div class="w-10"></div>
-                </div>
-            </header>
-            <main class="pb-4 overflow-y-auto flex-1 min-h-0">
-                <h2 class="text-slate-800 text-2xl font-semibold leading-tight px-6 text-center pb-6 pt-5">Ve şampiyon dilek...</h2>
-                <div id="resultsCardContainer" class="px-4 space-y-4">
-                    <div id="championCardDisplay" class="bg-white shadow-xl rounded-2xl overflow-hidden border-2 border-yellow-400 transform scale-105">
-                        <div class="relative">
-                            <img alt="Şampiyon dilek" id="championImageResults" class="w-full object-cover" style="height: 12.6rem;"/>
-                            <div class="absolute inset-0 bg-hero-gradient"></div>
-                            <div class="absolute top-2 right-2 gold-crown">
-                                <span class="material-icons" style="font-size: 36px;">emoji_events</span>
-                            </div>
-                            <div class="absolute bottom-0 left-0 p-4">
-                                <p id="championTitleResults" class="text-white text-3xl font-bold leading-tight"></p>
-                                <div class="flex items-center mt-2">
-                                    <span class="material-icons text-red-400 mr-1" style="font-size: 20px;">favorite</span>
-                                    <p id="championInfoResults" class="text-white text-base font-medium"></p>
+        <div id="resultsScreen" class="hidden-screen screen-content relative flex flex-col bg-slate-50">
+            <div class="flex flex-col flex-1 min-h-0">
+                <header class="sticky top-0 z-10 bg-slate-50/80 backdrop-blur-sm shadow-sm game-header-bar">
+                    <div class="flex items-center justify-between relative">
+                        <div class="w-10"></div>
+                        <h1 class="text-slate-900 text-xl font-bold leading-tight text-center flex-grow">UtopiArena Sonuçları</h1>
+                        <div class="w-10"></div>
+                    </div>
+                </header>
+                <main class="pb-4 overflow-y-auto flex-1 min-h-0">
+                    <h2 class="text-slate-800 text-2xl font-semibold leading-tight px-6 text-center pb-6 pt-5">Ve şampiyon dilek...</h2>
+                    <div id="resultsCardContainer" class="px-4 space-y-4">
+                        <div id="championCardDisplay" class="bg-white shadow-xl rounded-2xl overflow-hidden border-2 border-yellow-400 transform scale-105">
+                            <div class="relative">
+                                <img alt="Şampiyon dilek" id="championImageResults" class="w-full object-cover" style="height: 12.6rem;"/>
+                                <div class="absolute inset-0 bg-hero-gradient"></div>
+                                <div class="absolute top-2 right-2 gold-crown"><span class="material-icons" style="font-size: 36px;">emoji_events</span></div>
+                                <div class="absolute bottom-0 left-0 p-4">
+                                    <p id="championTitleResults" class="text-white text-3xl font-bold leading-tight"></p>
+                                    <div class="flex items-center mt-2">
+                                        <span class="material-icons text-red-400 mr-1" style="font-size: 20px;">favorite</span>
+                                        <p id="championInfoResults" class="text-white text-base font-medium"></p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </main>
+            </div>
+        </div>
+
+        <div id="finishScreen" class="hidden-screen screen-content relative flex flex-col bg-slate-50">
+          <div class="flex flex-col flex-1 min-h-0">
+            <header class="flex items-center bg-slate-50 p-3 justify-end sticky top-0 z-10 shadow-sm game-header-bar"></header>
+            <div class="overflow-y-auto flex-1 min-h-0">
+                <div class="px-6 pt-6 pb-4 text-center">
+                    <svg class="w-16 h-16 mx-auto text-yellow-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+                    <h1 class="text-[#0d131b] text-3xl font-bold leading-tight pb-2">UtopiArena Tamamlandı!</h1>
+                    <p id="winningWishTextFinish" class="text-slate-600 text-lg font-normal leading-relaxed"></p>
                 </div>
-            </main>
-        </div>
-    </div>
-
-    <div id="finishScreen" class="hidden-screen screen-content relative flex flex-col bg-slate-50">
-      <div class="flex flex-col flex-1 min-h-0">
-        <header class="flex items-center bg-slate-50 p-3 justify-end sticky top-0 z-10 shadow-sm game-header-bar"></header>
-        <div class="overflow-y-auto flex-1 min-h-0">
-            <div class="px-6 pt-6 pb-4 text-center">
-                <svg class="w-16 h-16 mx-auto text-yellow-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
-                <h1 class="text-[#0d131b] text-3xl font-bold leading-tight pb-2">UtopiArena Tamamlandı!</h1>
-                <p id="winningWishTextFinish" class="text-slate-600 text-lg font-normal leading-relaxed"></p>
-            </div>
-            <div class="flex flex-col gap-3 px-6 py-4">
-                <button id="shareChampionButton" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-14 px-6 flex-1 bg-[#428aef] text-slate-50 text-lg font-bold shadow-md hover:shadow-lg">
-                    <span class="material-icons mr-2">share</span>
-                    <span class="truncate">Şampiyonu Paylaş</span>
-                </button>
-                <button id="finishPlayAgainButton" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-14 px-6 flex-1 bg-slate-200 text-[#0d131b] text-lg font-bold hover:bg-slate-300">
-                    <span class="material-icons mr-2">replay</span>
-                    <span class="truncate">Yeni Turnuva Başlat</span>
-                </button>
-            </div>
-                <div class="px-6 pt-8 pb-4">
-                <h2 class="text-[#0d131b] text-2xl font-bold leading-tight">Diğer Popüler Hayaller...</h2>
-            </div>
-            <div class="flex overflow-x-auto [-ms-scrollbar-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden pl-6 pr-2 pb-6">
-                <div id="moreDreamsContainer" class="flex items-stretch gap-4"></div>
-            </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="howToPlayScreen" class="hidden-screen screen-content relative flex flex-col bg-slate-50 p-0">
-        <div class="flex flex-col flex-1 min-h-0">
-            <header class="sticky top-0 z-10 bg-slate-50/80 backdrop-blur-sm py-2 px-4 shadow-sm game-header-bar">
-                <div class="flex items-center justify-between">
-                    <h1 class="text-slate-900 text-xl font-bold leading-tight">Nasıl Oynanır?</h1>
-                    <button id="closeHowToPlayButton" aria-label="Kapat" class="text-slate-700 flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-slate-200 transition-colors">
-                        <span class="material-icons-outlined">close</span>
+                <div class="flex flex-col gap-3 px-6 py-4">
+                    <button id="shareChampionButton" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-14 px-6 flex-1 bg-[#428aef] text-slate-50 text-lg font-bold shadow-md hover:shadow-lg">
+                        <span class="material-icons mr-2">share</span> <span class="truncate">Şampiyonu Paylaş</span>
+                    </button>
+                    <button id="finishPlayAgainButton" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-14 px-6 flex-1 bg-slate-200 text-[#0d131b] text-lg font-bold hover:bg-slate-300">
+                        <span class="material-icons mr-2">replay</span> <span class="truncate">Yeni Turnuva Başlat</span>
                     </button>
                 </div>
-            </header>
-            <main class="p-4 space-y-4 text-slate-700 overflow-y-auto flex-1 min-h-0">
-                <p class="text-lg">UtopiArena'ya hoş geldiniz!</p>
-                <ol class="list-decimal list-inside space-y-2">
-                    <li>Size sunulan iki "gelecek senaryosu" arasından favorinizi seçin.</li>
-                    <li>Seçimlerinizle senaryolar turnuvada ilerleyecek:
-                        <ul class="list-disc list-inside pl-6 space-y-1 mt-1">
-                            <li><strong>Eleme Turu:</strong> 16 senaryo arasından 8 kazanan (8 maç).</li>
-                            <li><strong>Çeyrek Final:</strong> 8 senaryodan 4 kazanan (4 maç).</li>
-                            <li><strong>Yarı Final:</strong> 4 senaryodan 2 finalist (2 maç).</li>
-                            <li><strong>Final:</strong> 2 finalistten şampiyon senaryo seçilir (1 maç)!</li>
-                        </ul>
-                    </li>
-                    <li>Oyun sonunda şampiyon olan senaryoyu ve diğer popüler seçimleri görebilirsiniz.</li>
-                    <li>Alt menüden istediğiniz zaman Anasayfa, Oyna veya Sonuçlar ekranlarına geçebilirsiniz.</li>
-                    <li>Sağ üstteki <span class="material-icons-outlined text-sm">help_outline</span> ikonundan bu ekrana tekrar ulaşabilirsiniz (oyun sırasında).</li>
-                    <li>İyi eğlenceler ve en iyi geleceği seçin!</li>
-                </ol>
-                <p class="text-sm text-slate-500 mt-8 border-t border-slate-300 pt-4">
-                    <strong>Lütfen Dikkat:</strong> Bu oyunda yer alan tüm "dilekler", "gelecek senaryoları", "haber başlıkları" ve açıklamalar tamamen hayal ürünü olup kurgusaldır. Gerçek kişi, kurum veya olaylarla hiçbir ilgisi bulunmamaktadır. UtopiArena yalnızca eğlence amacıyla tasarlanmıştır.
-                </p>
-            </main>
+                <div class="px-6 pt-8 pb-4"><h2 class="text-[#0d131b] text-2xl font-bold leading-tight">Diğer Popüler Hayaller...</h2></div>
+                <div class="flex overflow-x-auto [-ms-scrollbar-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden pl-6 pr-2 pb-6">
+                    <div id="moreDreamsContainer" class="flex items-stretch gap-4"></div>
+                </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="howToPlayScreen" class="hidden-screen screen-content relative flex flex-col bg-slate-50 p-0">
+            <div class="flex flex-col flex-1 min-h-0">
+                <header class="sticky top-0 z-10 bg-slate-50/80 backdrop-blur-sm py-2 px-4 shadow-sm game-header-bar">
+                    <div class="flex items-center justify-between">
+                        <h1 class="text-slate-900 text-xl font-bold leading-tight">Nasıl Oynanır?</h1>
+                        <button id="closeHowToPlayButton" aria-label="Kapat" class="text-slate-700 flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-slate-200 transition-colors">
+                            <span class="material-icons-outlined">close</span>
+                        </button>
+                    </div>
+                </header>
+                <main class="p-4 space-y-4 text-slate-700 overflow-y-auto flex-1 min-h-0">
+                    <p class="text-lg">UtopiArena'ya hoş geldiniz!</p>
+                    <ol class="list-decimal list-inside space-y-2">
+                        <li>Size sunulan iki "gelecek senaryosu" arasından favorinizi seçin.</li>
+                        <li>Seçimlerinizle senaryolar turnuvada ilerleyecek:
+                            <ul class="list-disc list-inside pl-6 space-y-1 mt-1">
+                                <li><strong>Eleme Turu:</strong> 16 senaryo arasından 8 kazanan (8 maç).</li>
+                                <li><strong>Çeyrek Final:</strong> 8 senaryodan 4 kazanan (4 maç).</li>
+                                <li><strong>Yarı Final:</strong> 4 senaryodan 2 finalist (2 maç).</li>
+                                <li><strong>Final:</strong> 2 finalistten şampiyon senaryo seçilir (1 maç)!</li>
+                            </ul>
+                        </li>
+                        <li>Oyun sonunda şampiyon olan senaryoyu ve diğer popüler seçimleri görebilirsiniz.</li>
+                        <li>Alt menüden istediğiniz zaman Anasayfa, Oyna veya Sonuçlar ekranlarına geçebilirsiniz.</li>
+                        <li>Sağ üstteki <span class="material-icons-outlined text-sm">help_outline</span> ikonundan bu ekrana tekrar ulaşabilirsiniz (oyun sırasında).</li>
+                        <li>İyi eğlenceler ve en iyi geleceği seçin!</li>
+                    </ol>
+                    <p class="text-sm text-slate-500 mt-8 border-t border-slate-300 pt-4">
+                        <strong>Lütfen Dikkat:</strong> Bu oyunda yer alan tüm "dilekler", "gelecek senaryoları", "haber başlıkları" ve açıklamalar tamamen hayal ürünü olup kurgusaldır. Gerçek kişi, kurum veya olaylarla hiçbir ilgisi bulunmamaktadır. UtopiArena yalnızca eğlence amacıyla tasarlanmıştır.
+                    </p>
+                </main>
+            </div>
+        </div>
+
+        <div id="onboardingHowToPlayModal" class="hidden-screen fixed inset-0 z-[100] flex items-center justify-center p-4 modal-overlay opacity-0">
+            <div id="onboardingModalBackdrop" class="fixed inset-0 transition-opacity duration-300 ease-out opacity-0 bg-slate-900/70 backdrop-blur-sm"></div>
+            <div id="onboardingModalContent" class="modal-content-box bg-slate-50 rounded-xl shadow-2xl w-full max-w-md overflow-hidden relative z-10">
+                <header class="p-4 border-b border-slate-200"><h2 class="text-xl sm:text-2xl font-bold text-slate-800 text-center">UtopiArena'ya Hoş Geldin!</h2></header>
+                <main id="onboardingHowToPlayContent" class="p-5 sm:p-6 space-y-3 text-slate-700 max-h-[60vh] sm:max-h-[65vh] overflow-y-auto">
+                    <p class="text-base sm:text-lg font-semibold text-center text-blue-600">Hayalindeki Geleceği Oyla!</p>
+                    <ol class="list-none space-y-2 text-sm sm:text-base">
+                        <li class="flex items-start"><span class="material-icons-outlined text-blue-500 mr-2 mt-0.5">looks_one</span><span>Sana sunulan iki "gelecek senaryosu" arasından <strong class="text-slate-700">favorini seç</strong>.</span></li>
+                        <li class="flex items-start"><span class="material-icons-outlined text-blue-500 mr-2 mt-0.5">emoji_events</span><span>Seçimlerinle senaryolar turnuvada ilerlesin ve bir <strong class="text-yellow-500">şampiyon</strong> belirlensin!</span></li>
+                        <li class="flex items-start"><span class="material-icons-outlined text-blue-500 mr-2 mt-0.5">settings_ethernet</span><span>Eleme, Çeyrek Final, Yarı Final ve Final aşamalarından geç.</span></li>
+                        <li class="flex items-start"><span class="material-icons-outlined text-green-500 mr-2 mt-0.5">flag</span><span>En iyi geleceği seçerek <strong class="text-slate-700">ülkemizin hayalini</strong> şekillendir!</span></li>
+                    </ol>
+                    <p class="text-xs text-slate-500 mt-4 border-t border-slate-300 pt-3">
+                        <strong>Not:</strong> Oyundaki tüm senaryolar tamamen hayal ürünüdür. Daha detaylı "Nasıl Oynanır" bilgisine oyun içindeki <span class="material-icons-outlined text-xs align-bottom">help_outline</span> ikonundan her zaman ulaşabilirsin.
+                    </p>
+                </main>
+                <footer class="p-4 bg-slate-100 border-t border-slate-200 text-center">
+                    <button id="proceedFromOnboardingButton" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition-colors text-base sm:text-lg shadow-md hover:shadow-lg">
+                        Anladım, Oyuna Başla!
+                    </button>
+                </footer>
+            </div>
+        </div>
+
+        <div id="stageTransitionModal" class="hidden-screen fixed inset-0 z-[150] flex items-center justify-center p-4 modal-overlay opacity-0">
+            <div id="stageTransitionModalBackdrop" class="fixed inset-0 transition-opacity duration-300 ease-out opacity-0 bg-slate-900/75 backdrop-blur-md"></div>
+            <div id="stageTransitionModalContent" class="modal-content-box bg-slate-800 text-white rounded-xl shadow-2xl w-full max-w-xs sm:max-w-sm text-center overflow-hidden relative z-10 p-4 sm:p-6">
+                <span id="stageTransitionIcon" class="material-icons text-5xl sm:text-6xl mb-3 block text-yellow-400"></span>
+                <h2 id="stageTransitionTitle" class="text-xl sm:text-2xl font-bold mb-2 text-yellow-400"></h2>
+                <p id="stageTransitionMessage" class="text-sm sm:text-base text-slate-200"></p>
+            </div>
+        </div>
+
+        <nav id="bottomNav" class="fixed bottom-0 left-0 right-0 bg-slate-50 border-t border-slate-200 z-30">
+            <div class="flex justify-around items-center h-full max-w-2xl mx-auto px-1">
+                <a id="navHomeButton" href="#" class="flex flex-col items-center justify-center gap-0.5 text-slate-600 hover:text-blue-600 transition-colors w-1/3 py-2 h-full">
+                    <span class="material-icons-outlined">home</span><p class="text-xs font-medium tracking-tight">Anasayfa</p>
+                </a>
+                <a id="navPlayButton" href="#" class="flex flex-col items-center justify-center gap-0.5 text-slate-600 hover:text-blue-600 transition-colors w-1/3 py-2 h-full">
+                    <span class="material-icons-outlined">casino</span><p class="text-xs font-medium tracking-tight">Oyna</p>
+                </a>
+                <a id="navResultsButton" href="#" class="flex flex-col items-center justify-center gap-0.5 text-slate-600 hover:text-blue-600 transition-colors w-1/3 py-2 h-full">
+                    <span class="material-icons-outlined">emoji_events</span><p class="text-xs font-medium tracking-tight">Sonuçlar</p>
+                </a>
+            </div>
+        </nav>
+    </div> {/* End of appContainer */}
+
+    <div id="desktopWarningScreen" class="hidden-screen fixed inset-0 z-[200] flex flex-col items-center justify-center bg-slate-900 text-white p-8 text-center leading-relaxed">
+        <span class="material-icons-outlined text-7xl text-sky-400 mb-6">phone_iphone</span>
+        <h2 class="text-3xl font-bold mb-4 text-sky-300">UtopiArena Mobil Deneyimi!</h2>
+        <p class="text-lg mb-3">Bu macera en güzel mobil cihazlarda yaşanır.</p>
+        <p class="text-md text-slate-300 mb-6">En iyi deneyim için lütfen UtopiArena'yı telefonunuzdan ziyaret edin.</p>
+        <p class="text-sm text-slate-400">Tarayıcınızın "Cihaza Gönder" özelliğini kullanabilir veya<br>QR kodu telefonunuzla okutarak kolayca geçiş yapabilirsiniz.</p>
+        <div id="qrCodePlaceholder" class="mt-5 p-4 bg-white rounded-lg inline-block">
+            <span class="text-slate-700 text-sm">(Web sitesi için QR kod buraya eklenebilir)</span>
         </div>
     </div>
-
-    <div id="onboardingHowToPlayModal" class="hidden-screen fixed inset-0 z-[100] flex items-center justify-center p-4 modal-overlay opacity-0">
-        <div id="onboardingModalBackdrop" class="fixed inset-0 transition-opacity duration-300 ease-out opacity-0 bg-slate-900/70 backdrop-blur-sm"></div>
-        <div id="onboardingModalContent" class="modal-content-box bg-slate-50 rounded-xl shadow-2xl w-full max-w-md overflow-hidden relative z-10">
-            <header class="p-4 border-b border-slate-200">
-                <h2 class="text-xl sm:text-2xl font-bold text-slate-800 text-center">UtopiArena'ya Hoş Geldin!</h2>
-            </header>
-            <main id="onboardingHowToPlayContent" class="p-5 sm:p-6 space-y-3 text-slate-700 max-h-[60vh] sm:max-h-[65vh] overflow-y-auto">
-                <p class="text-base sm:text-lg font-semibold text-center text-blue-600">Hayalindeki Geleceği Oyla!</p>
-                <ol class="list-none space-y-2 text-sm sm:text-base">
-                    <li class="flex items-start">
-                        <span class="material-icons-outlined text-blue-500 mr-2 mt-0.5">looks_one</span>
-                        <span>Sana sunulan iki "gelecek senaryosu" arasından <strong class="text-slate-700">favorini seç</strong>.</span>
-                    </li>
-                    <li class="flex items-start">
-                        <span class="material-icons-outlined text-blue-500 mr-2 mt-0.5">emoji_events</span>
-                        <span>Seçimlerinle senaryolar turnuvada ilerlesin ve bir <strong class="text-yellow-500">şampiyon</strong> belirlensin!</span>
-                    </li>
-                    <li class="flex items-start">
-                        <span class="material-icons-outlined text-blue-500 mr-2 mt-0.5">settings_ethernet</span>
-                        <span>Eleme, Çeyrek Final, Yarı Final ve Final aşamalarından geç.</span>
-                    </li>
-                    <li class="flex items-start">
-                        <span class="material-icons-outlined text-green-500 mr-2 mt-0.5">flag</span>
-                        <span>En iyi geleceği seçerek <strong class="text-slate-700">ülkemizin hayalini</strong> şekillendir!</span>
-                    </li>
-                </ol>
-                <p class="text-xs text-slate-500 mt-4 border-t border-slate-300 pt-3">
-                    <strong>Not:</strong> Oyundaki tüm senaryolar tamamen hayal ürünüdür. Daha detaylı "Nasıl Oynanır" bilgisine oyun içindeki <span class="material-icons-outlined text-xs align-bottom">help_outline</span> ikonundan her zaman ulaşabilirsin.
-                </p>
-            </main>
-            <footer class="p-4 bg-slate-100 border-t border-slate-200 text-center">
-                <button id="proceedFromOnboardingButton" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition-colors text-base sm:text-lg shadow-md hover:shadow-lg">
-                    Anladım, Oyuna Başla!
-                </button>
-            </footer>
-        </div>
-    </div>
-
-    <div id="stageTransitionModal" class="hidden-screen fixed inset-0 z-[150] flex items-center justify-center p-4 modal-overlay opacity-0">
-        <div id="stageTransitionModalBackdrop" class="fixed inset-0 transition-opacity duration-300 ease-out opacity-0 bg-slate-900/75 backdrop-blur-md"></div>
-        <div id="stageTransitionModalContent" class="modal-content-box bg-slate-800 text-white rounded-xl shadow-2xl w-full max-w-xs sm:max-w-sm text-center overflow-hidden relative z-10 p-4 sm:p-6">
-            <span id="stageTransitionIcon" class="material-icons text-5xl sm:text-6xl mb-3 block text-yellow-400"></span>
-            <h2 id="stageTransitionTitle" class="text-xl sm:text-2xl font-bold mb-2 text-yellow-400"></h2>
-            <p id="stageTransitionMessage" class="text-sm sm:text-base text-slate-200"></p>
-        </div>
-    </div>
-
-    <nav id="bottomNav" class="fixed bottom-0 left-0 right-0 bg-slate-50 border-t border-slate-200 z-30">
-        <div class="flex justify-around items-center h-full max-w-2xl mx-auto px-1">
-            <a id="navHomeButton" href="#" class="flex flex-col items-center justify-center gap-0.5 text-slate-600 hover:text-blue-600 transition-colors w-1/3 py-2 h-full">
-                <span class="material-icons-outlined">home</span>
-                <p class="text-xs font-medium tracking-tight">Anasayfa</p>
-            </a>
-            <a id="navPlayButton" href="#" class="flex flex-col items-center justify-center gap-0.5 text-slate-600 hover:text-blue-600 transition-colors w-1/3 py-2 h-full">
-                <span class="material-icons-outlined">casino</span>
-                <p class="text-xs font-medium tracking-tight">Oyna</p>
-            </a>
-            <a id="navResultsButton" href="#" class="flex flex-col items-center justify-center gap-0.5 text-slate-600 hover:text-blue-600 transition-colors w-1/3 py-2 h-full">
-                <span class="material-icons-outlined">emoji_events</span>
-                <p class="text-xs font-medium tracking-tight">Sonuçlar</p>
-            </a>
-        </div>
-    </nav>
 
 <script>
     // ---------- DOM Elementleri ----------
@@ -465,10 +429,9 @@
     const sponsoredPopupContent = document.getElementById('sponsoredPopupContent');
     const closeSponsoredPopupButton = document.getElementById('closeSponsoredPopupButton');
     const sponsoredPopupTitleText = document.getElementById('sponsoredPopupTitleText');
-    const sponsoredPopupImage = document.getElementById('sponsoredPopupImage'); // This is the ad image, not a "news" image
+    const sponsoredPopupImage = document.getElementById('sponsoredPopupImage');
     const sponsoredPopupDescriptionText = document.getElementById('sponsoredPopupDescriptionText');
     const sponsoredPopupLink = document.getElementById('sponsoredPopupLink');
-
 
     const resultsCardContainer = document.getElementById('resultsCardContainer');
     const championCardDisplay = document.getElementById('championCardDisplay');
@@ -497,13 +460,8 @@
     const stageTransitionMessage = document.getElementById('stageTransitionMessage');
 
     const STAGES = {
-        SEEDING: 'Eleme Turu',
-        QUARTERFINALS: 'Çeyrek Final',
-        SEMIFINALS: 'Yarı Final',
-        FINAL: 'Final Maçı',
-        RESULTS: 'Sonuçlar',
-        FINISHED: 'Bitti',
-        HOW_TO_PLAY: 'Nasıl Oynanır'
+        SEEDING: 'Eleme Turu', QUARTERFINALS: 'Çeyrek Final', SEMIFINALS: 'Yarı Final',
+        FINAL: 'Final Maçı', RESULTS: 'Sonuçlar', FINISHED: 'Bitti', HOW_TO_PLAY: 'Nasıl Oynanır'
     };
     let currentScreenId = 'start';
     let previousScreenId = 'start';
@@ -518,34 +476,31 @@
     const SPONSORED_AD_DETAILS = {
         title: "Artık ikisi de ütopya değil!",
         description: "Samsung Bespoke AI Buzdolabı ile geleceğin teknolojileri evinize geldi.",
-        image: "https://i.ibb.co/Kj70CdwF/image.png",
-        imageSeed: null,
+        image: "https://i.ibb.co/Kj70CdwF/image.png", imageSeed: null,
         link: "https://www.samsung.com/tr/home-appliances/bespoke-home/?gad_source=1&gad_campaignid=21450180449&gbraid=0AAAAAD2gkfW5E2S3kMwBuWPlYFKrdtHfP&gclid=CjwKCAjwi-DBBhA5EiwAXOHsGUZ_AI9UaOv6drI3rnMCy15Ak3KhYxPdW7ZRU-lbD0FWs15154af7BoCwcQQAvD_BwE&gclsrc=aw.ds"
     };
 
     const wishes = [
-    { id:1, title: "İzmir Belediyesi: Gece 00:00–05:00 Arası Ücretsiz Taksi Hizmeti Başladı", description: "Gece çalışan, okuyan ya da çıkan herkese bir tuşla güvenli ulaşım imkanı sunuluyor. Bu önemli destek, kadınların gece saatlerinde daha güvende hissetmelerini ve sosyal hayata katılımlarını artırmayı amaçlıyor.", imageSeed: "https://i.ibb.co/vvjLGRgT/Ads-z-tasar-m.png" },
-    { id:2, title: "Türkiye’de Öğrencilere Aylık 2000 TL Kültür-Sanat Bütçesi Verilecek", description: "Sinema, tiyatro, konser ve kitap harcamalarında kullanılmak üzere öğrenci kartlarına aylık 2000 TL destek sağlanıyor. Gençlerin kültürel hayata daha aktif katılımı ve entelektüel gelişimi amaçlanıyor.", imageSeed: "https://i.ibb.co/932xx9Wm/Chat-GPT-Image-May-29-2025-02-43-51-PM.png" },
-    { id:3, title: "Haluk Bilginer, Oscar Kazandı: “Yılın En İyi Yardımcı Erkek Oyuncusu”", description: "Sahnede yaptığı dokunaklı konuşmada Türkiye’ye selam gönderdi. Oyunculuk kariyerinde bir zirve daha: Dünya basını bu anı ayakta alkışladı.", imageSeed: "https://i.ibb.co/q33VvYd3/Chat-GPT-Image-May-29-2025-03-10-29-AM.png" },
-    { id:4, title: "Avrupa Birliği Türkiye’ye Vizeyi Kaldırdı", description: "2026’dan itibaren kimlik kartıyla serbest geçiş dönemi başlıyor. Vize randevu kuyruğu tarih oldu, böylece vatandaşların seyahat özgürlüğü önemli ölçüde arttı.", imageSeed: "https://i.ibb.co/JWWGksJx/Chat-GPT-Image-May-29-2025-02-48-58-PM.png" },
-    { id:5, title: "WhatsApp’a “Yazdı Geri Sildi Ne Yazdı?” Özelliği Geldi", description: "Artık sildiği mesajı 5 saniyeliğine görebiliyorsun. “Az önce ne diyordun?” devri başladı, o büyük merak sonunda ortadan kalktı.", imageSeed: "https://i.ibb.co/sp7GCqFv/Chat-GPT-Image-May-29-2025-02-53-37-PM.png" },
-    { id:6, title: "Instagram “Yanlışlıkla Beğendiğin Fotoğrafı 10 Saniye İçinde Geri Al” Özelliğini Açtı", description: "2017 yılındaki bir fotoğrafa yanlışlıkla kalp bırakma kabusu bitti. Geri al, unutulsun gitsin; sosyal medya kullanımındaki bu tür küçük kazalar artık sorun değil.", imageSeed: "https://i.ibb.co/HfVHy1kb/Chat-GPT-Image-May-29-2025-03-09-39-PM.png" },
-    { id:7, title: "İlk Türk Formula 1 Pilotu: 19 Yaşındaki Emir Aslan, Monza’da start aldı!", description: "Genç pilot ilk yarışında sekizinci sırada bitirerek puan almayı başardı. Garajda gururla dalgalanan Türk bayrağı vardı, motor sporlarında yepyeni bir sayfa açıldı.", imageSeed: "https://i.ibb.co/Kj0KX6Xq/Chat-GPT-Image-May-29-2025-12-59-58-PM.png" },
-    { id:8, title: "Türkiye, Kadın-Erkek Eşitliği Endeksinde İlk 20’ye Girdi", description: "Eğitimde, iş hayatında ve evde kadın-erkek eşitliği uluslararası raporlarla tescillendi. “Artık yarı yarıya değil, tam tamına eşitiz” denilebilen bir dönem başladı.", imageSeed: "https://i.ibb.co/8D5yXv0K/Chat-GPT-Image-May-29-2025-02-46-14-PM.png" },
-    { id:9, title: "Beren Yıldız, Nobel Fizik Ödülünü Kazandı: “Evrenin Nabzını Dinledik”", description: "ODTÜ’lü başarılı bilim kadını, kuantum kütleçekim alanındaki temel denklemi çözdü. İsveç’te düzenlenen törende tarih yazdı, bilim dünyasında büyük yankı uyandırdı.", imageSeed: "https://i.ibb.co/N21NBh6S/Chat-GPT-Image-May-29-2025-02-51-54-PM.png" },
-    { id:10, title: "Türkiye, 2029’da Eurovision’a Geri Döndü: Mabel Matiz Avrupa’yı Salladı", description: "Yarışmada seslendirdiği “Surface” adlı şarkısı, sahnede kullanılan ebru animasyonu ve etkileyici bağlama solosuyla tüm Avrupa’yı büyüledi, kültürel bir köprü kuruldu.", imageSeed: "https://i.ibb.co/ycYF3DTj/Chat-GPT-Image-May-29-2025-12-56-35-AM.png" },
-    { id:11, title: "Haftada 4 Gün Çalışma Yasası Resmi Gazete’de Yayınlandı", description: "Artık cuma günü de resmi tatil ilan edildi. Aynı maaşla, daha az stresle yepyeni bir hayat başlıyor, genel iş-yaşam dengesi önemli ölçüde iyileşiyor.", imageSeed: "https://i.ibb.co/tMNVV4qG/Chat-GPT-Image-May-29-2025-12-52-25-AM.png" },
-    { id:12, title: "Boğaziçi Üniversitesi, Dünya Üniversite Sıralamasında İlk 100’e Girdi!", description: "Times Higher Education'ın saygın listesine göre Türkiye’den ilk kez bir üniversite 98. sırada yer aldı. Bu, eğitimde uluslararası bir başarı olarak tescillendi.", imageSeed: "https://i.ibb.co/VYXvWZyb/Chat-GPT-Image-May-29-2025-03-13-00-PM.png" },
-    { id:13, title: "Merkez Bankası, Enflasyon Tahminini %4’ten %3,5’e Düşürdü!", description: "Temel gıda ürünlerinde ve kiralarda belirgin bir düşüş başladı.", imageSeed: "https://i.ibb.co/HfSjcb19/Chat-GPT-Image-May-29-2025-03-44-18-PM.png" },
-    { id:14, title: "Türkiye’de Şehir Parkları ve Yeşil Alanlar 5 Yılda %42 Arttı", description: "Şehirlerde betonun yerini artık ağaç gölgeleri, otobüsün yerini ise bisiklet yolları aldı. “Nefes Al Türkiye” projesi başarıyla tamamlandı, yaşam kalitesi gözle görülür şekilde yükseldi.", imageSeed: "https://i.ibb.co/r263M7rN/Chat-GPT-Image-May-29-2025-03-13-04-PM.png" },
-    { id:15, title: "Türkiye, 2028 Avrupa Futbol Şampiyonu Oldu!", description: "Unutulmaz finalde Almanya’yı 3-2 yendik. Maçın 89. dakikasında Arda Güler'in attığı frikik golüyle millilerimiz tarih yazdı, tüm ülke büyük bir sevince boğuldu.", imageSeed: "https://i.ibb.co/zV9g4Pdf/Chat-GPT-Image-May-29-2025-12-24-44-AM.png" },
-    { id:16, title: "Filenin Sultanları, Paris 2028’de Altın Madalya Kazandı!", description: "Nefes kesen finalde Brezilya’ya karşı alınan 3-1'lik skorla şampiyonluk geldi. Bayraklar, gözyaşları ve omuz omuza kazanılan bu büyük zaferle Türk voleybolu adını zirveye yazdırdı.", imageSeed: "https://i.ibb.co/R4jrvBMx/Ads-z-tasar-m-1.png" }
-]
+        { id:1, title: "İzmir Belediyesi: Gece 00:00–05:00 Arası Ücretsiz Taksi Hizmeti Başladı", description: "Gece çalışan, okuyan ya da çıkan herkese bir tuşla güvenli ulaşım imkanı sunuluyor. Bu önemli destek, kadınların gece saatlerinde daha güvende hissetmelerini ve sosyal hayata katılımlarını artırmayı amaçlıyor.", imageSeed: "https://i.ibb.co/vvjLGRgT/Ads-z-tasar-m.png" },
+        { id:2, title: "Türkiye’de Öğrencilere Aylık 2000 TL Kültür-Sanat Bütçesi Verilecek", description: "Sinema, tiyatro, konser ve kitap harcamalarında kullanılmak üzere öğrenci kartlarına aylık 2000 TL destek sağlanıyor. Gençlerin kültürel hayata daha aktif katılımı ve entelektüel gelişimi amaçlanıyor.", imageSeed: "https://i.ibb.co/932xx9Wm/Chat-GPT-Image-May-29-2025-02-43-51-PM.png" },
+        { id:3, title: "Haluk Bilginer, Oscar Kazandı: “Yılın En İyi Yardımcı Erkek Oyuncusu”", description: "Sahnede yaptığı dokunaklı konuşmada Türkiye’ye selam gönderdi. Oyunculuk kariyerinde bir zirve daha: Dünya basını bu anı ayakta alkışladı.", imageSeed: "https://i.ibb.co/q33VvYd3/Chat-GPT-Image-May-29-2025-03-10-29-AM.png" },
+        { id:4, title: "Avrupa Birliği Türkiye’ye Vizeyi Kaldırdı", description: "2026’dan itibaren kimlik kartıyla serbest geçiş dönemi başlıyor. Vize randevu kuyruğu tarih oldu, böylece vatandaşların seyahat özgürlüğü önemli ölçüde arttı.", imageSeed: "https://i.ibb.co/JWWGksJx/Chat-GPT-Image-May-29-2025-02-48-58-PM.png" },
+        { id:5, title: "WhatsApp’a “Yazdı Geri Sildi Ne Yazdı?” Özelliği Geldi", description: "Artık sildiği mesajı 5 saniyeliğine görebiliyorsun. “Az önce ne diyordun?” devri başladı, o büyük merak sonunda ortadan kalktı.", imageSeed: "https://i.ibb.co/sp7GCqFv/Chat-GPT-Image-May-29-2025-02-53-37-PM.png" },
+        { id:6, title: "Instagram “Yanlışlıkla Beğendiğin Fotoğrafı 10 Saniye İçinde Geri Al” Özelliğini Açtı", description: "2017 yılındaki bir fotoğrafa yanlışlıkla kalp bırakma kabusu bitti. Geri al, unutulsun gitsin; sosyal medya kullanımındaki bu tür küçük kazalar artık sorun değil.", imageSeed: "https://i.ibb.co/HfVHy1kb/Chat-GPT-Image-May-29-2025-03-09-39-PM.png" },
+        { id:7, title: "İlk Türk Formula 1 Pilotu: 19 Yaşındaki Emir Aslan, Monza’da start aldı!", description: "Genç pilot ilk yarışında sekizinci sırada bitirerek puan almayı başardı. Garajda gururla dalgalanan Türk bayrağı vardı, motor sporlarında yepyeni bir sayfa açıldı.", imageSeed: "https://i.ibb.co/Kj0KX6Xq/Chat-GPT-Image-May-29-2025-12-59-58-PM.png" },
+        { id:8, title: "Türkiye, Kadın-Erkek Eşitliği Endeksinde İlk 20’ye Girdi", description: "Eğitimde, iş hayatında ve evde kadın-erkek eşitliği uluslararası raporlarla tescillendi. “Artık yarı yarıya değil, tam tamına eşitiz” denilebilen bir dönem başladı.", imageSeed: "https://i.ibb.co/8D5yXv0K/Chat-GPT-Image-May-29-2025-02-46-14-PM.png" },
+        { id:9, title: "Beren Yıldız, Nobel Fizik Ödülünü Kazandı: “Evrenin Nabzını Dinledik”", description: "ODTÜ’lü başarılı bilim kadını, kuantum kütleçekim alanındaki temel denklemi çözdü. İsveç’te düzenlenen törende tarih yazdı, bilim dünyasında büyük yankı uyandırdı.", imageSeed: "https://i.ibb.co/N21NBh6S/Chat-GPT-Image-May-29-2025-02-51-54-PM.png" },
+        { id:10, title: "Türkiye, 2029’da Eurovision’a Geri Döndü: Mabel Matiz Avrupa’yı Salladı", description: "Yarışmada seslendirdiği “Surface” adlı şarkısı, sahnede kullanılan ebru animasyonu ve etkileyici bağlama solosuyla tüm Avrupa’yı büyüledi, kültürel bir köprü kuruldu.", imageSeed: "https://i.ibb.co/ycYF3DTj/Chat-GPT-Image-May-29-2025-12-56-35-AM.png" },
+        { id:11, title: "Haftada 4 Gün Çalışma Yasası Resmi Gazete’de Yayınlandı", description: "Artık cuma günü de resmi tatil ilan edildi. Aynı maaşla, daha az stresle yepyeni bir hayat başlıyor, genel iş-yaşam dengesi önemli ölçüde iyileşiyor.", imageSeed: "https://i.ibb.co/tMNVV4qG/Chat-GPT-Image-May-29-2025-12-52-25-AM.png" },
+        { id:12, title: "Boğaziçi Üniversitesi, Dünya Üniversite Sıralamasında İlk 100’e Girdi!", description: "Times Higher Education'ın saygın listesine göre Türkiye’den ilk kez bir üniversite 98. sırada yer aldı. Bu, eğitimde uluslararası bir başarı olarak tescillendi.", imageSeed: "https://i.ibb.co/VYXvWZyb/Chat-GPT-Image-May-29-2025-03-13-00-PM.png" },
+        { id:13, title: "Merkez Bankası, Enflasyon Tahminini %4’ten %3,5’e Düşürdü!", description: "Temel gıda ürünlerinde ve kiralarda belirgin bir düşüş başladı.", imageSeed: "https://i.ibb.co/HfSjcb19/Chat-GPT-Image-May-29-2025-03-44-18-PM.png" },
+        { id:14, title: "Türkiye’de Şehir Parkları ve Yeşil Alanlar 5 Yılda %42 Arttı", description: "Şehirlerde betonun yerini artık ağaç gölgeleri, otobüsün yerini ise bisiklet yolları aldı. “Nefes Al Türkiye” projesi başarıyla tamamlandı, yaşam kalitesi gözle görülür şekilde yükseldi.", imageSeed: "https://i.ibb.co/r263M7rN/Chat-GPT-Image-May-29-2025-03-13-04-PM.png" },
+        { id:15, title: "Türkiye, 2028 Avrupa Futbol Şampiyonu Oldu!", description: "Unutulmaz finalde Almanya’yı 3-2 yendik. Maçın 89. dakikasında Arda Güler'in attığı frikik golüyle millilerimiz tarih yazdı, tüm ülke büyük bir sevince boğuldu.", imageSeed: "https://i.ibb.co/zV9g4Pdf/Chat-GPT-Image-May-29-2025-12-24-44-AM.png" },
+        { id:16, title: "Filenin Sultanları, Paris 2028’de Altın Madalya Kazandı!", description: "Nefes kesen finalde Brezilya’ya karşı alınan 3-1'lik skorla şampiyonluk geldi. Bayraklar, gözyaşları ve omuz omuza kazanılan bu büyük zaferle Türk voleybolu adını zirveye yazdırdı.", imageSeed: "https://i.ibb.co/R4jrvBMx/Ads-z-tasar-m-1.png" }
+    ];
 
     function getImageUrl(imageIdentifier, width = 600, height = 400) {
-        if (typeof imageIdentifier === 'string' && imageIdentifier.startsWith('http')) {
-            return imageIdentifier;
-        }
+        if (typeof imageIdentifier === 'string' && imageIdentifier.startsWith('http')) { return imageIdentifier; }
         const seed = imageIdentifier || `placeholder_${Math.random().toString(36).substring(7)}`;
         return `https://picsum.photos/seed/${seed}/${width}/${height}`;
     }
@@ -579,89 +534,58 @@
         if(navHomeButton) navHomeButton.classList.remove('active', 'text-blue-600');
         if(navPlayButton) navPlayButton.classList.remove('active', 'text-blue-600');
         if(navResultsButton) navResultsButton.classList.remove('active', 'text-blue-600');
-
         const isOverlayActive = (onboardingModal && !onboardingModal.classList.contains('hidden-screen')) ||
                                 (screens.winnerPopup && !screens.winnerPopup.classList.contains('hidden-screen')) ||
                                 (screens.sponsoredPopup && !screens.sponsoredPopup.classList.contains('hidden-screen')) ||
                                 (stageTransitionModal && !stageTransitionModal.classList.contains('hidden-screen'));
-
         const navHeightWithSpace = '70px';
         const basePaddingBottom = '1rem';
-
         Object.values(screens).forEach(screen => {
             if (screen && screen.style && screen.id !== 'sponsoredPopupScreen') {
-                if (screen.id === 'startScreen') {
-                    screen.style.paddingBottom = '';
-                } else {
-                    screen.style.paddingBottom = basePaddingBottom;
-                }
+                screen.style.paddingBottom = (screen.id === 'startScreen') ? '' : basePaddingBottom;
             }
         });
-
         if (currentScreenId === 'start' || isOverlayActive) {
             if (navHomeButton) navHomeButton.classList.add('active', 'text-blue-600');
             if (bottomNav) bottomNav.classList.add('hidden-screen');
             if (globalHowToPlayButton) globalHowToPlayButton.classList.add('hidden-screen');
         } else {
             if (bottomNav) bottomNav.classList.remove('hidden-screen');
-            if (globalHowToPlayButton && currentScreenId !== 'howToPlayScreen') {
-                globalHowToPlayButton.classList.remove('hidden-screen');
-            } else if (globalHowToPlayButton) {
-                globalHowToPlayButton.classList.add('hidden-screen');
-            }
-
+            if (globalHowToPlayButton) globalHowToPlayButton.classList[currentScreenId !== 'howToPlayScreen' ? 'remove' : 'add']('hidden-screen');
             const screensThatNeedNavPadding = ['game', 'results', 'finish', 'howToPlay'];
-            if (screensThatNeedNavPadding.includes(currentScreenId) && screens[currentScreenId] && screens[currentScreenId].style) {
+            if (screensThatNeedNavPadding.includes(currentScreenId) && screens[currentScreenId]?.style) {
                 const mainContentArea = screens[currentScreenId].querySelector('main, .overflow-y-auto, .flex-1.min-h-0');
-                if (mainContentArea && mainContentArea.style) {
-                    mainContentArea.style.paddingBottom = navHeightWithSpace;
-                } else if (screens[currentScreenId].style) {
-                    screens[currentScreenId].style.paddingBottom = navHeightWithSpace;
-                }
+                if (mainContentArea?.style) mainContentArea.style.paddingBottom = navHeightWithSpace;
+                else if (screens[currentScreenId].style) screens[currentScreenId].style.paddingBottom = navHeightWithSpace;
             }
-
-            if (currentScreenId === 'game' && navPlayButton) { navPlayButton.classList.add('active', 'text-blue-600'); }
-            else if ((currentScreenId === 'results' || currentScreenId === 'finish') && navResultsButton) { navResultsButton.classList.add('active', 'text-blue-600'); }
-            else if (currentScreenId === 'howToPlay' && globalHowToPlayButton) { /* Handled above */ }
-            else if (navHomeButton && !isOverlayActive && !screensThatNeedNavPadding.includes(currentScreenId)) {
-                navHomeButton.classList.add('active', 'text-blue-600');
-            }
+            if (currentScreenId === 'game' && navPlayButton) navPlayButton.classList.add('active', 'text-blue-600');
+            else if ((currentScreenId === 'results' || currentScreenId === 'finish') && navResultsButton) navResultsButton.classList.add('active', 'text-blue-600');
+            else if (navHomeButton && !isOverlayActive && !screensThatNeedNavPadding.includes(currentScreenId)) navHomeButton.classList.add('active', 'text-blue-600');
         }
     }
 
     function showModal(modalElement, modalContentElement, backdropElement = null) {
         if (!modalElement || !modalContentElement) return;
         let tempPreviousScreenId = currentScreenId;
-
         modalElement.classList.remove('hidden-screen', 'opacity-0');
         modalElement.classList.add('flex', 'active', 'opacity-100');
-        if (backdropElement) {
-            backdropElement.classList.remove('opacity-0');
-            backdropElement.classList.add('opacity-100');
-        }
+        if (backdropElement) { backdropElement.classList.remove('opacity-0'); backdropElement.classList.add('opacity-100'); }
         currentScreenId = modalElement.id;
         updateBottomNav();
-        if (tempPreviousScreenId !== 'onboardingHowToPlayModal' && tempPreviousScreenId !== 'stageTransitionModal' && tempPreviousScreenId !== 'winnerPopupScreen' && tempPreviousScreenId !== 'sponsoredPopupScreen') {
+        if (!['onboardingHowToPlayModal', 'stageTransitionModal', 'winnerPopupScreen', 'sponsoredPopupScreen'].includes(tempPreviousScreenId)) {
             previousScreenId = tempPreviousScreenId;
         }
     }
 
     function hideModal(modalElement, modalContentElement, backdropElement = null, callback) {
         if (!modalElement || !modalContentElement) { if (callback) callback(); return; }
-
         modalElement.classList.remove('active', 'opacity-100');
         modalElement.classList.add('opacity-0');
-
-        if (backdropElement) {
-            backdropElement.classList.remove('opacity-100');
-            backdropElement.classList.add('opacity-0');
-        }
+        if (backdropElement) { backdropElement.classList.remove('opacity-100'); backdropElement.classList.add('opacity-0'); }
         setTimeout(() => {
             modalElement.classList.add('hidden-screen');
             modalElement.classList.remove('flex');
-            if (currentScreenId === modalElement.id) {
-                currentScreenId = previousScreenId || 'start';
-            }
+            if (currentScreenId === modalElement.id) currentScreenId = previousScreenId || 'start';
             updateBottomNav();
             if (callback) callback();
         }, 300);
@@ -675,232 +599,110 @@
         else if (stageTransitionModal && !stageTransitionModal.classList.contains('hidden-screen')) activeModal = { el: stageTransitionModal, content: stageTransitionModalContent, backdrop: stageTransitionModalBackdrop };
 
         const displayActualScreen = () => {
-            if (screenIdToShow === 'onboardingModal') {
-                showModal(onboardingModal, onboardingModalContent, onboardingModalBackdrop);
-                return;
-            }
-            if (screenIdToShow === 'winnerPopup') {
-                displayWinnerPopupContent();
-                showModal(screens.winnerPopup, winnerPopupContentContainer);
-                return;
-            }
-              if (screenIdToShow === 'sponsoredPopup') {
+            if (screenIdToShow === 'onboardingModal') { showModal(onboardingModal, onboardingModalContent, onboardingModalBackdrop); return; }
+            if (screenIdToShow === 'winnerPopup') { displayWinnerPopupContent(); showModal(screens.winnerPopup, winnerPopupContentContainer); return; }
+            if (screenIdToShow === 'sponsoredPopup') {
                 if(sponsoredPopupTitleText) sponsoredPopupTitleText.textContent = SPONSORED_AD_DETAILS.title;
                 if(sponsoredPopupImage) sponsoredPopupImage.src = getImageUrl(SPONSORED_AD_DETAILS.imageSeed || SPONSORED_AD_DETAILS.image);
                 if(sponsoredPopupDescriptionText) sponsoredPopupDescriptionText.textContent = SPONSORED_AD_DETAILS.description;
                 if(sponsoredPopupLink) sponsoredPopupLink.href = SPONSORED_AD_DETAILS.link;
-                showModal(screens.sponsoredPopup, sponsoredPopupContent);
-                return;
+                showModal(screens.sponsoredPopup, sponsoredPopupContent); return;
             }
-
             if (!screens[screenIdToShow]) { console.error("Ekran bulunamadı:", screenIdToShow); return; }
-
-            if (currentScreenId !== screenIdToShow &&
-                currentScreenId !== 'onboardingHowToPlayModal' &&
-                currentScreenId !== 'stageTransitionModal' &&
-                currentScreenId !== 'winnerPopupScreen' &&
-                currentScreenId !== 'sponsoredPopupScreen') {
+            if (currentScreenId !== screenIdToShow && !['onboardingHowToPlayModal', 'stageTransitionModal', 'winnerPopupScreen', 'sponsoredPopupScreen'].includes(currentScreenId)) {
                 previousScreenId = currentScreenId;
             }
-
-            Object.values(screens).forEach(screen => {
-                if(screen && screen.id !== screenIdToShow) {
-                    screen.classList.add('hidden-screen');
-                }
-            });
+            Object.values(screens).forEach(screen => { if(screen && screen.id !== screenIdToShow) screen.classList.add('hidden-screen'); });
             screens[screenIdToShow].classList.remove('hidden-screen');
             currentScreenId = screenIdToShow;
-
             const bodyClassList = document.body.classList;
             if (screens.game) screens.game.classList.remove('final-match-theme', 'sponsored-round-theme');
             bodyClassList.remove('background-animate', 'bg-[#FAF8F6]', 'bg-slate-50', 'bg-slate-100');
-
-            if (screenIdToShow === 'start') {
-                bodyClassList.add('background-animate', 'bg-[#FAF8F6]');
-            } else if (screens[screenIdToShow]) {
-                const screenBg = screens[screenIdToShow].classList.contains('bg-slate-50') ? 'bg-slate-50' :
-                                 screens[screenIdToShow].classList.contains('bg-[#FAF8F6]') ? 'bg-[#FAF8F6]' : 'bg-slate-50';
+            if (screenIdToShow === 'start') bodyClassList.add('background-animate', 'bg-[#FAF8F6]');
+            else if (screens[screenIdToShow]) {
+                const screenBg = screens[screenIdToShow].classList.contains('bg-slate-50') ? 'bg-slate-50' : (screens[screenIdToShow].classList.contains('bg-[#FAF8F6]') ? 'bg-[#FAF8F6]' : 'bg-slate-50');
                 bodyClassList.add(screenBg);
-                if (screenIdToShow === 'game' && currentStage === STAGES.FINAL && screens.game) {
-                    screens.game.classList.add('final-match-theme');
-                }
+                if (screenIdToShow === 'game' && currentStage === STAGES.FINAL && screens.game) screens.game.classList.add('final-match-theme');
             }
             updateBottomNav();
             window.scrollTo(0,0);
         };
-
-        if (activeModal && activeModal.el.id !== screenIdToShow) {
-            hideModal(activeModal.el, activeModal.content, activeModal.backdrop, displayActualScreen);
-        } else {
-            displayActualScreen();
-        }
+        if (activeModal && activeModal.el.id !== screenIdToShow) hideModal(activeModal.el, activeModal.content, activeModal.backdrop, displayActualScreen);
+        else displayActualScreen();
     }
 
     function resetGameAndPlay(showOnboarding = false) {
-        currentStage = STAGES.SEEDING;
-        currentMatchInStage = 0;
-        nextStageWishes = [];
-        voteCounts = {};
-        champion = null;
-        isSponsoredInterstitialActive = false;
+        currentStage = STAGES.SEEDING; currentMatchInStage = 0; nextStageWishes = []; voteCounts = {}; champion = null; isSponsoredInterstitialActive = false;
         localStorage.removeItem('sponsoredRoundShownThisSession');
-
-        let wishesForSeeding = [...wishes];
-        shuffleArray(wishesForSeeding);
-        wishesForCurrentStage = wishesForSeeding.slice(0, 16);
-
-        if (screens.game) {
-            screens.game.classList.remove('sponsored-round-theme', 'final-match-theme');
-        }
-
-        if (showOnboarding) {
-            showScreen('onboardingModal');
-        } else {
-            showScreen('game');
-            updateProgressBar();
-            loadNextMatchUI();
-        }
+        let wishesForSeeding = [...wishes]; shuffleArray(wishesForSeeding); wishesForCurrentStage = wishesForSeeding.slice(0, 16);
+        if (screens.game) screens.game.classList.remove('sponsored-round-theme', 'final-match-theme');
+        if (showOnboarding) showScreen('onboardingModal');
+        else { showScreen('game'); updateProgressBar(); loadNextMatchUI(); }
     }
 
     function getMatchPair() {
-        if (wishesForCurrentStage.length < (currentMatchInStage * 2) + 2) {
-            return [null, null];
-        }
+        if (wishesForCurrentStage.length < (currentMatchInStage * 2) + 2) return [null, null];
         return [wishesForCurrentStage[currentMatchInStage * 2], wishesForCurrentStage[(currentMatchInStage * 2) + 1]];
     }
 
     function showSponsoredInterstitial() {
-        isSponsoredInterstitialActive = true;
-        localStorage.setItem('sponsoredRoundShownThisSession', 'true');
-
-        if (screens.game) {
-            screens.game.classList.remove('final-match-theme');
-            screens.game.classList.add('sponsored-round-theme');
-        }
+        isSponsoredInterstitialActive = true; localStorage.setItem('sponsoredRoundShownThisSession', 'true');
+        if (screens.game) { screens.game.classList.remove('final-match-theme'); screens.game.classList.add('sponsored-round-theme'); }
         if (progressTextElement) progressTextElement.textContent = "Sponsorlu Etap";
         if (progressBarFill) progressBarFill.style.width = `${(4 / 8) * 100}%`;
-
         const sponsoredCardContent1 = { id: 'sp_card_1', title: "Ne Pişireceğinize Artık Buzdolabımız Karar Verebilecek!", description: "AI destekli buzdolabı, içerikteki malzemelere göre her gün yeni tarif öneriyor.", imageSeed: "https://i.ibb.co/ZzT2LKCb/image-21.png" };
         const sponsoredCardContent2 = { id: 'sp_card_2', title: "İçindekileri Tanıyan ve Alışveriş Listesi Hazırlayan Buzdolabı duyuruldu! ", description: "Yapay zekâlı buzdolabı, eksikleri algılayıp ihtiyacın olan ürünleri liste halinde bildiriyor.", imageSeed: "https://i.ibb.co/n8cjQ8pV/Chat-GPT-Image-May-29-2025-02-20-27-PM.png" };
-
-        const card1TitleEl = gameScreenCards[0].querySelector('.card-title');
-        const card1DescEl = gameScreenCards[0].querySelector('.card-description');
-        const card1ImgEl = gameScreenCards[0].querySelector('img[data-role="card-image-img"]');
-        if (card1TitleEl) card1TitleEl.textContent = sponsoredCardContent1.title;
-        if (card1DescEl) card1DescEl.textContent = sponsoredCardContent1.description;
-        if (card1ImgEl) {
-            card1ImgEl.src = getImageUrl(sponsoredCardContent1.imageSeed);
-            card1ImgEl.alt = sponsoredCardContent1.title;
-        }
+        const card1TitleEl = gameScreenCards[0].querySelector('.card-title'), card1DescEl = gameScreenCards[0].querySelector('.card-description'), card1ImgEl = gameScreenCards[0].querySelector('img[data-role="card-image-img"]');
+        if (card1TitleEl) card1TitleEl.textContent = sponsoredCardContent1.title; if (card1DescEl) card1DescEl.textContent = sponsoredCardContent1.description;
+        if (card1ImgEl) { card1ImgEl.src = getImageUrl(sponsoredCardContent1.imageSeed); card1ImgEl.alt = sponsoredCardContent1.title; }
         gameScreenCards[0].dataset.wishId = sponsoredCardContent1.id;
-
-        const card2TitleEl = gameScreenCards[1].querySelector('.card-title');
-        const card2DescEl = gameScreenCards[1].querySelector('.card-description');
-        const card2ImgEl = gameScreenCards[1].querySelector('img[data-role="card-image-img"]');
-        if (card2TitleEl) card2TitleEl.textContent = sponsoredCardContent2.title;
-        if (card2DescEl) card2DescEl.textContent = sponsoredCardContent2.description;
-        if (card2ImgEl) {
-            card2ImgEl.src = getImageUrl(sponsoredCardContent2.imageSeed);
-            card2ImgEl.alt = sponsoredCardContent2.title;
-        }
+        const card2TitleEl = gameScreenCards[1].querySelector('.card-title'), card2DescEl = gameScreenCards[1].querySelector('.card-description'), card2ImgEl = gameScreenCards[1].querySelector('img[data-role="card-image-img"]');
+        if (card2TitleEl) card2TitleEl.textContent = sponsoredCardContent2.title; if (card2DescEl) card2DescEl.textContent = sponsoredCardContent2.description;
+        if (card2ImgEl) { card2ImgEl.src = getImageUrl(sponsoredCardContent2.imageSeed); card2ImgEl.alt = sponsoredCardContent2.title; }
         gameScreenCards[1].dataset.wishId = sponsoredCardContent2.id;
-
-        if (vsButtonSpan) {
-            vsButtonSpan.classList.remove('vs-animate');
-            void vsButtonSpan.offsetWidth;
-            vsButtonSpan.classList.add('vs-animate');
-        }
-        gameScreenCards.forEach(c => {
-            c.classList.remove('selected', 'not-selected');
-            c.style.pointerEvents = 'auto';
-            c.querySelector('.confetti-burst')?.classList.add('hidden');
-        });
+        if (vsButtonSpan) { vsButtonSpan.classList.remove('vs-animate'); void vsButtonSpan.offsetWidth; vsButtonSpan.classList.add('vs-animate'); }
+        gameScreenCards.forEach(c => { c.classList.remove('selected', 'not-selected'); c.style.pointerEvents = 'auto'; c.querySelector('.confetti-burst')?.classList.add('hidden'); });
         showScreen('game');
     }
 
-
     function loadNextMatchUI() {
-        if (currentStage === STAGES.SEEDING && currentMatchInStage === 4 && !localStorage.getItem('sponsoredRoundShownThisSession')) {
-            showSponsoredInterstitial();
-            return;
-        }
-
+        if (currentStage === STAGES.SEEDING && currentMatchInStage === 4 && !localStorage.getItem('sponsoredRoundShownThisSession')) { showSponsoredInterstitial(); return; }
         const [wish1, wish2] = getMatchPair();
-        if (!wish1 || !wish2) {
-            advanceToNextStage();
-            return;
-        }
-        if (vsButtonSpan) {
-            vsButtonSpan.classList.remove('vs-animate');
-            void vsButtonSpan.offsetWidth;
-            vsButtonSpan.classList.add('vs-animate');
-        }
-
-        const card1TitleEl = gameScreenCards[0].querySelector('.card-title');
-        const card1DescEl = gameScreenCards[0].querySelector('.card-description');
-        const card1ImgEl = gameScreenCards[0].querySelector('img[data-role="card-image-img"]');
-
-        if (card1TitleEl) card1TitleEl.textContent = wish1.title;
-        if (card1DescEl) card1DescEl.textContent = wish1.description;
-        if (card1ImgEl) {
-            card1ImgEl.src = getImageUrl(wish1.imageSeed);
-            card1ImgEl.alt = wish1.title;
-        }
-        gameScreenCards[0].dataset.wishId = wish1.id;
-
-        const card2TitleEl = gameScreenCards[1].querySelector('.card-title');
-        const card2DescEl = gameScreenCards[1].querySelector('.card-description');
-        const card2ImgEl = gameScreenCards[1].querySelector('img[data-role="card-image-img"]');
-
-        if (card2TitleEl) card2TitleEl.textContent = wish2.title;
-        if (card2DescEl) card2DescEl.textContent = wish2.description;
-        if (card2ImgEl) {
-            card2ImgEl.src = getImageUrl(wish2.imageSeed);
-            card2ImgEl.alt = wish2.title;
-        }
-        gameScreenCards[1].dataset.wishId = wish2.id;
-
+        if (!wish1 || !wish2) { advanceToNextStage(); return; }
+        if (vsButtonSpan) { vsButtonSpan.classList.remove('vs-animate'); void vsButtonSpan.offsetWidth; vsButtonSpan.classList.add('vs-animate'); }
+        const card1TitleEl = gameScreenCards[0].querySelector('.card-title'), card1DescEl = gameScreenCards[0].querySelector('.card-description'), card1ImgEl = gameScreenCards[0].querySelector('img[data-role="card-image-img"]');
+        if (card1TitleEl) card1TitleEl.textContent = wish1.title; if (card1DescEl) card1DescEl.textContent = wish1.description;
+        if (card1ImgEl) { card1ImgEl.src = getImageUrl(wish1.imageSeed); card1ImgEl.alt = wish1.title; } gameScreenCards[0].dataset.wishId = wish1.id;
+        const card2TitleEl = gameScreenCards[1].querySelector('.card-title'), card2DescEl = gameScreenCards[1].querySelector('.card-description'), card2ImgEl = gameScreenCards[1].querySelector('img[data-role="card-image-img"]');
+        if (card2TitleEl) card2TitleEl.textContent = wish2.title; if (card2DescEl) card2DescEl.textContent = wish2.description;
+        if (card2ImgEl) { card2ImgEl.src = getImageUrl(wish2.imageSeed); card2ImgEl.alt = wish2.title; } gameScreenCards[1].dataset.wishId = wish2.id;
         gameScreenCards.forEach(c => {c.classList.remove('selected', 'not-selected'); c.style.pointerEvents = 'auto'; c.querySelector('.confetti-burst')?.classList.add('hidden');});
     }
 
     function updateProgressBar() {
         if (isSponsoredInterstitialActive) {
-            if (progressTextElement) progressTextElement.textContent = "Sponsorlu Etap";
-            if (progressBarFill) progressBarFill.style.width = `${(4/8)*100}%`;
-            const oldSpark = progressBarFill.querySelector('.progress-bar-spark'); if (oldSpark) oldSpark.remove();
-            return;
+            if (progressTextElement) progressTextElement.textContent = "Sponsorlu Etap"; if (progressBarFill) progressBarFill.style.width = `${(4/8)*100}%`;
+            const oldSpark = progressBarFill.querySelector('.progress-bar-spark'); if (oldSpark) oldSpark.remove(); return;
         }
-
         let totalMatches = 0, stageName = currentStage, matchNum = currentMatchInStage + 1;
         if (currentStage === STAGES.SEEDING) { totalMatches = wishesForCurrentStage.length / 2; stageName = "Eleme"; }
         else if (currentStage === STAGES.QUARTERFINALS) { totalMatches = wishesForCurrentStage.length / 2; stageName = "Ç.Final"; }
         else if (currentStage === STAGES.SEMIFINALS) { totalMatches = wishesForCurrentStage.length / 2; stageName = "Y.Final"; }
-        else if (currentStage === STAGES.FINAL) { totalMatches = 1; stageName = "FİNAL!"; }
-        else return;
-
+        else if (currentStage === STAGES.FINAL) { totalMatches = 1; stageName = "FİNAL!"; } else return;
         if (currentMatchInStage >= totalMatches && totalMatches > 0) matchNum = totalMatches;
-
         const progress = totalMatches > 0 ? (currentMatchInStage / totalMatches) * 100 : 0;
         if (progressBarFill) progressBarFill.style.width = `${Math.min(progress, 100)}%`;
         if (progressTextElement) {
-            if (currentStage === STAGES.FINAL && currentMatchInStage === 0 && progress < 100) {
-                progressTextElement.textContent = stageName;
-            } else if (progress >= 100 && currentStage === STAGES.FINAL) {
-                progressTextElement.textContent = "ŞAMPİYON!";
-            } else {
-                progressTextElement.textContent = `${stageName}: ${matchNum}/${totalMatches}`;
-            }
+            if (currentStage === STAGES.FINAL && currentMatchInStage === 0 && progress < 100) progressTextElement.textContent = stageName;
+            else if (progress >= 100 && currentStage === STAGES.FINAL) progressTextElement.textContent = "ŞAMPİYON!";
+            else progressTextElement.textContent = `${stageName}: ${matchNum}/${totalMatches}`;
         }
-
         if (matchNum > 0 && totalMatches > 0 && progressBarFill) {
             const oldSpark = progressBarFill.querySelector('.progress-bar-spark'); if (oldSpark) oldSpark.remove();
             const spark = document.createElement('div'); spark.className = 'progress-bar-spark';
             let sparkPos = (matchNum / totalMatches * 100);
-            if (currentMatchInStage >= totalMatches) sparkPos = 100;
-            else if (progress >= 100 && currentMatchInStage < totalMatches) sparkPos = 99;
-
-            spark.style.left = `calc(${Math.min(sparkPos,100)}% - 5px)`;
-            progressBarFill.appendChild(spark);
+            if (currentMatchInStage >= totalMatches) sparkPos = 100; else if (progress >= 100 && currentMatchInStage < totalMatches) sparkPos = 99;
+            spark.style.left = `calc(${Math.min(sparkPos,100)}% - 5px)`; progressBarFill.appendChild(spark);
             setTimeout(() => { if(spark.parentElement) spark.remove(); }, 500);
         }
     }
@@ -911,311 +713,174 @@
             if(sponsoredPopupImage) sponsoredPopupImage.src = getImageUrl(SPONSORED_AD_DETAILS.imageSeed || SPONSORED_AD_DETAILS.image);
             if(sponsoredPopupDescriptionText) sponsoredPopupDescriptionText.textContent = SPONSORED_AD_DETAILS.description;
             if(sponsoredPopupLink) sponsoredPopupLink.href = SPONSORED_AD_DETAILS.link;
-            showModal(screens.sponsoredPopup, sponsoredPopupContent);
-            return;
+            showModal(screens.sponsoredPopup, sponsoredPopupContent); return;
         }
-
         gameScreenCards.forEach(c => c.style.pointerEvents = 'none'); selectedCardNode.classList.add('selected');
         const chosenId = selectedCardNode.dataset.wishId; const winner = wishes.find(w => w.id == chosenId);
-
-        if (currentStage === STAGES.FINAL) {
-            champion = winner;
-            currentMatchInStage++;
-            updateProgressBar();
-            setTimeout(()=> {
-                showScreen('winnerPopup');
-            }, 1000);
-            return;
-        }
-
+        if (currentStage === STAGES.FINAL) { champion = winner; currentMatchInStage++; updateProgressBar(); setTimeout(()=> { showScreen('winnerPopup'); }, 1000); return; }
         if (winner) nextStageWishes.push(winner);
-        if (currentStage === STAGES.SEEDING) {
-            voteCounts[chosenId] = (voteCounts[chosenId] || 0) + 1;
-        }
-
+        if (currentStage === STAGES.SEEDING) voteCounts[chosenId] = (voteCounts[chosenId] || 0) + 1;
         const confetti = selectedCardNode.querySelector('.confetti-burst');
-        if (confetti) {
-            confetti.classList.remove('hidden');
-            setTimeout(() => confetti.classList.add('hidden'), 700);
-        }
-
+        if (confetti) { confetti.classList.remove('hidden'); setTimeout(() => confetti.classList.add('hidden'), 700); }
         gameScreenCards.forEach(oc => { if (oc !== selectedCardNode) oc.classList.add('not-selected'); });
-
         setTimeout(() => {
-            currentMatchInStage++;
-            updateProgressBar();
-            let totalMatchesInThisStage = 0;
+            currentMatchInStage++; updateProgressBar(); let totalMatchesInThisStage = 0;
             if (currentStage === STAGES.SEEDING) totalMatchesInThisStage = wishesForCurrentStage.length / 2;
             else if (currentStage === STAGES.QUARTERFINALS) totalMatchesInThisStage = wishesForCurrentStage.length / 2;
             else if (currentStage === STAGES.SEMIFINALS) totalMatchesInThisStage = wishesForCurrentStage.length / 2;
-
-            if (currentMatchInStage >= totalMatchesInThisStage && currentStage !== STAGES.FINAL) {
-                advanceToNextStage();
-            } else if (currentStage !== STAGES.FINAL) {
-                loadNextMatchUI();
-            }
+            if (currentMatchInStage >= totalMatchesInThisStage && currentStage !== STAGES.FINAL) advanceToNextStage();
+            else if (currentStage !== STAGES.FINAL) loadNextMatchUI();
         }, 1000);
     }
 
     function advanceToNextStage() {
-        currentMatchInStage = 0;
-        wishesForCurrentStage = [...nextStageWishes];
-        shuffleArray(wishesForCurrentStage);
-        nextStageWishes = [];
-
+        currentMatchInStage = 0; wishesForCurrentStage = [...nextStageWishes]; shuffleArray(wishesForCurrentStage); nextStageWishes = [];
         let nextLogicalStage = null;
         switch (currentStage) {
             case STAGES.SEEDING: nextLogicalStage = STAGES.QUARTERFINALS; break;
             case STAGES.QUARTERFINALS: nextLogicalStage = STAGES.SEMIFINALS; break;
             case STAGES.SEMIFINALS: nextLogicalStage = STAGES.FINAL; break;
-            default:
-                if (champion) { displayResultsScreen(); } else { resetGameAndPlay(); }
-                return;
+            default: if (champion) displayResultsScreen(); else resetGameAndPlay(); return;
         }
         currentStage = nextLogicalStage;
-
         const showNextMatchSetup = () => {
             updateProgressBar();
-            if (wishesForCurrentStage.length >= 2 || (currentStage === STAGES.FINAL && wishesForCurrentStage.length === 2) ) {
-                loadNextMatchUI();
-                showScreen('game');
-            } else if (wishesForCurrentStage.length === 1 && currentStage !== STAGES.FINAL) {
-                champion = wishesForCurrentStage[0];
-                currentStage = STAGES.FINAL;
-                currentMatchInStage = 1;
-                updateProgressBar();
-                showScreen('winnerPopup');
-            } else {
-                console.error("Not enough wishes for the current stage:", currentStage, wishesForCurrentStage);
-                resetGameAndPlay();
-            }
+            if (wishesForCurrentStage.length >= 2 || (currentStage === STAGES.FINAL && wishesForCurrentStage.length === 2) ) { loadNextMatchUI(); showScreen('game'); }
+            else if (wishesForCurrentStage.length === 1 && currentStage !== STAGES.FINAL) { champion = wishesForCurrentStage[0]; currentStage = STAGES.FINAL; currentMatchInStage = 1; updateProgressBar(); showScreen('winnerPopup'); }
+            else { console.error("Not enough wishes for current stage:", currentStage, wishesForCurrentStage); resetGameAndPlay(); }
         };
-
         let iconName = '', title = '', message = '', showTransition = false;
-        if (currentStage === STAGES.QUARTERFINALS) {
-            iconName = 'sports_score'; title = 'Çeyrek Finaller!'; message = 'En iyi hayaller bir üst tura yükseldi. Mücadele devam ediyor!'; showTransition = true;
-        } else if (currentStage === STAGES.SEMIFINALS) {
-            iconName = 'stars'; title = 'Yarı Finaller!'; message = 'Şampiyonluğa çok az kaldı! Son hayaller yarışıyor.'; showTransition = true;
-        } else if (currentStage === STAGES.FINAL) {
-            iconName = 'emoji_events'; title = 'BÜYÜK FİNAL!'; message = 'İşte şampiyonu belirleyecek o efsanevi karşılaşma!'; showTransition = true;
-        }
-
+        if (currentStage === STAGES.QUARTERFINALS) { iconName = 'sports_score'; title = 'Çeyrek Finaller!'; message = 'En iyi hayaller bir üst tura yükseldi. Mücadele devam ediyor!'; showTransition = true; }
+        else if (currentStage === STAGES.SEMIFINALS) { iconName = 'stars'; title = 'Yarı Finaller!'; message = 'Şampiyonluğa çok az kaldı! Son hayaller yarışıyor.'; showTransition = true; }
+        else if (currentStage === STAGES.FINAL) { iconName = 'emoji_events'; title = 'BÜYÜK FİNAL!'; message = 'İşte şampiyonu belirleyecek o efsanevi karşılaşma!'; showTransition = true; }
         if (showTransition && stageTransitionModal) {
-            if(stageTransitionIcon) stageTransitionIcon.textContent = iconName;
-            if(stageTransitionTitle) stageTransitionTitle.textContent = title;
-            if(stageTransitionMessage) stageTransitionMessage.textContent = message;
+            if(stageTransitionIcon) stageTransitionIcon.textContent = iconName; if(stageTransitionTitle) stageTransitionTitle.textContent = title; if(stageTransitionMessage) stageTransitionMessage.textContent = message;
             showModal(stageTransitionModal, stageTransitionModalContent, stageTransitionModalBackdrop);
-            setTimeout(() => {
-                hideModal(stageTransitionModal, stageTransitionModalContent, stageTransitionModalBackdrop, showNextMatchSetup);
-            }, 2000);
-        } else {
-            showNextMatchSetup();
-        }
+            setTimeout(() => { hideModal(stageTransitionModal, stageTransitionModalContent, stageTransitionModalBackdrop, showNextMatchSetup); }, 2000);
+        } else showNextMatchSetup();
     }
 
     function displayWinnerPopupContent() {
         if (!champion) {
-            console.warn("Şampiyon popup gösterilirken şampiyon belirlenmemişti. Fallback kullanılıyor.");
-            if (wishesForCurrentStage.length > 0) champion = wishesForCurrentStage[0];
-            else if (wishes.length > 0) champion = wishes[0];
-            else {
-                if(winnerPopupTitle) winnerPopupTitle.textContent = "Hata";
-                if(winnerPopupDescription) winnerPopupDescription.textContent = "Şampiyon bilgisi bulunamadı.";
-                if(winnerPopupImage) winnerPopupImage.src = getImageUrl('error_placeholder_results/600/400');
-                return;
-            }
+            console.warn("Şampiyon popup için şampiyon belirlenmedi. Fallback.");
+            if (wishesForCurrentStage.length > 0) champion = wishesForCurrentStage[0]; else if (wishes.length > 0) champion = wishes[0];
+            else { if(winnerPopupTitle) winnerPopupTitle.textContent = "Hata"; if(winnerPopupDescription) winnerPopupDescription.textContent = "Şampiyon bulunamadı."; if(winnerPopupImage) winnerPopupImage.src = getImageUrl('error_placeholder_results/600/400'); return; }
         }
         if(winnerPopupSubtitle) winnerPopupSubtitle.textContent = `UtopiArena'da senin ve diğerlerinin oylarıyla geleceğin hayali bu oldu:`;
-        if(winnerPopupImage) {
-            winnerPopupImage.src = getImageUrl(champion.imageSeed);
-            winnerPopupImage.alt = champion.title;
-        }
-        if(winnerPopupTitle) winnerPopupTitle.textContent = champion.title;
-        if(winnerPopupDescription) winnerPopupDescription.textContent = champion.description;
+        if(winnerPopupImage) { winnerPopupImage.src = getImageUrl(champion.imageSeed); winnerPopupImage.alt = champion.title; }
+        if(winnerPopupTitle) winnerPopupTitle.textContent = champion.title; if(winnerPopupDescription) winnerPopupDescription.textContent = champion.description;
     }
 
     function displayResultsScreen() {
         const totalSeedingVotes = Object.values(voteCounts).reduce((sum, count) => sum + count, 0);
         if (!champion) {
-            const sortedByVotes = Object.keys(voteCounts).sort((a, b) => voteCounts[b] - voteCounts[a]);
-            if (sortedByVotes.length > 0) {
-                champion = wishes.find(w => w.id == sortedByVotes[0]);
-            }
-            if (!champion && wishes.length > 0) {
-                champion = wishes[0];
-            } else if (!champion) {
-                console.error("Champion could not be determined for results screen.");
-                if(championTitleResults) championTitleResults.textContent = "Şampiyon belirlenemedi";
-                if(championImageResults) {
-                    championImageResults.src = getImageUrl('error_placeholder_results/600/400');
-                    championImageResults.alt = "Hata";
-                }
-                if(championInfoResults) championInfoResults.textContent = "Sonuçlar hesaplanırken bir sorun oluştu.";
-                if(resultsCardContainer) resultsCardContainer.innerHTML = '<p class="text-center text-red-500 p-4">Şampiyon bilgisi yüklenemedi.</p>';
-                showScreen('results');
-                return;
-            }
+            const sortedByVotes = Object.keys(voteCounts).sort((a,b) => voteCounts[b] - voteCounts[a]);
+            if (sortedByVotes.length > 0) champion = wishes.find(w => w.id == sortedByVotes[0]);
+            if (!champion && wishes.length > 0) champion = wishes[0];
+            else if (!champion) { console.error("Sonuç ekranı için şampiyon belirlenemedi."); /* ... error handling ... */ showScreen('results'); return; }
         }
-
         const championVoteCount = voteCounts[champion.id] || 0;
         const championPercentage = totalSeedingVotes > 0 ? ((championVoteCount / totalSeedingVotes) * 100).toFixed(1) : "0.0";
-
         if(championTitleResults) championTitleResults.textContent = champion.title;
-        if(championImageResults) {
-            championImageResults.src = getImageUrl(champion.imageSeed);
-            championImageResults.alt = champion.title;
-        }
+        if(championImageResults) { championImageResults.src = getImageUrl(champion.imageSeed); championImageResults.alt = champion.title; }
         if(championInfoResults) championInfoResults.textContent = `Başlangıç oylarının %${championPercentage}'i ile şampiyon oldu!`;
-
         if(resultsCardContainer && championCardDisplay) {
-            resultsCardContainer.innerHTML = '';
-            resultsCardContainer.appendChild(championCardDisplay);
-
+            resultsCardContainer.innerHTML = ''; resultsCardContainer.appendChild(championCardDisplay);
             const fixedOtherWishIds = [8, 13, 4, 14];
-            let displayedCount = 0;
-
             const otherWishesToDisplay = fixedOtherWishIds.map(id => {
-                if (champion && id === champion.id) return null;
-                const wish = wishes.find(w => w.id === id);
-                if (!wish) return null;
+                if (champion && id === champion.id) return null; const wish = wishes.find(w => w.id === id); if (!wish) return null;
                 return { ...wish, voteCount: voteCounts[id] || 0 };
             }).filter(w => w);
-
             otherWishesToDisplay.slice(0, 3).forEach(w => {
                 if (!w || typeof w.voteCount === 'undefined') return;
                 const wishPercentage = totalSeedingVotes > 0 ? ((w.voteCount / totalSeedingVotes) * 100).toFixed(1) : "0.0";
                 resultsCardContainer.insertAdjacentHTML('beforeend',
-                    `<div class="bg-white shadow-lg rounded-2xl overflow-hidden mt-4">
-                        <div class="relative">
-                            <img alt="${w.title}" class="w-full object-cover" style="height: 10.5rem;" src="${getImageUrl(w.imageSeed, 600, 300)}"/> 
-                            <div class="absolute inset-0 bg-hero-gradient"></div>
-                            <div class="absolute bottom-0 left-0 p-4">
-                                <p class="text-white text-xl font-bold leading-tight">${w.title}</p>
-                                <div class="flex items-center mt-1.5">
-                                    <span class="material-icons text-red-400 mr-1" style="font-size: 18px;">favorite_border</span>
-                                    <p class="text-white text-sm font-medium">Başlangıç oylarının %${wishPercentage}'ini aldı</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>`);
+                    `<div class="bg-white shadow-lg rounded-2xl overflow-hidden mt-4"><div class="relative">
+                    <img alt="${w.title}" class="w-full object-cover" style="height: 10.5rem;" src="${getImageUrl(w.imageSeed, 600, 300)}"/>
+                    <div class="absolute inset-0 bg-hero-gradient"></div><div class="absolute bottom-0 left-0 p-4">
+                    <p class="text-white text-xl font-bold leading-tight">${w.title}</p><div class="flex items-center mt-1.5">
+                    <span class="material-icons text-red-400 mr-1" style="font-size: 18px;">favorite_border</span>
+                    <p class="text-white text-sm font-medium">Başlangıç oylarının %${wishPercentage}'ini aldı</p>
+                    </div></div></div></div>`);
             });
-        } else {
-            console.error("Results card container or champion card display element not found.");
-        }
+        } else console.error("Sonuç kart konteyneri bulunamadı.");
         showScreen('results');
     }
 
     function displayFinishScreen() {
         if (!champion) {
-            console.warn("Bitiş ekranı şampiyon olmadan gösteriliyor. Fallback kullanılıyor.");
-            if (wishes.length > 0) champion = wishes[0];
-            else {
-                if(winningWishTextFinishElement) winningWishTextFinishElement.textContent = "Turnuva tamamlandı! #UtopiArena";
-                if(moreDreamsContainer) moreDreamsContainer.innerHTML = '';
-                showScreen('finish');
-                return;
-            }
+            console.warn("Bitiş ekranı için şampiyon yok. Fallback."); if (wishes.length > 0) champion = wishes[0];
+            else { if(winningWishTextFinishElement) winningWishTextFinishElement.textContent = "Turnuva tamamlandı! #UtopiArena"; if(moreDreamsContainer) moreDreamsContainer.innerHTML = ''; showScreen('finish'); return; }
         }
         if(winningWishTextFinishElement) winningWishTextFinishElement.textContent = `Şampiyon dilek: ${champion.title}! Bu harika geleceği arkadaşlarınla paylaş! #UtopiArena`;
-
         if(moreDreamsContainer) {
-            moreDreamsContainer.innerHTML = '';
-            const otherWishes = [...wishes].filter(w => w.id !== champion.id);
-            shuffleArray(otherWishes);
-            for(let i=0; i<Math.min(3, otherWishes.length); i++){
-                const d=otherWishes[i];
-                if(!d||!d.title)continue;
+            moreDreamsContainer.innerHTML = ''; const otherWishes = [...wishes].filter(w => w.id !== champion.id); shuffleArray(otherWishes);
+            for(let i=0; i<Math.min(3, otherWishes.length); i++){ const d=otherWishes[i]; if(!d||!d.title)continue;
                 moreDreamsContainer.insertAdjacentHTML('beforeend',
                 `<div class="flex flex-col gap-3 rounded-xl min-w-[280px] max-w-[280px] bg-white shadow-lg p-4">
-                    <div class="w-full overflow-hidden rounded-lg" style="height: 165.375px;"> 
+                    <div class="w-full overflow-hidden rounded-lg" style="height: 165.375px;">
                         <img src="${getImageUrl(d.imageSeed, 400, 225)}" alt="${d.title}" class="w-full h-full object-cover">
                     </div>
                     <p class="text-[#0d131b] text-base font-medium leading-normal flex-grow card-description-clamp" style="-webkit-line-clamp: 3; min-height: calc(1.4em * 3); max-height: calc(1.4em * 3 + 2px);">${d.title}</p>
                     <button data-wish-id="${d.id}" class="more-dreams-wish-button mt-auto flex items-center justify-center w-full h-10 rounded-lg bg-rose-100 text-rose-600 hover:bg-rose-200 transition-colors duration-200 text-sm font-semibold">
                         <span class="material-icons text-sm mr-1">favorite_border</span> Bunu dile!
-                    </button>
-                </div>`);
+                    </button></div>`);
             }
             document.querySelectorAll('.more-dreams-wish-button').forEach(button => {
                 button.addEventListener('click', (event) => {
-                    const wishId = event.currentTarget.dataset.wishId;
-                    const wishedItem = wishes.find(w => w.id == wishId);
-                    if (wishedItem) {
-                        alert(`"${wishedItem.title}" dileğini tuttun! Belki bir sonraki UtopiArena'da o şampiyon olur!`);
-                    }
+                    const wishId = event.currentTarget.dataset.wishId; const wishedItem = wishes.find(w => w.id == wishId);
+                    if (wishedItem) alert(`"${wishedItem.title}" dileğini tuttun! Belki bir sonraki UtopiArena'da o şampiyon olur!`);
                 });
             });
         }
         showScreen('finish');
     }
 
-    // ---------- Event Listeners ----------
     if(startGameButton) startGameButton.addEventListener('click', () => resetGameAndPlay(true));
-
-    if (proceedFromOnboardingButton) {
-        proceedFromOnboardingButton.addEventListener('click', () => {
-            hideModal(onboardingModal, onboardingModalContent, onboardingModalBackdrop, () => {
-                showScreen('game');
-                updateProgressBar();
-                loadNextMatchUI();
-            });
-        });
-    }
-
+    if (proceedFromOnboardingButton) proceedFromOnboardingButton.addEventListener('click', () => {
+        hideModal(onboardingModal, onboardingModalContent, onboardingModalBackdrop, () => { showScreen('game'); updateProgressBar(); loadNextMatchUI(); });
+    });
     gameScreenCards.forEach(card => card.addEventListener('click', () => handleCardSelection(card)));
-
-    if(closeWinnerPopupButton) {
-        closeWinnerPopupButton.addEventListener('click', () => {
-            hideModal(screens.winnerPopup, winnerPopupContentContainer, null, displayResultsScreen);
-        });
-    }
-    if(winnerToResultsButton) {
-        winnerToResultsButton.addEventListener('click', () => {
-            hideModal(screens.winnerPopup, winnerPopupContentContainer, null, displayResultsScreen);
-        });
-    }
-
-    if(closeSponsoredPopupButton) {
-        closeSponsoredPopupButton.addEventListener('click', () => {
-            hideModal(screens.sponsoredPopup, sponsoredPopupContent, null, () => {
-                isSponsoredInterstitialActive = false;
-                if (screens.game) screens.game.classList.remove('sponsored-round-theme');
-                updateProgressBar();
-                loadNextMatchUI();
-            });
-        });
-    }
-
+    if(closeWinnerPopupButton) closeWinnerPopupButton.addEventListener('click', () => hideModal(screens.winnerPopup, winnerPopupContentContainer, null, displayResultsScreen));
+    if(winnerToResultsButton) winnerToResultsButton.addEventListener('click', () => hideModal(screens.winnerPopup, winnerPopupContentContainer, null, displayResultsScreen));
+    if(closeSponsoredPopupButton) closeSponsoredPopupButton.addEventListener('click', () => {
+        hideModal(screens.sponsoredPopup, sponsoredPopupContent, null, () => { isSponsoredInterstitialActive = false; if (screens.game) screens.game.classList.remove('sponsored-round-theme'); updateProgressBar(); loadNextMatchUI(); });
+    });
     const genericShareFunction = () => {
         if(navigator.share && champion) {
-            navigator.share({
-                title: '🏆 UtopiArena Şampiyonu!',
-                text: `Benim UtopiArena hayalim ve şampiyonu: "${champion.title}"! Sen de oyna ve kendi ütopyanı seç! #UtopiArena`,
-                url: window.location.href
-            }).catch(error => console.log('Paylaşım hatası:', error));
-        } else if (champion) {
-            alert(`Şampiyon hayal: ${champion.title}!\n\n"${champion.title}" dileğini arkadaşlarınla paylaşarak bu harika geleceği yayabilirsin! #UtopiArena`);
-        } else {
-            alert("Paylaşılacak bir şampiyon bulunamadı.");
-        }
+            navigator.share({ title: '🏆 UtopiArena Şampiyonu!', text: `Benim UtopiArena hayalim ve şampiyonu: "${champion.title}"! Sen de oyna ve kendi ütopyanı seç! #UtopiArena`, url: window.location.href })
+            .catch(error => console.log('Paylaşım hatası:', error));
+        } else if (champion) alert(`Şampiyon hayal: ${champion.title}!\n\n"${champion.title}" dileğini arkadaşlarınla paylaşarak bu harika geleceği yayabilirsin! #UtopiArena`);
+        else alert("Paylaşılacak bir şampiyon bulunamadı.");
     };
-
     if(winnerShareButtonPopup) winnerShareButtonPopup.addEventListener('click', genericShareFunction);
     if(shareChampionButtonFinish) shareChampionButtonFinish.addEventListener('click', genericShareFunction);
-
     if(globalHowToPlayButton) globalHowToPlayButton.addEventListener('click', () => showScreen('howToPlay'));
     if(closeHowToPlayButton) closeHowToPlayButton.addEventListener('click', () => showScreen(previousScreenId || 'game'));
-
     if(navHomeButton) navHomeButton.addEventListener('click', (e) => { e.preventDefault(); showScreen('start'); });
     if(navPlayButton) navPlayButton.addEventListener('click', (e) => { e.preventDefault(); resetGameAndPlay(); });
     if(navResultsButton) navResultsButton.addEventListener('click', (e) => { e.preventDefault(); displayResultsScreen(); });
-
     const finishPlayAgainButton = document.getElementById('finishPlayAgainButton');
     if(finishPlayAgainButton) finishPlayAgainButton.addEventListener('click', () => { resetGameAndPlay(); });
 
     document.addEventListener('DOMContentLoaded', () => {
-        preloadImages();
-        showScreen('start');
+        const appContainer = document.getElementById('appContainer');
+        const desktopWarningScreen = document.getElementById('desktopWarningScreen');
+        const DESKTOP_BREAKPOINT = 768; // Tablet ve üzeri genişlikler
+
+        if (window.innerWidth >= DESKTOP_BREAKPOINT) {
+            if (appContainer) appContainer.style.display = 'none';
+            if (desktopWarningScreen) {
+                desktopWarningScreen.classList.remove('hidden-screen');
+                desktopWarningScreen.classList.add('flex'); // Uyarı ekranını görünür yap ve flex ile ortala
+            }
+            document.body.style.overflow = 'hidden'; // Sadece uyarı ekranı kalsın, kaydırma olmasın
+        } else {
+            if (desktopWarningScreen) desktopWarningScreen.style.display = 'none'; // Mobil ise uyarıyı gizle
+            if (appContainer) appContainer.style.display = 'block'; // Mobil ise uygulamayı göster
+            preloadImages();
+            showScreen('start');
+        }
     });
 </script>
 </body>
