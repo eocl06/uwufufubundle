@@ -17,21 +17,21 @@
             overflow: hidden !important; /* Tüm body için scroll'u engelle */
         }
         .hidden-screen { display: none !important; }
-        .screen-content { 
-            box-sizing: border-box; 
+        .screen-content {
+            box-sizing: border-box;
             overflow: hidden !important; /* Ekran içi scroll'u engelle */
             height: 100dvh; /* Tüm ekranların tam yükseklik almasını sağla */
         }
 
-        @keyframes backgroundMorph { 
-            0% { background-position: 0% 50%; } 
-            50% { background-position: 100% 50%; } 
-            100% { background-position: 0% 50%; } 
+        @keyframes backgroundMorph {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
-        .background-animate { 
-            background: linear-gradient(270deg, #d1e4f0, #b8d8e8, #a3c9dc, #e0eaf0, #d1e4f0); 
-            background-size: 600% 600%; 
-            animation: backgroundMorph 12s ease infinite; 
+        .background-animate {
+            background: linear-gradient(270deg, #d1e4f0, #b8d8e8, #a3c9dc, #e0eaf0, #d1e4f0);
+            background-size: 600% 600%;
+            animation: backgroundMorph 12s ease infinite;
         }
 
         .start-button { background: linear-gradient(90deg, #76A9FA, #FF6F61); transition: transform 0.2s ease-out, box-shadow 0.2s ease-out; }
@@ -39,37 +39,38 @@
 
 #startGameButton {
   position: fixed;
-  bottom: 32px; /* daha yukarı alır */
+  bottom: clamp(80px, 18vh, 150px); /* Adjusted from 32px */
   left: 50%;
   transform: translateX(-50%);
   z-index: 30;
 }
-        .game-header-bar { 
-            padding-top: 0.5rem; 
+        .game-header-bar {
+            padding-top: 0.5rem;
             padding-bottom: 0.5rem;
-            padding-left: 1.5rem; 
-            padding-right: 1.5rem;
-        }
+            padding-left: 1.5rem;
+            padding-right: 4.5rem; /* Adjusted from 1.5rem to make space for the help button */
+}
+
 
         .card { transition: transform 0.3s ease-out, opacity 0.3s ease-out; cursor: pointer; }
         .card.selected { transform: scale(1.05); z-index: 10; }
         .card.not-selected { opacity: 0; transform: translateX(100px); }
-        
+
         .card-description-clamp {
             display: -webkit-box;
-            -webkit-line-clamp: 2; 
+            -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
             text-overflow: ellipsis;
-            line-height: 1.4em; 
-            min-height: calc(1.4em * 2); 
-            max-height: calc(1.4em * 2 + 2px); 
+            line-height: 1.4em;
+            min-height: calc(1.4em * 2);
+            max-height: calc(1.4em * 2 + 2px);
         }
 
-        #winnerPopupDescription.card-description-clamp { 
-            -webkit-line-clamp: 4; 
-            max-height: calc(1.4em * 4 + 2px); 
-            min-height: auto; 
+        #winnerPopupDescription.card-description-clamp {
+            -webkit-line-clamp: 4;
+            max-height: calc(1.4em * 4 + 2px);
+            min-height: auto;
         }
 
         #gameScreen .card .card-title {
@@ -79,14 +80,14 @@
             -webkit-box-orient: vertical;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-height: calc(1.25em * 2 + 2px); 
-            min-height: calc(1.25em * 2);       
+            max-height: calc(1.25em * 2 + 2px);
+            min-height: calc(1.25em * 2);
         }
         .confetti-burst { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 200px; height: 200px; background-image: radial-gradient(circle, rgba(255, 215, 0, 0.5) 0%, rgba(255, 215, 0, 0) 70%); border-radius: 50%; opacity: 0; animation: burst 0.7s ease-out forwards; z-index: 5; }
         @keyframes burst { 0% { opacity: 0.5; transform: translate(-50%, -50%) scale(0.5); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(1.5); } }
         .progress-bar-spark { position: absolute; right: -5px; top: -3px; width: 10px; height: 10px; background-color: #FFD700; border-radius: 50%; box-shadow: 0 0 8px 2px #FFD700; opacity: 0; animation: pulse-spark 0.5s ease-in-out; }
         @keyframes pulse-spark { 0%, 100% { opacity: 0; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.2); } }
-        
+
         #vsButtonSpan.vs-animate { animation: vsPulse 0.4s ease-in-out; }
         @keyframes vsPulse { 0% { transform: scale(1) rotate(-15deg); } 50% { transform: scale(1.3) rotate(5deg); } 100% { transform: scale(1) rotate(-15deg); } }
         @media (min-width: 768px) { #vsButtonSpan.vs-animate { animation: vsPulseDesktop 0.4s ease-in-out; } @keyframes vsPulseDesktop { 0% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.3) rotate(0deg); } 100% { transform: scale(1) rotate(0deg); } } }
@@ -95,35 +96,35 @@
         .final-match-theme .game-header-bar { background-color: #1a202c !important; }
         .final-match-theme #progressTextElement { color: #fbd38d !important; }
         .final-match-theme #progressBarFill { background-color: #FFD700 !important; }
-        .final-match-theme .card { 
-            border: 2px solid #FFD700; 
-            box-shadow: 0 0 15px #FFD700; 
-            background-color: #374151; 
+        .final-match-theme .card {
+            border: 2px solid #FFD700;
+            box-shadow: 0 0 15px #FFD700;
+            background-color: #374151;
         }
-        .final-match-theme .card .card-title { 
-            color: #f3f4f6; 
+        .final-match-theme .card .card-title {
+            color: #f3f4f6;
         }
-        .final-match-theme .card .card-description { 
-            color: #9ca3af; 
+        .final-match-theme .card .card-description {
+            color: #9ca3af;
         }
         .final-match-theme #vsButtonSpan { background: linear-gradient(45deg, #FFD700, #fbd38d) !important; color: #1A202C !important; box-shadow: 0 0 10px #FFD700; }
 
         .tournament-card-glow { box-shadow: 0 0 15px 5px rgba(66, 138, 239, 0.5), 0 0 30px 10px rgba(66, 138, 239, 0.3); animation: pulse-glow-qf 2s infinite; }
         .tournament-final-card-glow { background: linear-gradient(135deg, #fff1c0 0%, #ffe082 100%); box-shadow: 0 0 20px 8px rgba(255, 215, 0, 0.6), 0 0 40px 15px rgba(255, 215, 0, 0.4); }
         @keyframes pulse-glow-qf { 0% { box-shadow: 0 0 15px 5px rgba(66, 138, 239, 0.5), 0 0 30px 10px rgba(66, 138, 239, 0.3); } 50% { box-shadow: 0 0 25px 10px rgba(66, 138, 239, 0.7), 0 0 40px 15px rgba(66, 138, 239, 0.5); } 100% { box-shadow: 0 0 15px 5px rgba(66, 138, 239, 0.5), 0 0 30px 10px rgba(66, 138, 239, 0.3); } }
-        
+
         .bg-hero-gradient { background-image: linear-gradient(to bottom, rgba(0,0,0,0.0), rgba(0,0,0,0.6)); }
         .gold-crown { color: #FFD700; }
         .material-icons, .material-icons-outlined { vertical-align: middle; }
 
         #bottomNav { height: 60px; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); }
         #bottomNav a.active { color: #2563eb; }
-        
+
         #globalHowToPlayButton { transition: background-color 0.2s, color 0.2s; }
 
         .modal-overlay {
-            background-color: rgba(30, 41, 59, 0.7); 
-            backdrop-filter: blur(5px); 
+            background-color: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(5px);
         }
         .modal-content-box {
             transform: scale(0.95);
@@ -142,7 +143,7 @@
 
         @keyframes pulseTitle {
             0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.9; transform: scale(1.02); } 
+            50% { opacity: 0.9; transform: scale(1.02); }
         }
         #startScreen h1 {
             animation: pulseTitle 4s ease-in-out infinite;
@@ -156,16 +157,17 @@
         <span class="material-icons-outlined">help_outline</span>
     </button>
 
-    <div id="startScreen" class="screen-content relative flex h-screen flex-col justify-between items-center group/design-root px-4 pt-6 pb-2 sm:pt-10 sm:pb-4 background-animate">
-        <div class="flex flex-col items-center justify-center flex-grow min-h-0 z-10 text-center"> <h1 class="text-[#1a1a1a] tracking-tight text-[36px] sm:text-[52px] font-bold leading-tight pt-0 pb-1 sm:pb-2">UtopiArena</h1>
-            <p class="text-[#333333] text-base sm:text-lg font-normal leading-relaxed pb-3 sm:pb-4 max-w-md">Gönlündeki Türkiye'yi UtopiArena'da yaşat! Seçiminle geleceğe yön ver.</p>
-        </div>
-        <div class="w-full flex justify-center z-10 pb-0">
-<button id="startGameButton" class="start-button flex w-auto min-w-[180px] max-w-[320px] px-6 sm:px-8 h-12 sm:h-14 text-md sm:text-lg font-bold rounded-full shadow-lg items-center justify-center">
-                <span class="truncate">Turnuvaya Başla!</span>
-            </button>
-        </div>
+    <div id="startScreen" class="screen-content relative flex h-screen flex-col justify-center items-center group/design-root px-4 pt-6 pb-2 sm:pt-10 sm:pb-4 background-animate">
+    <div class="flex flex-col items-center justify-center min-h-0 z-10 text-center mb-10 sm:mb-12">
+        <h1 class="text-[#1a1a1a] tracking-tight text-[36px] sm:text-[52px] font-bold leading-tight pt-0 pb-1 sm:pb-2">UtopiArena</h1>
+        <p class="text-[#333333] text-base sm:text-lg font-normal leading-relaxed pb-3 sm:pb-4 max-w-md">Gönlündeki Türkiye'yi UtopiArena'da yaşat! Seçiminle geleceğe yön ver.</p>
     </div>
+    <div class="w-full flex justify-center z-10 pb-0">
+        <button id="startGameButton" class="start-button flex w-auto min-w-[180px] max-w-[320px] px-6 sm:px-8 h-12 sm:h-14 text-md sm:text-lg font-bold rounded-full shadow-lg items-center justify-center">
+            <span class="truncate">Turnuvaya Başla!</span>
+        </button>
+    </div>
+</div>
 
     <div id="gameScreen" class="hidden-screen screen-content relative flex flex-col bg-slate-50">
         <div class="sticky top-0 z-20 bg-slate-50 shadow-sm game-header-bar">
@@ -179,15 +181,15 @@
             <div class="flex flex-col items-center @md:flex-row @md:justify-center @md:items-center w-full">
                 <div class="card w-full max-w-md @md:max-w-sm bg-white rounded-xl shadow-xl overflow-hidden relative">
                     <div class="confetti-burst hidden"></div>
-                    <div class="w-full h-40 overflow-hidden"> 
+                    <div class="w-full h-40 overflow-hidden">
                         <img data-role="card-image-img" src="" alt="" class="w-full h-full object-cover">
                     </div>
                     <div class="p-4">
-                        <h2 class="card-title text-[#0d131b] font-bold leading-tight mb-0.5"></h2> 
+                        <h2 class="card-title text-[#0d131b] font-bold leading-tight mb-0.5"></h2>
                         <p class="card-description text-[#4c6c9a] text-sm font-normal leading-relaxed card-description-clamp"></p>
                     </div>
                 </div>
-                <div class="flex items-center justify-center my-3 @md:my-0 @md:mx-4"> 
+                <div class="flex items-center justify-center my-3 @md:my-0 @md:mx-4">
                     <span id="vsButtonSpan" class="bg-[#428aef] text-white text-xs font-bold px-2 py-1 rounded-full shadow-md transform rotate-[-15deg] @md:rotate-0">VS</span>
                 </div>
                 <div class="card w-full max-w-md @md:max-w-sm bg-white rounded-xl shadow-xl overflow-hidden relative">
@@ -208,7 +210,7 @@
             <button id="closeWinnerPopupButton" class="absolute top-3 right-3 text-gray-400 hover:text-white z-10 p-1 rounded-full hover:bg-gray-700">
                 <span class="material-icons">close</span>
             </button>
-            
+
             <div class="p-6 space-y-4">
                 <div class="mb-1">
                     <span class="material-icons text-yellow-400 text-5xl sm:text-6xl">emoji_events</span>
@@ -219,7 +221,7 @@
                 <div class="bg-gray-700 rounded-lg p-3 sm:p-4 border border-gray-600 shadow-md">
                     <img id="winnerPopupImage" src="" alt="Şampiyon Dilek" class="w-full h-40 sm:h-48 object-cover rounded-md mb-3 shadow-sm">
                     <h3 id="winnerPopupTitle" class="text-lg sm:text-xl font-semibold text-white mb-1"></h3>
-                    <p id="winnerPopupDescription" class="text-xs sm:text-sm text-gray-300 card-description-clamp leading-relaxed"></p> 
+                    <p id="winnerPopupDescription" class="text-xs sm:text-sm text-gray-300 card-description-clamp leading-relaxed"></p>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3">
@@ -236,7 +238,7 @@
     </div>
 
     <div id="resultsScreen" class="hidden-screen screen-content relative flex flex-col bg-slate-50">
-        <div class="flex flex-col flex-1 min-h-0"> 
+        <div class="flex flex-col flex-1 min-h-0">
             <header class="sticky top-0 z-10 bg-slate-50/80 backdrop-blur-sm shadow-sm game-header-bar">
                 <div class="flex items-center justify-between relative">
                     <div class="w-10"></div>
@@ -244,7 +246,7 @@
                     <div class="w-10"></div>
                 </div>
             </header>
-            <main class="pb-4 overflow-y-auto flex-1 min-h-0"> 
+            <main class="pb-4 overflow-y-auto flex-1 min-h-0">
                 <h2 class="text-slate-800 text-2xl font-semibold leading-tight px-6 text-center pb-6 pt-5">Ve şampiyon dilek...</h2>
                 <div id="resultsCardContainer" class="px-4 space-y-4">
                     <div id="championCardDisplay" class="bg-white shadow-xl rounded-2xl overflow-hidden border-2 border-yellow-400 transform scale-105">
@@ -271,7 +273,7 @@
     <div id="finishScreen" class="hidden-screen screen-content relative flex flex-col bg-slate-50">
       <div class="flex flex-col flex-1 min-h-0">
         <header class="flex items-center bg-slate-50 p-3 justify-end sticky top-0 z-10 shadow-sm game-header-bar"></header>
-        <div class="overflow-y-auto flex-1 min-h-0"> 
+        <div class="overflow-y-auto flex-1 min-h-0">
             <div class="px-6 pt-6 pb-4 text-center">
                 <svg class="w-16 h-16 mx-auto text-yellow-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
                 <h1 class="text-[#0d131b] text-3xl font-bold leading-tight pb-2">UtopiArena Tamamlandı!</h1>
@@ -307,7 +309,7 @@
                     </button>
                 </div>
             </header>
-            <main class="p-4 space-y-4 text-slate-700 overflow-y-auto flex-1 min-h-0"> 
+            <main class="p-4 space-y-4 text-slate-700 overflow-y-auto flex-1 min-h-0">
                 <p class="text-lg">UtopiArena'ya hoş geldiniz!</p>
                 <ol class="list-decimal list-inside space-y-2">
                     <li>Size sunulan iki "gelecek senaryosu" arasından favorinizi seçin.</li>
@@ -398,10 +400,10 @@
 <script>
     // ---------- DOM Elementleri ----------
     const screens = {
-        start: document.getElementById('startScreen'), 
+        start: document.getElementById('startScreen'),
         game: document.getElementById('gameScreen'),
         winnerPopup: document.getElementById('winnerPopupScreen'),
-        results: document.getElementById('resultsScreen'), 
+        results: document.getElementById('resultsScreen'),
         finish: document.getElementById('finishScreen'),
         howToPlay: document.getElementById('howToPlayScreen')
     };
@@ -411,23 +413,23 @@
     const progressBarFill = document.getElementById('progressBarFill');
     const progressTextElement = document.getElementById('progressTextElement');
     const vsButtonSpan = document.getElementById('vsButtonSpan');
-        
+
     const winnerPopupContentContainer = document.getElementById('winnerPopupContentContainer');
-    const winnerPopupImage = document.getElementById('winnerPopupImage'); 
+    const winnerPopupImage = document.getElementById('winnerPopupImage');
     const winnerPopupTitle = document.getElementById('winnerPopupTitle');
-    const winnerPopupSubtitle = document.getElementById('winnerPopupSubtitle'); 
+    const winnerPopupSubtitle = document.getElementById('winnerPopupSubtitle');
     const winnerPopupDescription = document.getElementById('winnerPopupDescription');
-    const winnerToResultsButton = document.getElementById('winnerToResultsButton'); 
-    const winnerShareButtonPopup = document.getElementById('winnerShareButton'); 
+    const winnerToResultsButton = document.getElementById('winnerToResultsButton');
+    const winnerShareButtonPopup = document.getElementById('winnerShareButton');
     const closeWinnerPopupButton = document.getElementById('closeWinnerPopupButton');
-    
+
     const resultsCardContainer = document.getElementById('resultsCardContainer');
     const championCardDisplay = document.getElementById('championCardDisplay');
-    const championImageResults = document.getElementById('championImageResults'); 
+    const championImageResults = document.getElementById('championImageResults');
     const championTitleResults = document.getElementById('championTitleResults');
     const championInfoResults = document.getElementById('championInfoResults');
     const winningWishTextFinishElement = document.getElementById('winningWishTextFinish');
-    const shareChampionButtonFinish = document.getElementById('shareChampionButton'); 
+    const shareChampionButtonFinish = document.getElementById('shareChampionButton');
     const moreDreamsContainer = document.getElementById('moreDreamsContainer');
     const closeHowToPlayButton = document.getElementById('closeHowToPlayButton');
     const bottomNav = document.getElementById('bottomNav');
@@ -448,12 +450,12 @@
     const stageTransitionMessage = document.getElementById('stageTransitionMessage');
 
     const STAGES = {
-        SEEDING: 'Eleme Turu', 
-        QUARTERFINALS: 'Çeyrek Final', 
-        SEMIFINALS: 'Yarı Final',    
-        FINAL: 'Final Maçı', 
-        RESULTS: 'Sonuçlar', 
-        FINISHED: 'Bitti', 
+        SEEDING: 'Eleme Turu',
+        QUARTERFINALS: 'Çeyrek Final',
+        SEMIFINALS: 'Yarı Final',
+        FINAL: 'Final Maçı',
+        RESULTS: 'Sonuçlar',
+        FINISHED: 'Bitti',
         HOW_TO_PLAY: 'Nasıl Oynanır'
     };
     let currentScreenId = 'start';
@@ -465,7 +467,7 @@
     let voteCounts = {};
     let champion = null;
 
-    const wishes = [ 
+    const wishes = [
         { id:1, title: "İzmir Belediyesi: Kadınlar İçin Gece 22:00–05:00 Arası Ücretsiz Taksi Hizmeti Başladı", description: "Gece çalışan, okuyan ya da çıkan her kadına bir tuşla güvenli ulaşım imkanı sunuluyor. Bu önemli destek, kadınların gece saatlerinde daha güvende hissetmelerini ve sosyal hayata katılımlarını artırmayı amaçlıyor.", imageSeed: "https://i.ibb.co/vvjLGRgT/Ads-z-tasar-m.png" },
         { id:2, title: "Üsküdar Belediyesi 21 Yaş Altı Her Gence Sinema Bileti Sponsoru Oldu", description: "“Bir film izledim, hayatım değişti” diyen gençler için düzenli sinema desteği sağlanıyor. Kültürel aktivitelere erişimi kolaylaştırarak gençlerin vizyonunu genişletmek ve sanatsal bakış açıları kazandırmak hedefleniyor.", imageSeed: "uskudar_genc_sinema_v3" },
         { id:3, title: "E-Devlet Üzerinden Terapi Randevusu Dönemi Başladı: İlk 3 Seans Devletten", description: "Giriş yap, uzman seç, ücretsiz başla. Ruh sağlığı artık herkes için çok daha erişilebilir bir hak olarak tanınıyor ve toplum genelinde önemseniyor.", imageSeed: "edevlet_terapi_v3" },
@@ -486,22 +488,27 @@
 
     function getImageUrl(imageIdentifier, width = 600, height = 400) {
         if (typeof imageIdentifier === 'string' && imageIdentifier.startsWith('http')) {
-            return imageIdentifier; 
+            return imageIdentifier;
         }
-        return `https://picsum.photos/seed/${imageIdentifier}/${width}/${height}`;
+        // Ensure placeholder seeds are distinct if imageIdentifier might be problematic
+        const seed = imageIdentifier || `placeholder_${Math.random().toString(36).substring(7)}`;
+        return `https://picsum.photos/seed/${seed}/${width}/${height}`;
     }
+
 
     let imagesToPreload = [];
     wishes.forEach(w => {
-        imagesToPreload.push(getImageUrl(w.imageSeed, 600, 400)); 
-        imagesToPreload.push(getImageUrl(w.imageSeed, 400, 225)); 
+        imagesToPreload.push(getImageUrl(w.imageSeed, 600, 400));
+        imagesToPreload.push(getImageUrl(w.imageSeed, 400, 225));
+         imagesToPreload.push(getImageUrl(w.imageSeed, 600, 300)); // For results cards
     });
-    imagesToPreload.push('https://picsum.photos/seed/champion_placeholder_final/600/400');
-    imagesToPreload = [...new Set(imagesToPreload)]; 
+    imagesToPreload.push(getImageUrl('champion_placeholder_final/600/400'));
+    imagesToPreload.push(getImageUrl('error_placeholder_results/600/400'));
+    imagesToPreload = [...new Set(imagesToPreload)];
 
     function preloadImages() {
         if (imagesToPreload.length === 0) { if(startGameButton) startGameButton.disabled = false; return; }
-        if(startGameButton) startGameButton.disabled = false; 
+        if(startGameButton) startGameButton.disabled = false;
         let loadedCount = 0;
         imagesToPreload.forEach(imageUrl => {
             const img = new Image();
@@ -517,64 +524,77 @@
         if(navHomeButton) navHomeButton.classList.remove('active', 'text-blue-600');
         if(navPlayButton) navPlayButton.classList.remove('active', 'text-blue-600');
         if(navResultsButton) navResultsButton.classList.remove('active', 'text-blue-600');
-        
-        const isOverlayActive = (onboardingModal && !onboardingModal.classList.contains('hidden-screen')) || 
+
+        const isOverlayActive = (onboardingModal && !onboardingModal.classList.contains('hidden-screen')) ||
                                   (screens.winnerPopup && !screens.winnerPopup.classList.contains('hidden-screen')) ||
                                   (stageTransitionModal && !stageTransitionModal.classList.contains('hidden-screen'));
-        
-        const navHeightWithSpace = '70px'; 
-        const basePaddingBottom = '1rem';
+
+        const navHeightWithSpace = '70px'; // Includes 60px nav + 10px buffer approx
+        const basePaddingBottom = '1rem'; // Default padding for screens without nav consideration
 
         Object.values(screens).forEach(screen => {
             if (screen && screen.style) {
                 if (screen.id === 'startScreen') {
-                     screen.style.paddingBottom = ''; 
+                     // Start screen has its own padding via Tailwind (pb-2 sm:pb-4), plus fixed button position
+                    screen.style.paddingBottom = ''; // Let Tailwind handle it or no padding if fixed button is lower
                 } else {
+                    // Set a base padding, might be overwritten if nav is visible
                     screen.style.paddingBottom = basePaddingBottom;
                 }
             }
         });
 
-        if (currentScreenId === 'start' || isOverlayActive) { 
-            if (navHomeButton) navHomeButton.classList.add('active', 'text-blue-600'); 
+
+        if (currentScreenId === 'start' || isOverlayActive) {
+            if (navHomeButton) navHomeButton.classList.add('active', 'text-blue-600'); // Still set active for logical state
             if (bottomNav) bottomNav.classList.add('hidden-screen');
             if (globalHowToPlayButton) globalHowToPlayButton.classList.add('hidden-screen');
         } else {
-            if (bottomNav) bottomNav.classList.remove('hidden-screen'); 
-            if (globalHowToPlayButton) globalHowToPlayButton.classList.remove('hidden-screen');
+            if (bottomNav) bottomNav.classList.remove('hidden-screen');
+            if (globalHowToPlayButton && currentScreenId !== 'howToPlayScreen') { // Hide on its own screen
+                 globalHowToPlayButton.classList.remove('hidden-screen');
+            } else if (globalHowToPlayButton) {
+                 globalHowToPlayButton.classList.add('hidden-screen');
+            }
+
 
             const screensThatNeedNavPadding = ['game', 'results', 'finish', 'howToPlay'];
             if (screensThatNeedNavPadding.includes(currentScreenId) && screens[currentScreenId] && screens[currentScreenId].style) {
-                screens[currentScreenId].style.paddingBottom = navHeightWithSpace;
+                // Ensure content doesn't go under the nav bar
+                const mainContentArea = screens[currentScreenId].querySelector('main, .overflow-y-auto, .flex-1.min-h-0');
+                if (mainContentArea && mainContentArea.style) {
+                     mainContentArea.style.paddingBottom = navHeightWithSpace;
+                } else if (screens[currentScreenId].style) {
+                     screens[currentScreenId].style.paddingBottom = navHeightWithSpace;
+                }
             }
-            
-            if (currentScreenId === 'game' && navPlayButton) { navPlayButton.classList.add('active', 'text-blue-600'); } 
+
+            if (currentScreenId === 'game' && navPlayButton) { navPlayButton.classList.add('active', 'text-blue-600'); }
             else if ((currentScreenId === 'results' || currentScreenId === 'finish') && navResultsButton) { navResultsButton.classList.add('active', 'text-blue-600'); }
-            else if (currentScreenId === 'howToPlay' && globalHowToPlayButton) { globalHowToPlayButton.classList.add('hidden-screen'); }
-            else if (navHomeButton && !isOverlayActive && !screensThatNeedNavPadding.includes(currentScreenId)) { 
+            else if (currentScreenId === 'howToPlay' && globalHowToPlayButton) { /* Handled above */ }
+            else if (navHomeButton && !isOverlayActive && !screensThatNeedNavPadding.includes(currentScreenId)) {
                  navHomeButton.classList.add('active', 'text-blue-600');
             }
         }
     }
-    
+
     function showModal(modalElement, modalContentElement, backdropElement = null) {
         if (!modalElement || !modalContentElement) return;
-        let tempPreviousScreenId = currentScreenId; 
+        let tempPreviousScreenId = currentScreenId;
 
-        modalElement.classList.remove('hidden-screen');
-        modalElement.classList.add('flex', 'active'); 
+        modalElement.classList.remove('hidden-screen', 'opacity-0'); // Remove opacity-0 if it's a Tailwind class on the overlay
+        modalElement.classList.add('flex', 'active', 'opacity-100'); // Add opacity-100 for overlay, 'active' for CSS rules
         if (backdropElement) {
             backdropElement.classList.remove('opacity-0');
             backdropElement.classList.add('opacity-100');
         }
-        requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-                 modalContentElement.classList.remove('opacity-0', 'scale-90');
-                 modalContentElement.classList.add('opacity-100', 'scale-100', 'active');
-            });
-        });
-        
-        currentScreenId = modalElement.id; 
+        // Content animation relies on .modal-overlay.active .modal-content-box CSS
+        // Or direct Tailwind class changes if preferred.
+        // For now, relying on CSS: .modal-content-box has opacity 0, scale .95 by default
+        // .modal-overlay.active .modal-content-box has opacity 1, scale 1
+        // The transition is on .modal-content-box itself.
+
+        currentScreenId = modalElement.id;
         updateBottomNav();
         if (tempPreviousScreenId !== 'onboardingHowToPlayModal' && tempPreviousScreenId !== 'stageTransitionModal' && tempPreviousScreenId !== 'winnerPopupScreen') {
             previousScreenId = tempPreviousScreenId;
@@ -584,24 +604,26 @@
     function hideModal(modalElement, modalContentElement, backdropElement = null, callback) {
         if (!modalElement || !modalContentElement) { if (callback) callback(); return; }
 
-        modalContentElement.classList.remove('opacity-100', 'scale-100', 'active');
-        modalContentElement.classList.add('opacity-0', 'scale-90');
+        modalElement.classList.remove('active', 'opacity-100'); // Remove active from overlay
+        modalElement.classList.add('opacity-0'); // Make overlay transparent for fade out
+
         if (backdropElement) {
             backdropElement.classList.remove('opacity-100');
             backdropElement.classList.add('opacity-0');
         }
-        modalElement.classList.remove('active'); 
-        
+        // Content will animate out due to .modal-content-box styles when .active is removed from overlay
+
         setTimeout(() => {
             modalElement.classList.add('hidden-screen');
-            modalElement.classList.remove('flex');
+            modalElement.classList.remove('flex'); // Remove display:flex
             if (currentScreenId === modalElement.id) {
-                currentScreenId = previousScreenId || 'start'; 
+                currentScreenId = previousScreenId || 'start';
             }
             updateBottomNav();
             if (callback) callback();
-        }, 300); 
+        }, 300); // Match CSS transition duration
     }
+
 
     function showScreen(screenIdToShow) {
         let activeModal = null;
@@ -615,51 +637,51 @@
                 return;
             }
             if (screenIdToShow === 'winnerPopup') {
-                displayWinnerPopupContent(); 
+                displayWinnerPopupContent();
                 showModal(screens.winnerPopup, winnerPopupContentContainer);
                 return;
             }
-            
+
             if (!screens[screenIdToShow]) { console.error("Ekran bulunamadı:", screenIdToShow); return; }
-            
+
             if (currentScreenId !== screenIdToShow && currentScreenId !== 'onboardingHowToPlayModal' && currentScreenId !== 'stageTransitionModal' && currentScreenId !== 'winnerPopupScreen') {
-                 previousScreenId = currentScreenId;
+                previousScreenId = currentScreenId;
             }
-            
-            Object.values(screens).forEach(screen => { 
-                if(screen && screen.id !== screenIdToShow) { 
-                    screen.classList.add('hidden-screen'); 
+
+            Object.values(screens).forEach(screen => {
+                if(screen && screen.id !== screenIdToShow) {
+                    screen.classList.add('hidden-screen');
                 }
             });
-            screens[screenIdToShow].classList.remove('hidden-screen'); 
-            currentScreenId = screenIdToShow; 
-            
-            const bodyClassList = document.body.classList; 
+            screens[screenIdToShow].classList.remove('hidden-screen');
+            currentScreenId = screenIdToShow;
+
+            const bodyClassList = document.body.classList;
             if (screens.game) screens.game.classList.remove('final-match-theme');
-            bodyClassList.remove('background-animate', 'bg-[#FAF8F6]', 'bg-slate-50', 'bg-slate-100'); 
+            bodyClassList.remove('background-animate', 'bg-[#FAF8F6]', 'bg-slate-50', 'bg-slate-100');
 
             if (screenIdToShow === 'start') {
-                 bodyClassList.add('background-animate', 'bg-[#FAF8F6]');
-            } else if (screens[screenIdToShow]) { 
-                 const screenBg = screens[screenIdToShow].classList.contains('bg-slate-50') ? 'bg-slate-50' : 
-                                  screens[screenIdToShow].classList.contains('bg-[#FAF8F6]') ? 'bg-[#FAF8F6]' : 'bg-slate-50'; 
-                 bodyClassList.add(screenBg);
-                 if (screenIdToShow === 'game' && currentStage === STAGES.FINAL && screens.game) { 
-                    screens.game.classList.add('final-match-theme'); 
-                 }
+                bodyClassList.add('background-animate', 'bg-[#FAF8F6]');
+            } else if (screens[screenIdToShow]) {
+                const screenBg = screens[screenIdToShow].classList.contains('bg-slate-50') ? 'bg-slate-50' :
+                                 screens[screenIdToShow].classList.contains('bg-[#FAF8F6]') ? 'bg-[#FAF8F6]' : 'bg-slate-50';
+                bodyClassList.add(screenBg);
+                if (screenIdToShow === 'game' && currentStage === STAGES.FINAL && screens.game) {
+                    screens.game.classList.add('final-match-theme');
+                }
             }
-            
-            updateBottomNav(); 
+
+            updateBottomNav();
             window.scrollTo(0,0);
         };
 
-        if (activeModal && activeModal.el.id !== screenIdToShow) { 
+        if (activeModal && activeModal.el.id !== screenIdToShow) {
             hideModal(activeModal.el, activeModal.content, activeModal.backdrop, displayActualScreen);
         } else {
             displayActualScreen();
         }
     }
-    
+
     function resetGameAndPlay(showOnboarding = false) {
         currentStage = STAGES.SEEDING;
         currentMatchInStage = 0;
@@ -668,33 +690,33 @@
         champion = null;
         let wishesForSeeding = [...wishes];
         shuffleArray(wishesForSeeding);
-        wishesForCurrentStage = wishesForSeeding.slice(0, 16);
+        wishesForCurrentStage = wishesForSeeding.slice(0, 16); // Assuming 16 items for seeding
 
         if (showOnboarding) {
             showScreen('onboardingModal');
         } else {
             showScreen('game');
-            updateProgressBar(); 
+            updateProgressBar();
             loadNextMatchUI();
         }
     }
 
     function getMatchPair() {
-        if (wishesForCurrentStage.length < (currentMatchInStage * 2) + 2) { 
-            return [null, null]; 
-        } 
+        if (wishesForCurrentStage.length < (currentMatchInStage * 2) + 2) {
+            return [null, null];
+        }
         return [wishesForCurrentStage[currentMatchInStage * 2], wishesForCurrentStage[(currentMatchInStage * 2) + 1]];
     }
-    
+
     function loadNextMatchUI() {
         const [wish1, wish2] = getMatchPair();
-        if (!wish1 || !wish2) { 
-            advanceToNextStage(); 
-            return; 
+        if (!wish1 || !wish2) {
+            advanceToNextStage();
+            return;
         }
         if (vsButtonSpan) {
-            vsButtonSpan.classList.remove('vs-animate'); 
-            void vsButtonSpan.offsetWidth; 
+            vsButtonSpan.classList.remove('vs-animate');
+            void vsButtonSpan.offsetWidth;
             vsButtonSpan.classList.add('vs-animate');
         }
 
@@ -727,56 +749,58 @@
 
     function updateProgressBar() {
         let totalMatches = 0, stageName = currentStage, matchNum = currentMatchInStage + 1;
-        if (currentStage === STAGES.SEEDING) { totalMatches = 8; stageName = "Eleme"; }
-        else if (currentStage === STAGES.QUARTERFINALS) { totalMatches = 4; stageName = "Ç.Final"; }
-        else if (currentStage === STAGES.SEMIFINALS) { totalMatches = 2; stageName = "Y.Final"; }
-        else if (currentStage === STAGES.FINAL) { totalMatches = 1; stageName = "FİNAL!"; }
+        if (currentStage === STAGES.SEEDING) { totalMatches = 8; stageName = "Eleme"; } // 16 wishes -> 8 matches
+        else if (currentStage === STAGES.QUARTERFINALS) { totalMatches = 4; stageName = "Ç.Final"; } // 8 wishes -> 4 matches
+        else if (currentStage === STAGES.SEMIFINALS) { totalMatches = 2; stageName = "Y.Final"; } // 4 wishes -> 2 matches
+        else if (currentStage === STAGES.FINAL) { totalMatches = 1; stageName = "FİNAL!"; } // 2 wishes -> 1 match
         else return;
-        
+
         if (currentMatchInStage >= totalMatches && totalMatches > 0) matchNum = totalMatches;
-        
+
         const progress = totalMatches > 0 ? (currentMatchInStage / totalMatches) * 100 : 0;
         if (progressBarFill) progressBarFill.style.width = `${Math.min(progress, 100)}%`;
         if (progressTextElement) {
             if (currentStage === STAGES.FINAL && currentMatchInStage === 0 && progress < 100) {
-                 progressTextElement.textContent = stageName;
-            } else if (progress >= 100 && currentStage === STAGES.FINAL) { 
-                 progressTextElement.textContent = "ŞAMPİYON!";
+                progressTextElement.textContent = stageName;
+            } else if (progress >= 100 && currentStage === STAGES.FINAL) {
+                progressTextElement.textContent = "ŞAMPİYON!";
             } else {
-                 progressTextElement.textContent = `${stageName}: ${matchNum}/${totalMatches}`;
+                progressTextElement.textContent = `${stageName}: ${matchNum}/${totalMatches}`;
             }
         }
-        
+
         if (matchNum > 0 && totalMatches > 0 && progressBarFill) {
             const oldSpark = progressBarFill.querySelector('.progress-bar-spark'); if (oldSpark) oldSpark.remove();
             const spark = document.createElement('div'); spark.className = 'progress-bar-spark';
             let sparkPos = (matchNum / totalMatches * 100);
-            if (currentMatchInStage >= totalMatches) sparkPos = 100;
-            else if (progress >= 100 && currentMatchInStage < totalMatches) sparkPos = 99;
-            
-            spark.style.left = `calc(${Math.min(sparkPos,100)}% - 5px)`; 
+            if (currentMatchInStage >= totalMatches) sparkPos = 100; // Ensure spark is at the end if matches are complete
+            else if (progress >= 100 && currentMatchInStage < totalMatches) sparkPos = 99; // Slight offset if progress is full but match isn't last visually
+
+            spark.style.left = `calc(${Math.min(sparkPos,100)}% - 5px)`; // Adjust for spark width
             progressBarFill.appendChild(spark);
-            setTimeout(() => { if(spark.parentElement) spark.remove(); }, 500);
+            setTimeout(() => { if(spark.parentElement) spark.remove(); }, 500); // Animation duration
         }
     }
 
     function handleCardSelection(selectedCardNode) {
         gameScreenCards.forEach(c => c.style.pointerEvents = 'none'); selectedCardNode.classList.add('selected');
         const chosenId = selectedCardNode.dataset.wishId; const winner = wishes.find(w => w.id == chosenId);
-        
-        if (currentStage === STAGES.FINAL) { 
-            champion = winner; 
-            currentMatchInStage++; 
-            updateProgressBar(); 
+
+        if (currentStage === STAGES.FINAL) {
+            champion = winner;
+            currentMatchInStage++;
+            updateProgressBar();
             setTimeout(()=> {
-                showScreen('winnerPopup'); 
-            }, 1000); 
-            return; 
+                showScreen('winnerPopup');
+            }, 1000); // Delay for selection animation
+            return;
         }
 
         if (winner) nextStageWishes.push(winner);
-        if (currentStage === STAGES.SEEDING) { voteCounts[chosenId] = (voteCounts[chosenId] || 0) + 1; }
-        
+        if (currentStage === STAGES.SEEDING) { // Only count initial votes in seeding for simplicity of ranking
+            voteCounts[chosenId] = (voteCounts[chosenId] || 0) + 1;
+        }
+
         const confetti = selectedCardNode.querySelector('.confetti-burst');
         if (confetti) {
             confetti.classList.remove('hidden');
@@ -784,55 +808,57 @@
         }
 
         gameScreenCards.forEach(oc => { if (oc !== selectedCardNode) oc.classList.add('not-selected'); });
-        
+
         setTimeout(() => {
             currentMatchInStage++;
-            updateProgressBar(); 
+            updateProgressBar();
 
             let totalMatchesInThisStage = 0;
             if (currentStage === STAGES.SEEDING) totalMatchesInThisStage = 8;
             else if (currentStage === STAGES.QUARTERFINALS) totalMatchesInThisStage = 4;
             else if (currentStage === STAGES.SEMIFINALS) totalMatchesInThisStage = 2;
-            
-            if (currentMatchInStage >= totalMatchesInThisStage && currentStage !== STAGES.FINAL) { 
-                advanceToNextStage(); 
-            } else if (currentStage !== STAGES.FINAL) { 
-                loadNextMatchUI(); 
+
+            if (currentMatchInStage >= totalMatchesInThisStage && currentStage !== STAGES.FINAL) {
+                advanceToNextStage();
+            } else if (currentStage !== STAGES.FINAL) {
+                loadNextMatchUI();
             }
-        }, 1000);
+        }, 1000); // Delay for animations
     }
 
     function advanceToNextStage() {
-        currentMatchInStage = 0; 
-        wishesForCurrentStage = [...nextStageWishes]; 
-        shuffleArray(wishesForCurrentStage); 
+        currentMatchInStage = 0;
+        wishesForCurrentStage = [...nextStageWishes];
+        shuffleArray(wishesForCurrentStage);
         nextStageWishes = [];
-        
+
         let nextLogicalStage = null;
         switch (currentStage) {
             case STAGES.SEEDING: nextLogicalStage = STAGES.QUARTERFINALS; break;
             case STAGES.QUARTERFINALS: nextLogicalStage = STAGES.SEMIFINALS; break;
-            case STAGES.SEMIFINALS: nextLogicalStage = STAGES.FINAL; break; 
-            default: 
-                if (champion) { displayResultsScreen(); } else { resetGameAndPlay(); }
+            case STAGES.SEMIFINALS: nextLogicalStage = STAGES.FINAL; break;
+            default:
+                if (champion) { displayResultsScreen(); } else { resetGameAndPlay(); } // Should not happen if logic is correct
                 return;
         }
-        
-        currentStage = nextLogicalStage; 
+
+        currentStage = nextLogicalStage;
 
         const showNextMatchSetup = () => {
-            updateProgressBar(); 
+            updateProgressBar();
             if (wishesForCurrentStage.length >= 2 || (currentStage === STAGES.FINAL && wishesForCurrentStage.length === 2) ) {
-                 loadNextMatchUI(); 
-                 showScreen('game'); 
-            } else if (wishesForCurrentStage.length === 1 && currentStage !== STAGES.FINAL) {
+                loadNextMatchUI();
+                showScreen('game');
+            } else if (wishesForCurrentStage.length === 1 && currentStage !== STAGES.FINAL) { // Auto-win if only one left before final
                 champion = wishesForCurrentStage[0];
-                currentStage = STAGES.FINAL; 
-                currentMatchInStage = 1; 
+                currentStage = STAGES.FINAL; // Mark as final
+                currentMatchInStage = 1; // Mark final match as complete
                 updateProgressBar();
                 showScreen('winnerPopup');
-            } else { 
-                resetGameAndPlay();
+            } else {
+                // Not enough wishes to continue, something went wrong or tournament structure issue
+                console.error("Not enough wishes for the current stage:", currentStage, wishesForCurrentStage);
+                resetGameAndPlay(); // Reset as a fallback
             }
         };
 
@@ -850,66 +876,103 @@
             if(stageTransitionIcon) stageTransitionIcon.textContent = iconName;
             if(stageTransitionTitle) stageTransitionTitle.textContent = title;
             if(stageTransitionMessage) stageTransitionMessage.textContent = message;
-            
+
             showModal(stageTransitionModal, stageTransitionModalContent, stageTransitionModalBackdrop);
 
             setTimeout(() => {
                 hideModal(stageTransitionModal, stageTransitionModalContent, stageTransitionModalBackdrop, showNextMatchSetup);
-            }, 2000); 
+            }, 2000); // Duration of stage transition modal display
         } else {
             showNextMatchSetup();
         }
     }
-    
-    function displayWinnerPopupContent() { 
-        if (!champion) { 
-             champion = wishes[0];
+
+    function displayWinnerPopupContent() {
+        if (!champion) {
+            // Fallback: if champion isn't set for some reason (should be set by handleCardSelection in FINAL)
+            // This indicates a potential logic flaw if reached without 'champion'
+             console.warn("Şampiyon popup gösterilirken şampiyon belirlenmemişti. Fallback kullanılıyor.");
+             if (wishesForCurrentStage.length > 0) champion = wishesForCurrentStage[0]; // Last selected or first of final pair
+             else if (wishes.length > 0) champion = wishes[0]; // Absolute fallback
+             else { // No wishes available, fatal error for this display
+                 if(winnerPopupTitle) winnerPopupTitle.textContent = "Hata";
+                 if(winnerPopupDescription) winnerPopupDescription.textContent = "Şampiyon bilgisi bulunamadı.";
+                 if(winnerPopupImage) winnerPopupImage.src = "";
+                 return;
+             }
         }
         if(winnerPopupSubtitle) winnerPopupSubtitle.textContent = `UtopiArena'da senin ve diğerlerinin oylarıyla geleceğin hayali bu oldu:`;
         if(winnerPopupImage) {
-            winnerPopupImage.src = getImageUrl(champion.imageSeed); 
+            winnerPopupImage.src = getImageUrl(champion.imageSeed);
             winnerPopupImage.alt = champion.title;
         }
-        if(winnerPopupTitle) winnerPopupTitle.textContent = champion.title; 
+        if(winnerPopupTitle) winnerPopupTitle.textContent = champion.title;
         if(winnerPopupDescription) winnerPopupDescription.textContent = champion.description;
     }
 
-    function displayResultsScreen() { 
+    // CORRECTED displayResultsScreen function
+    function displayResultsScreen() {
         const totalSeedingVotes = Object.values(voteCounts).reduce((sum, count) => sum + count, 0);
 
-        if (!champion) { 
-            const sortedByVotes = Object.keys(voteCounts).sort((a,b) => voteCounts[b] - voteCounts[a]);
+        if (!champion) {
+            const sortedByVotes = Object.keys(voteCounts).sort((a, b) => voteCounts[b] - voteCounts[a]);
             if (sortedByVotes.length > 0) {
                 champion = wishes.find(w => w.id == sortedByVotes[0]);
             }
-            if (!champion) champion = wishes[0]; 
+            // Ensure champion is set, even if no votes, fallback to first wish.
+            if (!champion && wishes.length > 0) {
+                champion = wishes[0];
+            } else if (!champion) {
+                // This case should ideally not happen if 'wishes' array is always populated.
+                console.error("Champion could not be determined and wishes array might be empty or no votes were cast.");
+                if(championTitleResults) championTitleResults.textContent = "Şampiyon belirlenemedi";
+                if(championImageResults) {
+                    championImageResults.src = getImageUrl('error_placeholder_results/600/400'); // A generic placeholder
+                    championImageResults.alt = "Hata";
+                }
+                if(championInfoResults) championInfoResults.textContent = "Sonuçlar hesaplanırken bir sorun oluştu.";
+                if(resultsCardContainer) resultsCardContainer.innerHTML = '<p class="text-center text-red-500 p-4">Şampiyon bilgisi yüklenemedi.</p>';
+                showScreen('results');
+                return;
+            }
         }
-        
+
         const championVoteCount = voteCounts[champion.id] || 0;
         const championPercentage = totalSeedingVotes > 0 ? ((championVoteCount / totalSeedingVotes) * 100).toFixed(1) : "0.0";
-        
+
         if(championTitleResults) championTitleResults.textContent = champion.title;
-        if(championImageResults) championImageResults.src = getImageUrl(champion.imageSeed); 
+        if(championImageResults) {
+            championImageResults.src = getImageUrl(champion.imageSeed);
+            championImageResults.alt = champion.title;
+        }
         if(championInfoResults) championInfoResults.textContent = `Başlangıç oylarının %${championPercentage}'i ile şampiyon oldu!`;
 
         if(resultsCardContainer && championCardDisplay) {
-            resultsCardContainer.innerHTML = ''; 
-            resultsCardContainer.appendChild(championCardDisplay);
+            resultsCardContainer.innerHTML = ''; // Clear previous cards, including any old "other wishes"
+            resultsCardContainer.appendChild(championCardDisplay); // Add the champion card first
 
-            const oPW = Object.entries(voteCounts)
-                .map(([id, c]) => {
-                    const wish = wishes.find(w => w.id == id);
-                    return wish ? { ...wish, voteCount: c } : null;
-                })
-                .filter(w => w && w.id !== champion.id && w.title)
-                .sort((a, b) => b.voteCount - a.voteCount)
-                .slice(0, 4);
+            // Logic for displaying other fixed wishes, ensuring they are not the champion
+            const fixedOtherWishIds = [8, 13, 4, 14]; // Specified IDs: Kadın-Erkek Eşitliği, Enflasyon, Vize, Yeşil Alanlar
 
-            oPW.forEach(w => {
-                if (!w || typeof w.voteCount === 'undefined') return; 
+            const otherWishesToDisplay = fixedOtherWishIds.map(id => {
+                const wish = wishes.find(w => w.id === id);
+                if (!wish) return null; // Wish with this ID not found in the main 'wishes' array
+                // Do not display this wish if it is the current champion
+                if (champion && wish.id === champion.id) return null;
+                return {
+                    ...wish,
+                    voteCount: voteCounts[id] || 0 // Get actual vote count for this wish, or 0 if none
+                };
+            }).filter(w => w); // Remove nulls (e.g., if a wish was the champion or not found)
+
+            otherWishesToDisplay.forEach(w => {
+                // Ensure w and w.voteCount are valid (filter should handle w, but good for safety)
+                if (!w || typeof w.voteCount === 'undefined') return;
+
                 const wishPercentage = totalSeedingVotes > 0 ? ((w.voteCount / totalSeedingVotes) * 100).toFixed(1) : "0.0";
-                resultsCardContainer.insertAdjacentHTML('beforeend', 
-                    `<div class="bg-white shadow-lg rounded-2xl overflow-hidden">
+
+                resultsCardContainer.insertAdjacentHTML('beforeend',
+                    `<div class="bg-white shadow-lg rounded-2xl overflow-hidden mt-4"> {/* Added mt-4 for spacing */}
                         <div class="relative">
                             <img alt="${w.title}" class="w-full h-40 object-cover" src="${getImageUrl(w.imageSeed, 600, 300)}"/>
                             <div class="absolute inset-0 bg-hero-gradient"></div>
@@ -923,20 +986,34 @@
                         </div>
                     </div>`);
             });
+        } else {
+            // Fallback if resultsCardContainer or championCardDisplay is not found in the DOM
+            console.error("Results card container or champion card display element not found.");
         }
         showScreen('results');
     }
-    
+
+
     function displayFinishScreen() {
-        if (!champion) champion = wishes[0];
+        if (!champion) {
+            // Fallback if champion is somehow not set (e.g., direct navigation to finish screen if possible)
+            console.warn("Bitiş ekranı şampiyon olmadan gösteriliyor. Fallback kullanılıyor.");
+            if (wishes.length > 0) champion = wishes[0];
+            else { // No champion, no wishes, show generic message
+                if(winningWishTextFinishElement) winningWishTextFinishElement.textContent = "Turnuva tamamlandı! #UtopiArena";
+                if(moreDreamsContainer) moreDreamsContainer.innerHTML = '';
+                showScreen('finish');
+                return;
+            }
+        }
         if(winningWishTextFinishElement) winningWishTextFinishElement.textContent = `Şampiyon dilek: ${champion.title}! Bu harika geleceği arkadaşlarınla paylaş! #UtopiArena`;
-        
+
         if(moreDreamsContainer) {
-            moreDreamsContainer.innerHTML = ''; 
-            const sW = [...wishes].filter(w=>w.id!==champion.id); 
+            moreDreamsContainer.innerHTML = '';
+            const sW = [...wishes].filter(w=>w.id!==champion.id);
             shuffleArray(sW);
-            for(let i=0; i<Math.min(3,sW.length); i++){ 
-                const d=sW[i]; 
+            for(let i=0; i<Math.min(3,sW.length); i++){
+                const d=sW[i];
                 if(!d||!d.title)continue;
                 moreDreamsContainer.insertAdjacentHTML('beforeend',
                 `<div class="flex flex-col gap-3 rounded-xl min-w-[280px] bg-white shadow-lg p-4">
@@ -952,23 +1029,23 @@
         }
         showScreen('finish');
     }
-    
-    if(startGameButton) startGameButton.addEventListener('click', () => resetGameAndPlay(true)); 
+
+    if(startGameButton) startGameButton.addEventListener('click', () => resetGameAndPlay(true));
 
     if (proceedFromOnboardingButton) {
         proceedFromOnboardingButton.addEventListener('click', () => {
             hideModal(onboardingModal, onboardingModalContent, onboardingModalBackdrop, () => {
                 showScreen('game');
-                updateProgressBar(); 
+                updateProgressBar();
                 loadNextMatchUI();
             });
         });
     }
 
     gameScreenCards.forEach(card => card.addEventListener('click', () => handleCardSelection(card)));
-    
+
     if(closeWinnerPopupButton) {
-        closeWinnerPopupButton.addEventListener('click', () => { 
+        closeWinnerPopupButton.addEventListener('click', () => {
             hideModal(screens.winnerPopup, winnerPopupContentContainer, null, displayResultsScreen);
         });
     }
@@ -977,18 +1054,18 @@
             hideModal(screens.winnerPopup, winnerPopupContentContainer, null, displayResultsScreen);
         });
     }
-    
+
     const genericShareFunction = () => {
         if(navigator.share && champion) {
             navigator.share({
                 title: '🏆 UtopiArena Şampiyonu!',
                 text: `Benim UtopiArena hayalim ve şampiyonu: "${champion.title}"! Sen de oyna ve kendi ütopyanı seç! #UtopiArena`,
-                url: window.location.href 
+                url: window.location.href
             }).catch(error => console.log('Paylaşım hatası:', error));
         } else if (champion) {
             alert(`Şampiyon hayal: ${champion.title}!\n\n"${champion.title}" dileğini arkadaşlarınla paylaşarak bu harika geleceği yayabilirsin! #UtopiArena`);
-        } else { 
-            alert("Paylaşılacak bir şampiyon bulunamadı."); 
+        } else {
+            alert("Paylaşılacak bir şampiyon bulunamadı.");
         }
     };
 
@@ -997,18 +1074,18 @@
 
 
     if(globalHowToPlayButton) globalHowToPlayButton.addEventListener('click', () => showScreen('howToPlay'));
-    if(closeHowToPlayButton) closeHowToPlayButton.addEventListener('click', () => showScreen(previousScreenId || 'start')); 
-    
-    if(navHomeButton) navHomeButton.addEventListener('click', (e) => { e.preventDefault(); showScreen('start'); }); 
-    if(navPlayButton) navPlayButton.addEventListener('click', (e) => { e.preventDefault(); resetGameAndPlay(); }); 
+    if(closeHowToPlayButton) closeHowToPlayButton.addEventListener('click', () => showScreen(previousScreenId || 'game')); // Go back to game or previous valid screen
+
+    if(navHomeButton) navHomeButton.addEventListener('click', (e) => { e.preventDefault(); showScreen('start'); });
+    if(navPlayButton) navPlayButton.addEventListener('click', (e) => { e.preventDefault(); resetGameAndPlay(); });
     if(navResultsButton) navResultsButton.addEventListener('click', (e) => { e.preventDefault(); displayResultsScreen(); });
-    
+
     const finishPlayAgainButton = document.getElementById('finishPlayAgainButton');
     if(finishPlayAgainButton) finishPlayAgainButton.addEventListener('click', () => { resetGameAndPlay(); });
 
-    document.addEventListener('DOMContentLoaded', () => { 
-        preloadImages(); 
-        showScreen('start'); 
+    document.addEventListener('DOMContentLoaded', () => {
+        preloadImages();
+        showScreen('start');
     });
 </script>
 </body>
